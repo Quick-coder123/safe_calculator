@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="uk" data-theme="light">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Калькулятор оренди сейфу</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="header">
@@ -15,10 +15,10 @@
   </div>
 
   <div class="layout">
+    <!-- Блок форми -->
     <div class="panel" style="grid-area: form;">
       <h2>Калькулятор</h2>
 
-      <!-- Форма -->
       <div class="form-group">
         <label for="category">Категорія сейфу</label>
         <select id="category">
@@ -31,18 +31,18 @@
 
       <div class="form-group">
         <label for="startDate">Дата початку</label>
-        <input type="date" id="startDate">
+        <input type="date" id="startDate" />
       </div>
 
       <div class="form-group">
         <label for="endDate">Дата закінчення</label>
-        <input type="date" id="endDate">
+        <input type="date" id="endDate" />
         <div id="holidayWarning" class="warning-msg"></div>
       </div>
 
       <div class="form-group">
         <label for="daysCount">Термін (днів)</label>
-        <input type="number" id="daysCount" min="1" max="365">
+        <input type="number" id="daysCount" min="1" max="365" />
       </div>
 
       <div class="form-group">
@@ -66,21 +66,25 @@
 
       <div class="form-group">
         <label>
-          <input type="checkbox" id="fineOption" onchange="toggleFineInput()"> Пеня
+          <input type="checkbox" id="fineOption" onchange="toggleFineInput()" /> Пеня
         </label>
-        <input type="number" id="fineAmount" style="display:none;" placeholder="Сума пені">
+        <input type="number" id="fineAmount" style="display: none" placeholder="Сума пені" />
       </div>
 
       <button class="action-btn" onclick="calculate()">Розрахувати</button>
     </div>
 
+    <!-- Підсумок -->
     <div id="summary" class="panel summary-panel" style="grid-area: summary;">
       <h2>Підсумкова інформація</h2>
-      <div id="summaryDetails"></div>
-      <hr>
+      <div id="summaryDetails" style="min-height: 100px; border: 1px solid var(--accent); border-radius: 6px; padding: 10px;">
+        <em style="opacity: 0.6;">Немає даних для відображення</em>
+      </div>
+      <hr />
       <button class="action-btn secondary" onclick="copySummary()">Скопіювати</button>
     </div>
 
+    <!-- Реквізити -->
     <div class="panel" style="grid-area: payment;">
       <h2>Реквізити</h2>
       <textarea id="invoiceText" readonly></textarea>
