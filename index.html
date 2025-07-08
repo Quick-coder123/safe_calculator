@@ -1,62 +1,55 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Калькулятор оренди сейфу</title>
+  <link rel="icon" href="https://www.ukrgasbank.com/img/favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="header">
-    <button id="theme-toggle" class="btn-icon" aria-label="Перемикач теми">🌙</button>
-    <select id="lang-select" class="select-small">
+    <button id="theme-toggle" class="btn-icon" aria-label="Перемикач теми" title="Змінити тему">🌙</button>
+    <select id="lang-select" class="select-small" title="Мова">
       <option value="uk">UA</option>
       <option value="en">EN</option>
     </select>
   </header>
 
-  <main class="layout">
-    <!-- 1. КАЛЬКУЛЯТОР -->
+  <main class="layout" aria-label="Калькулятор оренди сейфу">
+    <!-- Форма -->
     <section class="panel form-panel" style="grid-area: form;">
       <h1 data-i18n-key="calc_title">Калькулятор оренди індивідуального сейфу</h1>
-
       <div class="form-group">
         <label for="category" data-i18n-key="label_category">Категорія сейфу</label>
-        <select id="category"></select>
+        <select id="category" class="select-small" autocomplete="off"></select>
       </div>
-
       <div class="form-group">
         <label for="contractType" data-i18n-key="label_contract">Тип договору</label>
-        <select id="contractType"></select>
+        <select id="contractType" class="select-small" autocomplete="off"></select>
       </div>
-
       <div class="form-group">
         <label for="coverage" data-i18n-key="label_coverage">Тип покриття</label>
-        <select id="coverage"></select>
+        <select id="coverage" class="select-small" autocomplete="off"></select>
       </div>
-
       <div class="form-group small">
         <label for="days" data-i18n-key="label_days">Термін (днів)</label>
-        <input type="number" id="days" min="1" max="365" value="1">
+        <input type="number" id="days" min="1" max="365" value="1" autocomplete="off">
       </div>
-
       <div class="form-group small">
         <label for="start-date" data-i18n-key="label_start">Дата початку</label>
-        <input type="date" id="start-date">
+        <input type="date" id="start-date" required autocomplete="off">
       </div>
-
       <div class="form-group small">
         <label for="end-date" data-i18n-key="label_end">Дата закінчення</label>
-        <input type="date" id="end-date">
+        <input type="date" id="end-date" required autocomplete="off">
         <div id="end-warning" class="warning-msg" style="display:none;">⚠️ Увага: дата закінчення припадає на вихідний день!</div>
       </div>
-
       <div class="form-group small">
         <label for="penalty-amount" data-i18n-key="label_penalty">Пеня (грн)</label>
-        <input type="number" id="penalty-amount" min="0" value="0">
+        <input type="number" id="penalty-amount" min="0" value="0" autocomplete="off">
       </div>
-
       <div class="form-group inline-group">
         <label data-i18n-key="label_attorney">Довіреності</label>
         <div class="qty-control">
@@ -65,24 +58,10 @@
           <button id="attorney-increase" class="qty-btn">+</button>
         </div>
       </div>
-
-      <div class="form-group inline-group">
-        <label data-i18n-key="label_packet">Пакети</label>
-        <div class="qty-control">
-          <button id="packet-decrease" class="qty-btn">−</button>
-          <span id="packet-count">0</span>
-          <button id="packet-increase" class="qty-btn">+</button>
-        </div>
-      </div>
-
-      <button
-        class="action-btn secondary"
-        onclick="window.open('https://ars.aiwa.in.ua/docs/sdb/newID','_blank')"
-        style="margin-top:16px;"
-      >Оформити страхування ключа</button>
+      <button class="action-btn secondary" onclick="window.open('https://ars.aiwa.in.ua/docs/sdb/newID','_blank')" style="margin-top:16px;">Оформити страхування ключа</button>
     </section>
 
-    <!-- 2. ПІДСУМКИ -->
+    <!-- Підсумок -->
     <section class="panel summary-panel" style="grid-area: summary;">
       <h2 data-i18n-key="summary_title">Підсумкова інформація</h2>
       <div class="summary-item"><span>Тариф:</span> <span id="out-rate">0.00 грн/день</span></div>
@@ -96,26 +75,26 @@
       <div class="summary-total"><strong data-i18n-key="summary_total">Разом:</strong> <span id="total-cost">0.00 грн</span></div>
     </section>
 
-    <!-- 3. РЕКВІЗИТИ -->
+    <!-- Реквізити -->
     <section class="panel payment-panel" style="grid-area: payment;">
       <h2 data-i18n-key="pay_title">Реквізити</h2>
       <div class="form-group">
         <label for="recipient-name" data-i18n-key="label_rec">Отримувач (ПІБ)</label>
-        <input type="text" id="recipient-name">
+        <input type="text" id="recipient-name" required autocomplete="off">
       </div>
       <div class="form-group tooltip">
         <label for="edrpou" data-i18n-key="label_edr">Код ЄДРПОУ</label>
-        <input type="text" id="edrpou" maxlength="10">
+        <input type="text" id="edrpou" maxlength="10" required autocomplete="off" placeholder="1234567890">
         <span class="tooltiptext" data-i18n-key="hint_edr">10 цифр</span>
       </div>
       <div class="form-group tooltip">
         <label for="iban" data-i18n-key="label_iban">IBAN</label>
-        <input type="text" id="iban" maxlength="31">
+        <input type="text" id="iban" maxlength="31" required autocomplete="off" placeholder="UA1234...">
         <span class="tooltiptext" data-i18n-key="hint_iban">UA + 29 цифр</span>
       </div>
       <div class="form-group">
         <label for="insurance-link" data-i18n-key="label_link">Посилання на страхування</label>
-        <input type="url" id="insurance-link" placeholder="https://...">
+        <input type="url" id="insurance-link" placeholder="https://..." autocomplete="off">
       </div>
       <textarea id="payment-text" readonly placeholder=""></textarea>
       <button id="generate-btn" class="action-btn" data-i18n-key="btn_generate">Згенерувати реквізити</button>
