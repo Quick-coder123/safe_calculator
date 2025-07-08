@@ -185,7 +185,7 @@ textarea {
 /* Відступ між кнопками у секціях */
 .payment-panel .action-btn,
 .summary-panel .action-btn {
-  margin: 8px 0;
+  margin: 2px 0;
 }
 
 .action-btn {
