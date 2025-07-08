@@ -1,6 +1,8 @@
+// script.js
+
 document.addEventListener('DOMContentLoaded', () => {
   // —————————————————————————————————————————————————————————
-  // Налаштування тарифів (оновіть значення згідно ваших даних)
+  // 1. Налаштування тарифів (оновіть значення відповідно до ваших даних)
   // —————————————————————————————————————————————————————————
   const dailyRates = [
     { min: 1,   max: 30,  rates: { 1: 5,  2: 10,  3: 15,  4: 20  } },
@@ -10,72 +12,79 @@ document.addEventListener('DOMContentLoaded', () => {
     { min: 1,   max: 180, cost: 50  },
     { min: 181, max: 365, cost: 75  },
   ];
-  const depositAmount   = 1000;  // сума грошового покриття
+  const depositAmount   = 1000;  // сума грошового покриття при новому договорі
   const attorneyTariff  = 25;    // тариф за одну довіреність
 
   // —————————————————————————————————————————————————————————
-  // Отримуємо елементи DOM
+  // 2. Отримуємо елементи DOM
   // —————————————————————————————————————————————————————————
-  const categoryEl   = document.getElementById('category');
-  const contractEl   = document.getElementById('contractType');
-  const coverageEl   = document.getElementById('coverage');
-  const daysEl       = document.getElementById('days');
-  const startEl      = document.getElementById('start-date');
-  const endEl        = document.getElementById('end-date');
-  const penaltyEl    = document.getElementById('penalty-amount');
-  const atDec        = document.getElementById('attorney-decrease');
-  const atInc        = document.getElementById('attorney-increase');
-  const atCount      = document.getElementById('attorney-count');
+  const categoryEl     = document.getElementById('category');
+  const contractEl     = document.getElementById('contractType');
+  const coverageEl     = document.getElementById('coverage');
+  const daysEl         = document.getElementById('days');
+  const startEl        = document.getElementById('start-date');
+  const endEl          = document.getElementById('end-date');
+  const penaltyEl      = document.getElementById('penalty-amount');
+  const atDec          = document.getElementById('attorney-decrease');
+  const atInc          = document.getElementById('attorney-increase');
+  const atCount        = document.getElementById('attorney-count');
 
-  const outRate      = document.getElementById('out-rate');
-  const outDays      = document.getElementById('out-days');
-  const outEnd       = document.getElementById('out-end');
-  const rentCost     = document.getElementById('rent-cost');
-  const covCost      = document.getElementById('coverage-cost');
-  const atCost       = document.getElementById('attorney-cost');
-  const penCost      = document.getElementById('penalty-cost');
-  const totCost      = document.getElementById('total-cost');
+  const outRate        = document.getElementById('out-rate');
+  const outDays        = document.getElementById('out-days');
+  const outEnd         = document.getElementById('out-end');
+  const rentCost       = document.getElementById('rent-cost');
+  const covCost        = document.getElementById('coverage-cost');
+  const atCost         = document.getElementById('attorney-cost');
+  const penCost        = document.getElementById('penalty-cost');
+  const totCost        = document.getElementById('total-cost');
 
-  const recEl        = document.getElementById('recipient-name');
-  const edrEl        = document.getElementById('edrpou');
-  const ibanEl       = document.getElementById('iban');
-  const linkEl       = document.getElementById('insurance-link');
-  const txtArea      = document.getElementById('payment-text');
+  const recEl          = document.getElementById('recipient-name');
+  const edrEl          = document.getElementById('edrpou');
+  const ibanEl         = document.getElementById('iban');
+  const linkEl         = document.getElementById('insurance-link');
+  const txtArea        = document.getElementById('payment-text');
 
-  const genBtn       = document.getElementById('generate-btn');
-  const copyBtn      = document.getElementById('copy-btn');
-  const printBtn     = document.getElementById('print-btn');
-  const copySumBtn   = document.getElementById('copy-summary-btn');
+  const genBtn         = document.getElementById('generate-btn');
+  const spinner        = genBtn.querySelector('.spinner');
+  const copyBtn        = document.getElementById('copy-btn');
+  const printBtn       = document.getElementById('print-btn');
+  const copySumBtn     = document.getElementById('copy-summary-btn');
 
-  const warningEl    = document.getElementById('end-warning');
-  const toast        = document.getElementById('toast');
+  const warningEl      = document.getElementById('end-warning');
+  const toast          = document.getElementById('toast');
 
   // —————————————————————————————————————————————————————————
-  // Допоміжні функції
+  // 3. Допоміжні функції
   // —————————————————————————————————————————————————————————
+
+  // Інклюзивний підрахунок днів між startEl та endEl
   function getTermDays() {
     const s = new Date(startEl.value);
     const e = new Date(endEl.value);
-    const diff = Math.round((e - s) / (1000 * 60 * 60 * 24));
-    return diff >= 0 ? diff : 0;
+    const rawDiff = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
+    return rawDiff > 0 ? rawDiff : 0;
   }
 
+  // Синхронізація endEl з урахуванням інклюзивності
   function syncEndDate() {
-    const days = parseInt(daysEl.value, 10) || 0;
+    const days = parseInt(daysEl.value, 10) || 1;
     const s = new Date(startEl.value);
-    s.setDate(s.getDate() + days);
+    s.setDate(s.getDate() + days - 1);
     endEl.value = s.toISOString().slice(0, 10);
   }
 
+  // Синхронізація daysEl при зміні endEl
   function syncDays() {
     daysEl.value = getTermDays();
   }
 
+  // Показ або приховування попередження про вихідний день
   function checkWeekend(dateStr) {
-    const day = new Date(dateStr).getDay();
-    warningEl.style.display = (day === 0 || day === 6) ? 'block' : 'none';
+    const dow = new Date(dateStr).getDay();
+    warningEl.style.display = (dow === 0 || dow === 6) ? 'block' : 'none';
   }
 
+  // Debounce для полегшення обробки input
   function debounce(fn, ms) {
     let timeout;
     return (...args) => {
@@ -84,20 +93,21 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // Основна функція розрахунків та оновлення UI
   function calculateAll() {
     const days = getTermDays();
     outDays.textContent = `${days} дн.`;
 
-    // тариф
+    // 1) Щоденний тариф
     const dr = dailyRates.find(r => days >= r.min && days <= r.max) || { rates: {} };
     const dailyRate = dr.rates[categoryEl.value] || 0;
     outRate.textContent = `${dailyRate.toFixed(2)} грн/день`;
 
-    // оренда
+    // 2) Вартість оренди
     const rentAmt = dailyRate * days;
     rentCost.textContent = `${rentAmt.toFixed(2)} грн`;
 
-    // покриття
+    // 3) Вартість покриття
     let coverageAmt = 0;
     if (coverageEl.value === 'insurance') {
       const ins = insuranceRates.find(r => days >= r.min && days <= r.max) || { cost: 0 };
@@ -107,23 +117,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     covCost.textContent = `${coverageAmt.toFixed(2)} грн`;
 
-    // довіреності
+    // 4) Вартість довіреностей
     const aCount = parseInt(atCount.textContent, 10) || 0;
     const aAmt = aCount * attorneyTariff;
     atCost.textContent = `${aAmt.toFixed(2)} грн`;
 
-    // пеня
+    // 5) Пеня
     const pAmt = parseFloat(penaltyEl.value) || 0;
     penCost.textContent = `${pAmt.toFixed(2)} грн`;
 
-    // підсумок
+    // 6) Підсумкова сума
     const total = rentAmt + coverageAmt + aAmt + pAmt;
     totCost.textContent = `${total.toFixed(2)} грн`;
 
-    // перевірка вихідного
+    // 7) Перевірка вихідного дня
     checkWeekend(endEl.value);
   }
 
+  // Генерація тексту реквізитів
   function generatePaymentText() {
     const total = parseFloat(totCost.textContent) || 0;
     const lines = [
@@ -143,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     txtArea.value = lines.join('\n');
   }
 
+  // Відображення тост-повідомлення
   function showToast(msg) {
     toast.textContent = msg;
     toast.classList.add('show');
@@ -150,20 +162,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // —————————————————————————————————————————————————————————
-  // Обробники подій
+  // 4. Обробники подій
   // —————————————————————————————————————————————————————————
+
   daysEl.addEventListener('input', debounce(() => {
     syncEndDate();
     calculateAll();
   }, 300));
+
   startEl.addEventListener('change', () => {
     syncEndDate();
     calculateAll();
   });
+
   endEl.addEventListener('change', () => {
     syncDays();
     calculateAll();
   });
+
   [categoryEl, contractEl, coverageEl].forEach(el =>
     el.addEventListener('change', calculateAll)
   );
@@ -173,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (n > 0) atCount.textContent = --n;
     calculateAll();
   });
+
   atInc.addEventListener('click', () => {
     let n = parseInt(atCount.textContent, 10);
     atCount.textContent = ++n;
@@ -205,8 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
     inv.setAttribute('aria-hidden', 'true');
   });
 
-  // Новий обробник: копіювання підсумків
   copySumBtn.addEventListener('click', () => {
+    // Збираємо підсумки в текст
     const lines = [];
     document.querySelectorAll('.summary-panel .summary-item').forEach(item => {
       const label = item.children[0].textContent.trim();
@@ -217,15 +234,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalValue = document.querySelector('.summary-panel .summary-total span').textContent.trim();
     lines.push(`${totalLabel}: ${totalValue}`);
 
-    navigator.clipboard.writeText(lines.join('\n'));
+    // Копіюємо в буфер
+    const temp = document.createElement('textarea');
+    temp.value = lines.join('\n');
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand('copy');
+    document.body.removeChild(temp);
+
     showToast('Підсумки скопійовано');
   });
 
   // —————————————————————————————————————————————————————————
-  // Ініціалізація
+  // 5. Початкова ініціалізація
   // —————————————————————————————————————————————————————————
   const today = new Date().toISOString().slice(0, 10);
   startEl.value = endEl.value = today;
-
+  syncEndDate();
   calculateAll();
 });
