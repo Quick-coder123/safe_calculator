@@ -182,10 +182,10 @@ textarea {
   margin: 12px 0;
 }
 
-/* Відступ між кнопками у секції “Реквізити” */
+/* Відступ між кнопками у секціях */
 .payment-panel .action-btn,
 .summary-panel .action-btn {
-  margin: 2px 0;
+  margin: 8px 0;
 }
 
 .action-btn {
@@ -211,49 +211,6 @@ textarea {
   cursor: not-allowed;
 }
 
-.toast {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  background: var(--accent);
-  color: #fff;
-  padding: 10px 16px;
-  border-radius: 6px;
-  opacity: 0;
-  transition: opacity .3s;
-}
-.toast.show { opacity: 1; }
-
-.invoice { display: none; }
-
-.warning-msg {
-  color: #cc0000;
-  font-size: 0.85rem;
-  margin-top: 4px;
-}
-
-@media print {
-  body * { visibility: hidden; }
-  .invoice, .invoice * { visibility: visible; }
-  .invoice {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 20px;
-  }
-}
-
-@media (max-width: 600px) {
-  .layout {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "form"
-      "summary"
-      "payment";
-  }
-}
-
 /* Spinner */
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner {
@@ -262,7 +219,7 @@ textarea {
   height: 16px;
   border: 2px solid #f3f3f3;
   border-top-color: var(--accent);
- 	border-radius: 50%;
+  border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin-left: 8px;
   vertical-align: middle;
