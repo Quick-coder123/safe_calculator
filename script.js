@@ -1,12 +1,10 @@
-// Локалізація, калькуляції, інші функції...
-
 function toggleTheme() {
   const html = document.documentElement;
   html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
 }
 
 function changeLanguage(lang) {
-  // Логіка перемикання мови (UA/EN)
+  // Місце для логіки перемикання мови (UA/EN)
 }
 
 function adjustProxy(delta) {
@@ -34,6 +32,7 @@ function calculate() {
   const proxyFee = proxies * 30;
   const total = rent + coverageAmount + proxyFee + fine;
 
+  const summary = document.getElementById('summaryDetails');
   const summaryHTML = `
     <div class="summary-item"><span>Оренда:</span><span>${rent} грн</span></div>
     <div class="summary-item"><span>Забезпечення:</span><span>${coverageAmount} грн</span></div>
@@ -42,7 +41,7 @@ function calculate() {
     <hr>
     <div class="summary-total"><strong>ВСЬОГО:</strong><strong>${total} грн</strong></div>
   `;
-  document.getElementById('summaryDetails').innerHTML = summaryHTML;
+  summary.innerHTML = summaryHTML;
 
   const invoiceText = `До сплати: ${total} грн\nОренда: ${rent} грн\nЗабезпечення: ${coverageAmount} грн\nДовіреностей: ${proxyFee} грн\nПеня: ${fine} грн`;
   document.getElementById('invoiceText').value = invoiceText;
@@ -70,7 +69,10 @@ function showToast(message) {
 
 function copySummary() {
   const summary = document.getElementById('summaryDetails');
-  if (!summary) return;
+  if (!summary || summary.innerText.trim() === '') {
+    showToast('Немає даних для копіювання');
+    return;
+  }
 
   const text = Array.from(summary.querySelectorAll('.summary-item, .summary-total'))
     .map(el => el.textContent.trim())
@@ -80,5 +82,6 @@ function copySummary() {
     showToast('Підсумок скопійовано');
   }).catch(err => {
     console.error('Помилка копіювання:', err);
+    showToast('Помилка копіювання');
   });
 }
