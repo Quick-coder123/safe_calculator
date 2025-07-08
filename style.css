@@ -1,7 +1,8 @@
+/* style.css */
 :root {
   --bg-light:    #F9F9F9;
   --bg-dark:     #222;
-  --text-light:  #333;
+  --text-light:  #222;
   --text-dark:   #EEE;
   --accent:      #009944;
   --light-green: #E6F4EA;
@@ -36,13 +37,8 @@ body {
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  color: var(--text);
-  transition: color .3s;
 }
-
-.btn-icon:hover {
-  color: var(--accent);
-}
+.btn-icon:hover { color: var(--accent); }
 
 .select-small {
   padding: 4px 8px;
@@ -66,33 +62,33 @@ body {
   background: #fff;
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: box-shadow .3s;
 }
+.panel:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+html[data-theme="dark"] .panel { background: #333; }
 
-.panel:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+.form-panel h1 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-size: 1.5rem;
 }
-
-html[data-theme="dark"] .panel {
-  background: #333;
-}
-
-.form-panel h1,
 .summary-panel h2,
 .payment-panel h2 {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   margin-bottom: 12px;
   color: var(--accent);
+  font-size: 1.25rem;
 }
 
 .form-group {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
-
 .form-group.small {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 
 .form-group label {
@@ -118,8 +114,8 @@ input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 153, 68, 0.2);
-  outline: none;
+  box-shadow: 0 0 0 4px rgba(0,153,68,0.4);
+  outline: 2px solid var(--accent);
 }
 
 textarea {
@@ -133,13 +129,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
-}
-
-.qty-control {
-  margin-left: auto;
-  display: flex;
-  gap: 4px;
+  margin-bottom: 16px;
 }
 
 .qty-btn {
@@ -151,15 +141,11 @@ textarea {
   cursor: pointer;
   transition: background .3s;
 }
-
-.qty-btn:hover {
-  background: #008f3c;
-}
+.qty-btn:hover { background: #008f3c; }
 
 .tooltip {
   position: relative;
 }
-
 .tooltip .tooltiptext {
   visibility: hidden;
   opacity: 0;
@@ -170,13 +156,12 @@ textarea {
   border-radius: 6px;
   padding: 6px;
   position: absolute;
-  bottom: 120%;
+  bottom: 125%;
   left: 50%;
   transform: translateX(-50%);
   transition: opacity .3s;
   z-index: 10;
 }
-
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
@@ -186,13 +171,15 @@ textarea {
 .summary-total {
   display: flex;
   justify-content: space-between;
+  background: #fff;
+  padding: 8px;
+  border-radius: 6px;
   margin-bottom: 8px;
 }
 
 .summary-panel {
   background: var(--light-green);
 }
-
 .summary-panel hr {
   border: none;
   border-top: 1px solid #c8e5d1;
@@ -202,7 +189,6 @@ textarea {
 .action-btn {
   width: 100%;
   padding: 10px;
-  margin-top: 8px;
   font-size: 0.95rem;
   font-weight: 500;
   border: none;
@@ -212,17 +198,12 @@ textarea {
   color: #fff;
   transition: background .3s, transform .2s;
 }
-
-.action-btn:hover {
-  transform: translateY(-2px);
-}
-
+.action-btn:hover { transform: translateY(-2px); }
 .action-btn.secondary {
   background: #fff;
   color: var(--accent);
   border: 2px solid var(--accent);
 }
-
 .action-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -234,20 +215,14 @@ textarea {
   right: 16px;
   background: var(--accent);
   color: #fff;
-  padding: 12px 20px;
+  padding: 10px 16px;
   border-radius: 6px;
   opacity: 0;
-  pointer-events: none;
   transition: opacity .3s;
 }
+.toast.show { opacity: 1; }
 
-.toast.show {
-  opacity: 1;
-}
-
-.invoice {
-  display: none;
-}
+.invoice { display: none; }
 
 .warning-msg {
   color: #cc0000;
@@ -256,13 +231,8 @@ textarea {
 }
 
 @media print {
-  body * {
-    visibility: hidden;
-  }
-  .invoice,
-  .invoice * {
-    visibility: visible;
-  }
+  body * { visibility: hidden; }
+  .invoice, .invoice * { visibility: visible; }
   .invoice {
     position: absolute;
     top: 0;
@@ -270,4 +240,28 @@ textarea {
     width: 100%;
     padding: 20px;
   }
+}
+
+@media (max-width: 600px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "form"
+      "summary"
+      "payment";
+  }
+}
+
+/* Spinner */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-left: 8px;
+  vertical-align: middle;
 }
