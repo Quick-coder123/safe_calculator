@@ -5,53 +5,53 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. Налаштування тарифів (оновіть значення відповідно до ваших даних)
   // —————————————————————————————————————————————————————————
   const dailyRates = [
-    { min: 1,   max: 30,  rates: { 1: 5,  2: 10,  3: 15,  4: 20  } },
-    { min: 31,  max: 365, rates: { 1: 4,  2: 8,   3: 12,  4: 16  } },
+    { min: 1,  max: 30,  rates: { 1: 5, 2: 10, 3: 15, 4: 20 } },
+    { min: 31, max: 365, rates: { 1: 4, 2: 8,  3: 12, 4: 16 } },
   ];
   const insuranceRates = [
-    { min: 1,   max: 180, cost: 50  },
-    { min: 181, max: 365, cost: 75  },
+    { min: 1,   max: 180, cost: 50 },
+    { min: 181, max: 365, cost: 75 },
   ];
-  const depositAmount   = 1000;  // сума грошового покриття при новому договорі
-  const attorneyTariff  = 25;    // тариф за одну довіреність
+  const depositAmount  = 1000;  // сума грошового покриття при новому договорі
+  const attorneyTariff = 25;    // тариф за одну довіреність
 
   // —————————————————————————————————————————————————————————
   // 2. Отримуємо елементи DOM
   // —————————————————————————————————————————————————————————
-  const categoryEl     = document.getElementById('category');
-  const contractEl     = document.getElementById('contractType');
-  const coverageEl     = document.getElementById('coverage');
-  const daysEl         = document.getElementById('days');
-  const startEl        = document.getElementById('start-date');
-  const endEl          = document.getElementById('end-date');
-  const penaltyEl      = document.getElementById('penalty-amount');
-  const atDec          = document.getElementById('attorney-decrease');
-  const atInc          = document.getElementById('attorney-increase');
-  const atCount        = document.getElementById('attorney-count');
+  const categoryEl   = document.getElementById('category');
+  const contractEl   = document.getElementById('contractType');
+  const coverageEl   = document.getElementById('coverage');
+  const daysEl       = document.getElementById('days');
+  const startEl      = document.getElementById('start-date');
+  const endEl        = document.getElementById('end-date');
+  const penaltyEl    = document.getElementById('penalty-amount');
+  const atDec        = document.getElementById('attorney-decrease');
+  const atInc        = document.getElementById('attorney-increase');
+  const atCount      = document.getElementById('attorney-count');
 
-  const outRate        = document.getElementById('out-rate');
-  const outDays        = document.getElementById('out-days');
-  const outEnd         = document.getElementById('out-end');
-  const rentCost       = document.getElementById('rent-cost');
-  const covCost        = document.getElementById('coverage-cost');
-  const atCost         = document.getElementById('attorney-cost');
-  const penCost        = document.getElementById('penalty-cost');
-  const totCost        = document.getElementById('total-cost');
+  const outRate      = document.getElementById('out-rate');
+  const outDays      = document.getElementById('out-days');
+  const outEnd       = document.getElementById('out-end');
+  const rentCost     = document.getElementById('rent-cost');
+  const covCost      = document.getElementById('coverage-cost');
+  const atCost       = document.getElementById('attorney-cost');
+  const penCost      = document.getElementById('penalty-cost');
+  const totCost      = document.getElementById('total-cost');
 
-  const recEl          = document.getElementById('recipient-name');
-  const edrEl          = document.getElementById('edrpou');
-  const ibanEl         = document.getElementById('iban');
-  const linkEl         = document.getElementById('insurance-link');
-  const txtArea        = document.getElementById('payment-text');
+  const recEl        = document.getElementById('recipient-name');
+  const edrEl        = document.getElementById('edrpou');
+  const ibanEl       = document.getElementById('iban');
+  const linkEl       = document.getElementById('insurance-link');
+  const txtArea      = document.getElementById('payment-text');
 
-  const genBtn         = document.getElementById('generate-btn');
-  const spinner        = genBtn.querySelector('.spinner');
-  const copyBtn        = document.getElementById('copy-btn');
-  const printBtn       = document.getElementById('print-btn');
-  const copySumBtn     = document.getElementById('copy-summary-btn');
+  const genBtn       = document.getElementById('generate-btn');
+  const spinner      = genBtn.querySelector('.spinner');
+  const copyBtn      = document.getElementById('copy-btn');
+  const printBtn     = document.getElementById('print-btn');
+  const copySumBtn   = document.getElementById('copy-summary-btn');
 
-  const warningEl      = document.getElementById('end-warning');
-  const toast          = document.getElementById('toast');
+  const warningEl    = document.getElementById('end-warning');
+  const toast        = document.getElementById('toast');
 
   // —————————————————————————————————————————————————————————
   // 3. Допоміжні функції
@@ -164,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // —————————————————————————————————————————————————————————
   // 4. Обробники подій
   // —————————————————————————————————————————————————————————
-
   daysEl.addEventListener('input', debounce(() => {
     syncEndDate();
     calculateAll();
@@ -223,8 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   copySumBtn.addEventListener('click', () => {
-    // Збираємо підсумки в текст
-    const lines = [];
+    const lines = ['Підсумкова інформація:'];
     document.querySelectorAll('.summary-panel .summary-item').forEach(item => {
       const label = item.children[0].textContent.trim();
       const value = item.children[1].textContent.trim();
@@ -234,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalValue = document.querySelector('.summary-panel .summary-total span').textContent.trim();
     lines.push(`${totalLabel}: ${totalValue}`);
 
-    // Копіюємо в буфер
     const temp = document.createElement('textarea');
     temp.value = lines.join('\n');
     document.body.appendChild(temp);
