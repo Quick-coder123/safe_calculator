@@ -10,7 +10,6 @@ const covCost = document.getElementById('coverage-cost');
 const atCost = document.getElementById('attorney-cost');
 const penCost = document.getElementById('penalty-cost');
 const totCost = document.getElementById('total-cost');
-const outEnd = document.getElementById('output-end');
 const langSelect = document.getElementById('lang');
 
 const dailyRates = [
@@ -40,6 +39,11 @@ function getTermDays() {
   return isNaN(diff) ? 0 : diff;
 }
 
+function toggleVisibilityByAmount(id, amount) {
+  const row = document.getElementById(id);
+  if (row) row.style.display = amount > 0 ? 'flex' : 'none';
+}
+
 function calculateAll() {
   const lang = langSelect.value;
   const days = getTermDays();
@@ -66,11 +70,6 @@ function calculateAll() {
   toggleVisibilityByAmount('coverage-row', cov);
   toggleVisibilityByAmount('attorney-row', at);
   toggleVisibilityByAmount('penalty-row', pen);
-}
-
-function toggleVisibilityByAmount(id, amount) {
-  const row = document.getElementById(id);
-  if (row) row.style.display = amount > 0 ? 'flex' : 'none';
 }
 
 // Події
