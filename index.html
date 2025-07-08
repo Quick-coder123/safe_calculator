@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="uk" data-theme="light">
 <head>
@@ -36,23 +37,23 @@
         <select id="coverage"></select>
       </div>
 
-      <div class="form-group small">
+      <div class="form-group">
         <label for="days" data-i18n-key="label_days">Термін (днів)</label>
         <input type="number" id="days" min="1" max="365" value="1">
       </div>
 
-      <div class="form-group small">
+      <div class="form-group">
         <label for="start-date" data-i18n-key="label_start">Дата початку</label>
         <input type="date" id="start-date">
       </div>
 
-      <div class="form-group small">
+      <div class="form-group">
         <label for="end-date" data-i18n-key="label_end">Дата закінчення</label>
         <input type="date" id="end-date">
         <div id="end-warning" class="warning-msg" style="display:none;">⚠️ Увага: дата закінчення припадає на вихідний день!</div>
       </div>
 
-      <div class="form-group small">
+      <div class="form-group">
         <label for="penalty-amount" data-i18n-key="label_penalty">Пеня (грн)</label>
         <input type="number" id="penalty-amount" min="0" value="0">
       </div>
@@ -75,11 +76,12 @@
         </div>
       </div>
 
-      <button
-        class="action-btn secondary"
-        onclick="window.open('https://ars.aiwa.in.ua/docs/sdb/newID','_blank')"
-        style="margin-top:16px;"
-      >Оформити страхування ключа</button>
+      <button id="generate-btn" class="action-btn">
+        <span class="btn-text" data-i18n-key="btn_generate">Згенерувати реквізити</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+      <button id="copy-btn" class="action-btn" data-i18n-key="btn_copy">Скопіювати</button>
+      <button id="print-btn" class="action-btn secondary" data-i18n-key="btn_print">Друк рахунку</button>
     </section>
 
     <!-- 2. ПІДСУМКИ -->
@@ -118,9 +120,6 @@
         <input type="url" id="insurance-link" placeholder="https://...">
       </div>
       <textarea id="payment-text" readonly placeholder=""></textarea>
-      <button id="generate-btn" class="action-btn" data-i18n-key="btn_generate">Згенерувати реквізити</button>
-      <button id="copy-btn" class="action-btn" data-i18n-key="btn_copy">Скопіювати</button>
-      <button id="print-btn" class="action-btn secondary" data-i18n-key="btn_print">Друк рахунку</button>
     </section>
   </main>
 
