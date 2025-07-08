@@ -37,11 +37,15 @@ body {
   font-size: 1.2rem;
   cursor: pointer;
   color: var(--text);
-  transition: color .3s;
+  transition: color .3s, transform .1s;
 }
 
 .btn-icon:hover {
   color: var(--accent);
+}
+
+.btn-icon:active {
+  transform: scale(0.95);
 }
 
 .select-small {
@@ -50,6 +54,7 @@ body {
   border: 1px solid #ccc;
   background: #fff;
   cursor: pointer;
+  transition: border-color .3s, background .3s;
 }
 
 .layout {
@@ -230,6 +235,10 @@ textarea {
 
 .action-btn:hover {
   transform: translateY(-2px);
+}
+
+.action-btn:active {
+  transform: scale(0.97);
 }
 
 .action-btn.secondary {
