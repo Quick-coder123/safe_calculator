@@ -7,8 +7,14 @@
   --light-green: #E6F4EA;
 }
 
-html[data-theme="light"] { --bg: var(--bg-light); --text: var(--text-light); }
-html[data-theme="dark"]  { --bg: var(--bg-dark);  --text: var(--text-dark); }
+html[data-theme="light"] {
+  --bg: var(--bg-light);
+  --text: var(--text-light);
+}
+html[data-theme="dark"] {
+  --bg: var(--bg-dark);
+  --text: var(--text-dark);
+}
 
 * {
   margin: 0;
@@ -39,27 +45,17 @@ body {
   color: var(--text);
   transition: color 0.3s;
 }
-
 .btn-icon:hover {
   color: var(--accent);
 }
 
 .select-small {
+  padding: 4px 8px;
+  border-radius: 6px;
   font-size: 0.95rem;
-  padding: 6px 4px;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-.select-small:focus {
-  border-bottom: 2px solid var(--accent);
-  outline: none;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #333;
 }
 
 .layout {
@@ -90,16 +86,15 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s;
 }
-
 .panel:hover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
-
 html[data-theme="dark"] .panel {
   background: #333;
 }
 
-h1, h2 {
+h1,
+h2 {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   margin-bottom: 12px;
@@ -110,45 +105,20 @@ h1, h2 {
 .form-group.small {
   margin-bottom: 12px;
 }
-
 .form-group label {
   display: block;
   margin-bottom: 4px;
   font-weight: 500;
 }
 
-/* === Оновлені поля === */
 input,
 select,
 textarea {
-  all: unset;
   width: 100%;
+  padding: 6px;
   font-size: 0.95rem;
-  padding: 6px 4px;
-  border-bottom: 1px solid #ccc;
-  background: transparent;
-  color: inherit;
-  transition: border-color 0.3s;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-bottom: 2px solid var(--accent);
-  outline: none;
-}
-
-/* Специфічно для select та date */
-input[type="date"],
-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background: transparent;
-}
-
-select::-ms-expand {
-  display: none;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
 textarea {
@@ -170,7 +140,6 @@ textarea {
   display: flex;
   gap: 4px;
 }
-
 .qty-btn {
   background: var(--accent);
   color: #fff;
@@ -180,7 +149,6 @@ textarea {
   cursor: pointer;
   transition: background 0.3s;
 }
-
 .qty-btn:hover {
   background: #008f3c;
 }
@@ -188,7 +156,6 @@ textarea {
 .tooltip {
   position: relative;
 }
-
 .tooltip .tooltiptext {
   visibility: hidden;
   opacity: 0;
@@ -205,7 +172,6 @@ textarea {
   transition: opacity 0.3s;
   z-index: 10;
 }
-
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
@@ -221,7 +187,6 @@ textarea {
 .summary-panel {
   background: var(--light-green);
 }
-
 .summary-panel hr {
   border: none;
   border-top: 1px solid #c8e5d1;
@@ -241,17 +206,14 @@ textarea {
   color: #fff;
   transition: background 0.3s, transform 0.2s;
 }
-
 .action-btn:hover {
   transform: translateY(-2px);
 }
-
 .action-btn.secondary {
   background: #fff;
   color: var(--accent);
   border: 2px solid var(--accent);
 }
-
 .action-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -269,7 +231,6 @@ textarea {
   pointer-events: none;
   transition: opacity 0.3s;
 }
-
 .toast.show {
   opacity: 1;
 }
