@@ -39,21 +39,27 @@ body {
   color: var(--text);
   transition: color 0.3s;
 }
+
 .btn-icon:hover {
   color: var(--accent);
 }
 
 .select-small {
-  padding: 4px 8px;
+  font-size: 0.95rem;
+  padding: 6px 4px;
   border: none;
   border-bottom: 1px solid #ccc;
   border-radius: 0;
   background: transparent;
-  font-size: 0.95rem;
   color: inherit;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+}
+
+.select-small:focus {
+  border-bottom: 2px solid var(--accent);
+  outline: none;
 }
 
 .layout {
@@ -111,21 +117,18 @@ h1, h2 {
   font-weight: 500;
 }
 
+/* === Оновлені поля === */
 input,
 select,
 textarea {
+  all: unset;
   width: 100%;
-  padding: 6px 4px;
   font-size: 0.95rem;
-  background: transparent;
-  border: none;
+  padding: 6px 4px;
   border-bottom: 1px solid #ccc;
-  border-radius: 0;
+  background: transparent;
   color: inherit;
   transition: border-color 0.3s;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 }
 
 input:focus,
@@ -133,7 +136,19 @@ select:focus,
 textarea:focus {
   border-bottom: 2px solid var(--accent);
   outline: none;
-  box-shadow: none;
+}
+
+/* Специфічно для select та date */
+input[type="date"],
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: transparent;
+}
+
+select::-ms-expand {
+  display: none;
 }
 
 textarea {
@@ -165,6 +180,7 @@ textarea {
   cursor: pointer;
   transition: background 0.3s;
 }
+
 .qty-btn:hover {
   background: #008f3c;
 }
