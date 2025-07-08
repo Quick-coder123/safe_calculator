@@ -20,7 +20,7 @@ body {
   font-family: 'Roboto', sans-serif;
   background: var(--bg);
   color: var(--text);
-  transition: background .3s, color .3s;
+  transition: background 0.3s, color 0.3s;
 }
 
 .header {
@@ -37,21 +37,23 @@ body {
   font-size: 1.2rem;
   cursor: pointer;
   color: var(--text);
-  transition: color .3s;
+  transition: color 0.3s;
 }
-
 .btn-icon:hover {
   color: var(--accent);
 }
 
 .select-small {
   padding: 4px 8px;
-  border-radius: 6px;
   border: none;
   border-bottom: 1px solid #ccc;
+  border-radius: 0;
   background: transparent;
   font-size: 0.95rem;
   color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .layout {
@@ -80,7 +82,7 @@ body {
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: box-shadow .3s;
+  transition: box-shadow 0.3s;
 }
 
 .panel:hover {
@@ -113,22 +115,25 @@ input,
 select,
 textarea {
   width: 100%;
-  padding: 8px 4px;
+  padding: 6px 4px;
   font-size: 0.95rem;
+  background: transparent;
   border: none;
   border-bottom: 1px solid #ccc;
   border-radius: 0;
-  background: transparent;
   color: inherit;
-  transition: border-color .3s, box-shadow .3s;
+  transition: border-color 0.3s;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
   border-bottom: 2px solid var(--accent);
-  box-shadow: none;
   outline: none;
+  box-shadow: none;
 }
 
 textarea {
@@ -158,9 +163,8 @@ textarea {
   padding: 4px 8px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background .3s;
+  transition: background 0.3s;
 }
-
 .qty-btn:hover {
   background: #008f3c;
 }
@@ -182,7 +186,7 @@ textarea {
   bottom: 120%;
   left: 50%;
   transform: translateX(-50%);
-  transition: opacity .3s;
+  transition: opacity 0.3s;
   z-index: 10;
 }
 
@@ -219,7 +223,7 @@ textarea {
   cursor: pointer;
   background: var(--accent);
   color: #fff;
-  transition: background .3s, transform .2s;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .action-btn:hover {
@@ -247,7 +251,7 @@ textarea {
   border-radius: 6px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity .3s;
+  transition: opacity 0.3s;
 }
 
 .toast.show {
