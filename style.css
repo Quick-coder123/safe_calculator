@@ -47,8 +47,11 @@ body {
 .select-small {
   padding: 4px 8px;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #fff;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+  font-size: 0.95rem;
+  color: inherit;
 }
 
 .layout {
@@ -110,20 +113,21 @@ input,
 select,
 textarea {
   width: 100%;
-  padding: 8px;
+  padding: 8px 4px;
   font-size: 0.95rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
   transition: border-color .3s, box-shadow .3s;
-  background: #fff;
-  color: #000;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 153, 68, 0.2);
+  border-bottom: 2px solid var(--accent);
+  box-shadow: none;
   outline: none;
 }
 
