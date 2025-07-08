@@ -205,11 +205,6 @@ textarea {
   cursor: not-allowed;
 }
 
-/* Відступи між кнопками у секції “Реквізити” */
-.payment-panel .action-btn {
-  margin-top: 12px;
-}
-
 .toast {
   position: fixed;
   bottom: 16px;
