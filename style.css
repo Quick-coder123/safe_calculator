@@ -1,4 +1,3 @@
-/* style.css */
 :root {
   --bg-light:    #F9F9F9;
   --bg-dark:     #222;
@@ -85,9 +84,6 @@ html[data-theme="dark"] .panel { background: #333; }
 }
 
 .form-group {
-  margin-bottom: 16px;
-}
-.form-group.small {
   margin-bottom: 16px;
 }
 
@@ -207,6 +203,11 @@ textarea {
 .action-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Відступи між кнопками у секції “Реквізити” */
+.payment-panel .action-btn {
+  margin-top: 12px;
 }
 
 .toast {
