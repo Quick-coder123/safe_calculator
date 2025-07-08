@@ -207,7 +207,7 @@ textarea {
 
 /* Відступ між кнопками у секції “Реквізити” */
 .payment-panel .action-btn {
-  margin: 6px 0;
+  margin: 4px 0;
 }
 
 .toast {
