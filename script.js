@@ -49,11 +49,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const warningEl    = document.getElementById('end-warning');
   const toast        = document.getElementById('toast');
 
-  // 3. Допоміжні функції
+  // 3. Populate select elements
+  categoryEl.innerHTML = `
+    <option value="1">Категорія 1</option>
+    <option value="2">Категорія 2</option>
+    <option value="3">Категорія 3</option>
+    <option value="4">Категорія 4</option>
+  `;
+  contractEl.innerHTML = `
+    <option value="new">Новий договір</option>
+    <option value="extension">Продовження</option>
+  `;
+  coverageEl.innerHTML = `
+    <option value="insurance">Страхування ключа</option>
+    <option value="deposit">Грошове покриття</option>
+  `;
+
+  // 4. Допоміжні функції
   function getTermDays() {
     const s = new Date(startEl.value);
     const e = new Date(endEl.value);
-    const rawDiff = Math.round((e - s) / (1000*60*60*24)) + 1;
+    const rawDiff = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
     return rawDiff > 0 ? rawDiff : 0;
   }
 
@@ -70,14 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function checkWeekend(dateStr) {
     const dow = new Date(dateStr).getDay();
-    warningEl.style.display = (dow===0||dow===6) ? 'block':'none';
+    warningEl.style.display = (dow===0 || dow===6) ? 'block' : 'none';
   }
 
   function debounce(fn, ms) {
     let timeout;
     return (...args) => {
       clearTimeout(timeout);
-      timeout = setTimeout(() => fn.apply(this,args), ms);
+      timeout = setTimeout(() => fn.apply(this, args), ms);
     };
   }
 
@@ -85,127 +101,129 @@ document.addEventListener('DOMContentLoaded', () => {
     const days = getTermDays();
     outDays.textContent = `${days} дн.`;
 
-    const dr = dailyRates.find(r=>days>=r.min&&days<=r.max) || {rates:{}};
-    const dailyRate = dr.rates[categoryEl.value]||0;
+    const dr = dailyRates.find(r => days >= r.min && days <= r.max) || { rates:{} };
+    const dailyRate = dr.rates[categoryEl.value] || 0;
     outRate.textContent = `${dailyRate.toFixed(2)} грн/день`;
 
-    const rentAmt = dailyRate*days;
+    const rentAmt = dailyRate * days;
     rentCost.textContent = `${rentAmt.toFixed(2)} грн`;
 
     let coverageAmt = 0;
-    if(coverageEl.value==='insurance') {
-      const ins = insuranceRates.find(r=>days>=r.min&&days<=r.max)||{cost:0};
+    if (coverageEl.value === 'insurance') {
+      const ins = insuranceRates.find(r => days >= r.min && days <= r.max) || {cost:0};
       coverageAmt = ins.cost;
-    } else if(contractEl.value==='new') {
+    } else if (contractEl.value === 'new') {
       coverageAmt = depositAmount;
     }
     covCost.textContent = `${coverageAmt.toFixed(2)} грн`;
 
-    const aCount = parseInt(atCount.textContent,10)||0;
-    const aAmt = aCount*attorneyTariff;
+    const aCount = parseInt(atCount.textContent,10) || 0;
+    const aAmt = aCount * attorneyTariff;
     atCost.textContent = `${aAmt.toFixed(2)} грн`;
 
-    const pAmt = parseFloat(penaltyEl.value)||0;
+    const pAmt = parseFloat(penaltyEl.value) || 0;
     penCost.textContent = `${pAmt.toFixed(2)} грн`;
 
-    const total = rentAmt+coverageAmt+aAmt+pAmt;
+    const total = rentAmt + coverageAmt + aAmt + pAmt;
     totCost.textContent = `${total.toFixed(2)} грн`;
 
     checkWeekend(endEl.value);
   }
 
   function generatePaymentText() {
-    const total = parseFloat(totCost.textContent)||0;
-    const lines=[
+    const total = parseFloat(totCost.textContent) || 0;
+    const lines = [
       'Для дистанційного продовження строку дії індивідуального сейфу просимо здійснити оплату:',
       '',
       `💳 Сума до сплати: ${total.toFixed(2)} грн`,
-      `👤 Отримувач: ${recEl.value||'—'}`,
-      `🆔 Код ЄДРПОУ: ${edrEl.value||'—'}`,
-      `🏦 IBAN: ${ibanEl.value||'—'}`,
+      `👤 Отримувач: ${recEl.value || '—'}`,
+      `🆔 Код ЄДРПОУ: ${edrEl.value || '—'}`,
+      `🏦 IBAN: ${ibanEl.value || '—'}`,
       '',
       '📝 Призначення платежу:',
       'Продовження строку дії індивідуального сейфу',
       '',
       '🔗 Посилання на сплату страхування:',
-      linkEl.value.trim()||'https://ars.aiwa.in.ua/docs/sdb/newID'
+      linkEl.value.trim() || 'https://ars.aiwa.in.ua/docs/sdb/newID'
     ];
-    txtArea.value=lines.join('\n');
+    txtArea.value = lines.join('\n');
   }
 
   function showToast(msg) {
-    toast.textContent=msg;
+    toast.textContent = msg;
     toast.classList.add('show');
-    setTimeout(()=>toast.classList.remove('show'),1500);
+    setTimeout(() => toast.classList.remove('show'), 1500);
   }
 
-  // 4. Обробники подій
-  daysEl.addEventListener('input',debounce(()=>{
-    syncEndDate();calculateAll();
-  },300));
+  // 5. Обробники подій
+  daysEl.addEventListener('input', debounce(() => {
+    syncEndDate(); calculateAll();
+  }, 300));
 
-  startEl.addEventListener('change',()=>{
-    syncEndDate();calculateAll();
+  startEl.addEventListener('change', () => {
+    syncEndDate(); calculateAll();
   });
 
-  endEl.addEventListener('change',()=>{
-    syncDays();calculateAll();
+  endEl.addEventListener('change', () => {
+    syncDays(); calculateAll();
   });
 
-  [categoryEl,contractEl,coverageEl].forEach(el=>
-    el.addEventListener('change',calculateAll)
+  [categoryEl, contractEl, coverageEl].forEach(el =>
+    el.addEventListener('change', calculateAll)
   );
 
-  atDec.addEventListener('click',()=>{
-    let n=parseInt(atCount.textContent,10);
-    if(n>0) atCount.textContent=--n;
+  atDec.addEventListener('click', () => {
+    let n = parseInt(atCount.textContent,10);
+    if(n > 0) atCount.textContent = --n;
     calculateAll();
   });
 
-  atInc.addEventListener('click',()=>{
-    let n=parseInt(atCount.textContent,10);
-    atCount.textContent=++n;
+  atInc.addEventListener('click', () => {
+    let n = parseInt(atCount.textContent,10);
+    atCount.textContent = ++n;
     calculateAll();
   });
 
-  genBtn.addEventListener('click',()=>{
-    genBtn.disabled=true;spinner.style.display='inline-block';
-    calculateAll();generatePaymentText();
-    spinner.style.display='none';genBtn.disabled=false;
+  genBtn.addEventListener('click', () => {
+    genBtn.disabled = true; spinner.style.display = 'inline-block';
+    calculateAll(); generatePaymentText();
+    spinner.style.display = 'none'; genBtn.disabled = false;
     showToast('Реквізити згенеровано');
   });
 
-  copyBtn.addEventListener('click',()=>{
-    txtArea.select();document.execCommand('copy');
+  copyBtn.addEventListener('click', () => {
+    txtArea.select(); document.execCommand('copy');
     showToast('Текст скопійовано');
   });
 
-  printBtn.addEventListener('click',()=>{
-    const inv=document.getElementById('invoice-print');
-    inv.innerHTML=`<pre>${txtArea.value}</pre>`;
-    inv.removeAttribute('aria-hidden');window.print();
+  printBtn.addEventListener('click', () => {
+    const inv = document.getElementById('invoice-print');
+    inv.innerHTML = `<pre>${txtArea.value}</pre>`;
+    inv.removeAttribute('aria-hidden'); window.print();
     inv.setAttribute('aria-hidden','true');
   });
 
-  copySumBtn.addEventListener('click',()=>{
-    const lines=['Підсумкова інформація:'];
-    document.querySelectorAll('.summary-panel .summary-item').forEach(item=>{
-      let label=item.querySelector('span:first-child').textContent.replace(/:$/,'').trim();
-      let value=item.querySelector('span:last-child').textContent.trim();
+  copySumBtn.addEventListener('click', () => {
+    const lines = ['Підсумкова інформація:'];
+    document.querySelectorAll('.summary-panel .summary-item').forEach(item => {
+      let label = item.querySelector('span:first-child').textContent.replace(/:$/, '').trim();
+      const value = item.querySelector('span:last-child').textContent.trim();
       lines.push(`${label}: ${value}`);
     });
-    const totalLabel=document.querySelector('.summary-panel .summary-total strong').textContent.replace(/:$/,'').trim();
-    const totalValue=document.querySelector('.summary-panel .summary-total span').textContent.trim();
+    const totalLabelEl = document.querySelector('.summary-panel .summary-total strong');
+    const totalValueEl = document.querySelector('.summary-panel .summary-total span');
+    let totalLabel = totalLabelEl ? totalLabelEl.textContent.replace(/:$/, '').trim() : 'Разом';
+    const totalValue = totalValueEl ? totalValueEl.textContent.trim() : '';
     lines.push(`${totalLabel}: ${totalValue}`);
-    const temp=document.createElement('textarea');
-    temp.value=lines.join('\n');
+    const temp = document.createElement('textarea');
+    temp.value = lines.join('\n');
     document.body.appendChild(temp);
-    temp.select();document.execCommand('copy');document.body.removeChild(temp);
+    temp.select(); document.execCommand('copy'); document.body.removeChild(temp);
     showToast('Підсумки скопійовано');
   });
 
-  // 5. Початкова ініціалізація
-  const today=new Date().toISOString().slice(0,10);
-  startEl.value=endEl.value=today;
-  syncEndDate();calculateAll();
+  // 6. Початкова ініціалізація
+  const today = new Date().toISOString().slice(0,10);
+  startEl.value = endEl.value = today;
+  syncEndDate(); calculateAll();
 });
