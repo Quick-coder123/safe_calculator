@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // === ЕЛЕМЕНТИ ===
   const get = id => document.getElementById(id);
 
   const themeBtn = get('theme-toggle');
@@ -33,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const toast = get('toast');
   const warningEl = get('end-warning');
 
-  // === ТЕМА ===
   const savedTheme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
   themeBtn.textContent = savedTheme === 'light' ? '🌙' : '☀️';
@@ -44,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtn.textContent = next === 'light' ? '🌙' : '☀️';
   });
 
-  // === ЛОКАЛІЗАЦІЯ ===
   const translations = {
     uk: {
       calc_title: "Калькулятор оренди індивідуального сейфу",
@@ -110,6 +107,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  const coverageLabels = {
+    uk: {
+      insurance: "Страхування ключа",
+      deposit: "Покриття"
+    },
+    en: {
+      insurance: "Key Insurance",
+      deposit: "Coverage"
+    }
+  };
+
   function applyTranslations(lang) {
     const t = translations[lang];
     document.querySelectorAll('[data-i18n-key]').forEach(el => {
@@ -133,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ).map((txt, i) => `<option value="${i === 0 ? 'insurance' : 'deposit'}">${txt}</option>`).join('');
   }
 
-  // === ТАРИФИ ===
   const dailyRates = [
     { min: 1, max: 30,  rates: { 1: 39, 2: 51, 3: 63, 4: 63, 5: 63 }},
     { min: 31, max: 90, rates: { 1: 25, 2: 26, 3: 28, 4: 35, 5: 43 }},
@@ -175,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function calculateAll() {
+    const lang = langSelect.value;
     const days = getTermDays();
     const rate = dailyRates.find(r => days >= r.min && days <= r.max)?.rates[categoryEl.value] || 0;
     const rent = rate * days;
@@ -195,6 +203,10 @@ document.addEventListener('DOMContentLoaded', () => {
     penCost.textContent = pen.toFixed(2) + ' грн';
     totCost.textContent = total.toFixed(2) + ' грн';
 
+    // ✅ ОНОВЛЕННЯ НАЗВИ "Покриття"/"Страхування ключа"
+    const covLabelEl = document.querySelector('[data-i18n-key="summary_cov"]');
+    covLabelEl.textContent = coverageLabels[lang][coverageEl.value];
+
     checkWeekend(endEl.value);
   }
 
@@ -211,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => toast.classList.remove('show'), 1500);
   }
 
-  // === EVENTS ===
   const savedLang = localStorage.getItem('lang') || 'uk';
   langSelect.value = savedLang;
   applyTranslations(savedLang);
@@ -269,7 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
     inv.setAttribute('aria-hidden', 'true');
   });
 
-  // === INIT ===
   const today = new Date().toISOString().slice(0, 10);
   startEl.value = endEl.value = today;
   calculateAll();
