@@ -49,6 +49,7 @@ body {
   border-radius: 6px;
   border: 1px solid #ccc;
   background: #fff;
+  cursor: pointer;
 }
 
 .layout {
@@ -60,6 +61,16 @@ body {
     "payment .";
   gap: 16px;
   padding: 0 16px 16px;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "form"
+      "summary"
+      "payment";
+  }
 }
 
 .panel {
@@ -149,11 +160,15 @@ textarea {
   padding: 4px 8px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background .3s;
+  transition: background .3s, transform .1s;
 }
 
 .qty-btn:hover {
   background: #008f3c;
+}
+
+.qty-btn:active {
+  transform: scale(0.95);
 }
 
 .tooltip {
