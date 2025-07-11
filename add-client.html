@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Додати клієнта</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <nav>
+      <a href="index.html" class="nav-link">Калькулятор</a>
+      <a href="clients.html" class="nav-link">Клієнти</a>
+      <a href="add-client.html" class="nav-link">Додати клієнта</a>
+    </nav>
+  </div>
+  <header class="header"></header>
+  <main class="panel" style="max-width:600px;margin:24px auto;">
+    <h1>Новий клієнт</h1>
+    <form id="client-form">
+      <div class="form-group"><label>ПІБ<input type="text" name="name" required></label></div>
+      <div class="form-group"><label>ІПН<input type="text" name="ipn" required></label></div>
+      <div id="safes-list"></div>
+      <button type="button" id="add-safe-btn" class="action-btn secondary" style="margin-bottom:12px;">Додати сейф</button>
+      <div class="form-group"><label>IBAN<input type="text" name="iban" required></label></div>
+      <div class="form-group"><label>Email<input type="email" name="email" required></label></div>
+      <div class="form-group"><label>Телефон<input type="tel" name="phone" required></label></div>
+      <button type="submit" class="action-btn">Зберегти</button>
+    </form>
+  </main>
+  <script src="add-client.js"></script>
+</body>
+</html>

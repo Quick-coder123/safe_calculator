@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Клієнти сейфів</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <nav>
+      <a href="index.html" class="nav-link">Калькулятор</a>
+      <a href="clients.html" class="nav-link">Клієнти</a>
+      <a href="add-client.html" class="nav-link">Додати клієнта</a>
+    </nav>
+  </div>
+  <header class="header">
+    <button id="theme-toggle" class="btn-icon" aria-label="Перемикач теми">🌙</button>
+    <select id="lang-select" class="select-small">
+      <option value="uk">UA</option>
+      <option value="en">EN</option>
+    </select>
+  </header>
+  <main class="panel" style="max-width:900px;margin:24px auto 0 auto;">
+    <h1>Діючі клієнти</h1>
+    <input type="text" id="client-search" class="input search-input" placeholder="Пошук по ПІБ..." style="margin-bottom:16px;width:100%;max-width:400px;">
+    <div style="overflow-x:hidden;">
+      <table id="clients-table" class="clients-table" style="width:100%;">
+        <thead>
+          <tr>
+            <th>ПІБ</th>
+            <th>Дії</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <button id="export-btn" class="action-btn secondary" style="margin-top:16px;">Експортувати в Excel</button>
+  </main>
+  <script src="clients.js"></script>
+</body>
+</html>
