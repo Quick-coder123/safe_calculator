@@ -35,8 +35,69 @@ function renderClientForm() {
     <div class="form-group"><label>IBAN<input type="text" name="iban" value="${currentClient.iban||''}" ${editMode?'':'readonly'} required></label></div>
     <div class="form-group"><label>Email<input type="email" name="email" value="${currentClient.email||''}" ${editMode?'':'readonly'} required></label></div>
     <div class="form-group"><label>Телефон<input type="tel" name="phone" value="${currentClient.phone||''}" ${editMode?'':'readonly'} required></label></div>
-    <button id="save-client-btn" type="submit" class="action-btn" style="display:${editMode ? '' : 'none'};margin-top:8px;">Зберегти зміни</button>
+    <div style="display:${editMode ? 'flex' : 'none'};gap:10px;margin-top:8px;">
+      <button id="save-client-btn" type="submit" class="action-btn">Зберегти зміни</button>
+      <button id="add-safe-btn" type="button" class="action-btn secondary">Додати сейф</button>
+    </div>
   `;
+  
+  // Додаємо обробник події для кнопки "Додати сейф" після рендерингу
+  if (editMode) {
+    const addSafeBtn = document.getElementById('add-safe-btn');
+    if (addSafeBtn) {
+      addSafeBtn.onclick = function() {
+        if (!editMode) return;
+        // Показати форму додавання сейфу з вибором категорії
+        const box = document.getElementById('safes-section');
+        const formDiv = document.createElement('div');
+        formDiv.className = 'client-box';
+        formDiv.innerHTML = `
+          <form id="add-safe-form">
+            <div class="form-group"><label>№ сейфу<input type="text" name="safeNumber" required></label></div>
+            <div class="form-group"><label>Категорія
+              <select name="category" required>
+                <option value="1">1 категорія</option>
+                <option value="2">2 категорія</option>
+                <option value="3">3 категорія</option>
+                <option value="4">4 категорія</option>
+                <option value="5">5 категорія</option>
+              </select>
+            </label></div>
+            <div class="form-group"><label>Дата закінчення<input type="date" name="endDate" required></label></div>
+            <div class="form-group"><label>Тип покриття
+              <select name="coverage" required>
+                <option value="Страховка">Страховка</option>
+                <option value="Депозит">Депозит</option>
+              </select>
+            </label></div>
+            <button type="submit" class="action-btn">Додати сейф</button>
+            <button type="button" class="action-btn secondary" id="cancel-add-safe">Скасувати</button>
+          </form>
+        `;
+        box.prepend(formDiv);
+        addSafeBtn.disabled = true;
+        formDiv.querySelector('#cancel-add-safe').onclick = function() {
+          formDiv.remove();
+          addSafeBtn.disabled = false;
+        };
+        formDiv.querySelector('#add-safe-form').onsubmit = function(e) {
+          e.preventDefault();
+          const fd = new FormData(this);
+          const safe = {
+            safeNumber: fd.get('safeNumber'),
+            category: fd.get('category'),
+            endDate: fd.get('endDate'),
+            coverage: fd.get('coverage'),
+          };
+          currentClient.safes = currentClient.safes || [];
+          currentClient.safes.push(safe);
+          formDiv.remove();
+          addSafeBtn.disabled = false;
+          renderSafes();
+        };
+      };
+    }
+  }
 }
 
 function renderSafes() {
@@ -68,58 +129,6 @@ window.deleteSafe = function(idx) {
 window.updateSafeDate = function(idx, value) {
   currentClient.safes[idx].endDate = value;
 }
-
-document.getElementById('add-safe-btn').onclick = function() {
-  if (!editMode) return;
-  // Показати форму додавання сейфу з вибором категорії
-  const box = document.getElementById('safes-section');
-  const formDiv = document.createElement('div');
-  formDiv.className = 'client-box';
-  formDiv.innerHTML = `
-    <form id="add-safe-form">
-      <div class="form-group"><label>№ сейфу<input type="text" name="safeNumber" required></label></div>
-      <div class="form-group"><label>Категорія
-        <select name="category" required>
-          <option value="1">1 категорія</option>
-          <option value="2">2 категорія</option>
-          <option value="3">3 категорія</option>
-          <option value="4">4 категорія</option>
-          <option value="5">5 категорія</option>
-        </select>
-      </label></div>
-      <div class="form-group"><label>Дата закінчення<input type="date" name="endDate" required></label></div>
-      <div class="form-group"><label>Тип покриття
-        <select name="coverage" required>
-          <option value="Страховка">Страховка</option>
-          <option value="Депозит">Депозит</option>
-        </select>
-      </label></div>
-      <button type="submit" class="action-btn">Додати сейф</button>
-      <button type="button" class="action-btn secondary" id="cancel-add-safe">Скасувати</button>
-    </form>
-  `;
-  box.prepend(formDiv);
-  document.getElementById('add-safe-btn').disabled = true;
-  formDiv.querySelector('#cancel-add-safe').onclick = function() {
-    formDiv.remove();
-    document.getElementById('add-safe-btn').disabled = false;
-  };
-  formDiv.querySelector('#add-safe-form').onsubmit = function(e) {
-    e.preventDefault();
-    const fd = new FormData(this);
-    const safe = {
-      safeNumber: fd.get('safeNumber'),
-      category: fd.get('category'),
-      endDate: fd.get('endDate'),
-      coverage: fd.get('coverage'),
-    };
-    currentClient.safes = currentClient.safes || [];
-    currentClient.safes.push(safe);
-    formDiv.remove();
-    document.getElementById('add-safe-btn').disabled = false;
-    renderSafes();
-  };
-};
 
 document.getElementById('edit-client-btn').onclick = function() {
   editMode = true;
