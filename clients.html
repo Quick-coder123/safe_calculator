@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Клієнти сейфів</title>
+  <title>Клієнти сейфів - Калькулятор оренди сейфу</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,12 +22,18 @@
       <option value="en">EN</option>
     </select>
   </header>
-  <main class="panel" style="max-width:900px;margin:24px auto 0 auto;">
-    <h1>Діючі клієнти</h1>
-    <input type="text" id="client-search" class="input search-input" placeholder="Пошук по ПІБ..." style="margin-bottom:16px;width:100%;max-width:400px;">
-    <div style="overflow-x:hidden;">
-      <table id="clients-table" class="clients-table" style="width:100%;">
-        <thead>
+  
+  <main class="layout" style="grid-template-columns: 1fr; grid-template-areas: 'form'; max-width: 1000px; margin: 0 auto;">
+    <section class="panel form-panel" style="grid-area: form;">
+      <h1 style="font-family:'Inter',sans-serif; font-weight:600; color:var(--accent); margin-bottom:16px;">Діючі клієнти</h1>
+      
+      <div class="form-group" style="max-width: 400px; margin-bottom: 20px;">
+        <input type="text" id="client-search" placeholder="Пошук по ПІБ..." style="width:100%;">
+      </div>
+      
+      <div style="overflow-x:auto;">
+        <table id="clients-table" class="clients-table" style="width:100%;">
+          <thead>
           <tr>
             <th>ПІБ</th>
             <th>Дії</th>
@@ -34,9 +41,24 @@
         </thead>
         <tbody></tbody>
       </table>
-    </div>
-    <button id="export-btn" class="action-btn secondary" style="margin-top:16px;">Експортувати в Excel</button>
+      </div>
+      
+      <button id="export-btn" class="action-btn secondary" style="margin-top:16px;">Експортувати в Excel</button>
+    </section>
   </main>
+
+  <script>
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
+    });
+  </script>
   <script src="clients.js"></script>
 </body>
 </html>

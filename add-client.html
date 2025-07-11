@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Додати клієнта</title>
+  <title>Додати клієнта - Калькулятор оренди сейфу</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,20 +15,71 @@
       <a href="add-client.html" class="nav-link">Додати клієнта</a>
     </nav>
   </div>
-  <header class="header"></header>
-  <main class="panel" style="max-width:600px;margin:24px auto;">
-    <h1>Новий клієнт</h1>
-    <form id="client-form">
-      <div class="form-group"><label>ПІБ<input type="text" name="name" required></label></div>
-      <div class="form-group"><label>ІПН<input type="text" name="ipn" required></label></div>
-      <div id="safes-list"></div>
-      <button type="button" id="add-safe-btn" class="action-btn secondary" style="margin-bottom:12px;">Додати сейф</button>
-      <div class="form-group"><label>IBAN<input type="text" name="iban" required></label></div>
-      <div class="form-group"><label>Email<input type="email" name="email" required></label></div>
-      <div class="form-group"><label>Телефон<input type="tel" name="phone" required></label></div>
-      <button type="submit" class="action-btn">Зберегти</button>
-    </form>
+  
+  <header class="header">
+    <button id="theme-toggle" class="btn-icon" aria-label="Перемикач теми">🌙</button>
+    <select id="lang-select" class="select-small">
+      <option value="uk">UA</option>
+      <option value="en">EN</option>
+    </select>
+  </header>
+
+  <main class="layout" style="grid-template-columns: 1fr; grid-template-areas: 'form'; max-width: 800px; margin: 0 auto;">
+    <section class="panel form-panel" style="grid-area: form;">
+      <h1 style="font-family:'Inter',sans-serif; font-weight:600; color:var(--accent); margin-bottom:16px;">Додати нового клієнта</h1>
+      
+      <form id="client-form">
+        <div class="form-group">
+          <label for="client-name">ПІБ <span class="info-icon" title="Введіть повне ім'я клієнта">ℹ️</span></label>
+          <input type="text" id="client-name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="client-ipn">ІПН <span class="info-icon" title="Індивідуальний податковий номер">ℹ️</span></label>
+          <input type="text" id="client-ipn" name="ipn" required>
+        </div>
+        
+        <div id="safes-list" style="margin: 16px 0;"></div>
+        
+        <button type="button" id="add-safe-btn" class="action-btn secondary" style="margin-bottom:16px;">
+          Додати сейф
+        </button>
+        
+        <div class="form-group">
+          <label for="client-iban">IBAN <span class="info-icon" title="Міжнародний номер банківського рахунку">ℹ️</span></label>
+          <input type="text" id="client-iban" name="iban" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="client-email">Email <span class="info-icon" title="Електронна пошта клієнта">ℹ️</span></label>
+          <input type="email" id="client-email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="client-phone">Телефон <span class="info-icon" title="Контактний номер телефону">ℹ️</span></label>
+          <input type="tel" id="client-phone" name="phone" required>
+        </div>
+        
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button type="submit" class="action-btn">Зберегти клієнта</button>
+          <a href="clients.html" class="action-btn secondary">Скасувати</a>
+        </div>
+      </form>
+    </section>
   </main>
+
+  <script>
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
+    });
+  </script>
   <script src="add-client.js"></script>
 </body>
 </html>
