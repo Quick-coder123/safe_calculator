@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Анкета клієнта</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <nav>
+      <a href="index.html" class="nav-link">Калькулятор</a>
+      <a href="clients.html" class="nav-link">Клієнти</a>
+      <a href="add-client.html" class="nav-link">Додати клієнта</a>
+    </nav>
+  </div>
+  <main class="panel" style="max-width:600px;margin:24px auto;">
+    <h1>Анкета клієнта</h1>
+    <form id="client-form" class="client-info-boxes"></form>
+    <div id="safes-section" class="client-safes-boxes"></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button id="add-safe-btn" type="button" class="action-btn secondary">Додати сейф</button>
+      <button id="edit-client-btn" type="button" class="action-btn secondary">Редагувати анкету</button>
+      <button id="save-client-btn" type="submit" class="action-btn" style="display:none;">Зберегти зміни</button>
+      <a href="clients.html" class="action-btn secondary">Назад до списку</a>
+    </div>
+  </main>
+  <script src="client.js"></script>
+</body>
+</html>

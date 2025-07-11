@@ -1,4 +1,24 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+﻿// Копіювання підсумкової інформації
+document.addEventListener('DOMContentLoaded', () => {
+  const copySummaryBtn = document.getElementById('copy-summary-btn');
+  if (copySummaryBtn) {
+    copySummaryBtn.onclick = function() {
+      const title = document.querySelector('[data-i18n-key="summary_title"]').textContent.trim();
+      const summary = document.getElementById('summary-content');
+      let text = title + '\n';
+      summary.querySelectorAll('.summary-item, .summary-total').forEach(row => {
+        if (row.offsetParent !== null) {
+          text += row.innerText.replace(/\s+/g,' ').trim() + '\n';
+        }
+      });
+      navigator.clipboard.writeText(text.trim());
+      toast.textContent = 'Підсумок скопійовано!';
+      toast.classList.add('show');
+      setTimeout(()=>toast.classList.remove('show'),1500);
+    };
+  }
+});
+document.addEventListener('DOMContentLoaded', () => {
   // Elements
   const themeBtn    = document.getElementById('theme-toggle');
   const langSelect  = document.getElementById('lang-select');
@@ -29,10 +49,75 @@
   const linkEl      = document.getElementById('insurance-link');
   const genBtn      = document.getElementById('generate-btn');
   const copyBtn     = document.getElementById('copy-btn');
-  const printBtn    = document.getElementById('print-btn');
+  // Валідація
+  function validateEDRPOU(val) {
+    return /^\d{10}$/.test(val);
+  }
+  function validateIBAN(val) {
+    return /^UA\d{27}$/.test(val);
+  }
+function showHint(id, msg, isError) {
+  const el = document.getElementById(id+"-help");
+  if (!el) return;
+  if (msg) {
+    el.textContent = msg;
+    el.classList.toggle('error', !!isError);
+  } else {
+    // показати стандартну підказку, якщо немає помилки
+    if (id === 'edrpou') {
+      el.textContent = translations[langSelect.value].hint_edr;
+    } else if (id === 'iban') {
+      el.textContent = translations[langSelect.value].hint_iban;
+    } else if (id === 'recipient-name') {
+      el.textContent = langSelect.value==='uk' ? 'Введіть ПІБ отримувача' : 'Enter recipient full name';
+    } else {
+      el.textContent = '';
+    }
+    el.classList.remove('error');
+  }
+}
+  function setError(input, isError) {
+    input.classList.toggle('input-error', !!isError);
+  }
+
+  // Збереження у LocalStorage
+  function saveForm() {
+    const data = {
+      category: categoryEl.value,
+      contract: contractEl.value,
+      coverage: coverageEl.value,
+      days: daysEl.value,
+      start: startEl.value,
+      end: endEl.value,
+      penalty: penaltyEl.value,
+      attorney: atCount.textContent,
+      packet: pkCount.textContent,
+      rec: recEl.value,
+      edr: edrEl.value,
+      iban: ibanEl.value,
+      link: linkEl.value
+    };
+    localStorage.setItem('safe_calc_form', JSON.stringify(data));
+  }
+  function loadForm() {
+    const data = JSON.parse(localStorage.getItem('safe_calc_form')||'null');
+    if (!data) return;
+    categoryEl.value = data.category || '';
+    contractEl.value = data.contract || '';
+    coverageEl.value = data.coverage || '';
+    daysEl.value = data.days || '1';
+    startEl.value = data.start || '';
+    endEl.value = data.end || '';
+    penaltyEl.value = data.penalty || '0';
+    atCount.textContent = data.attorney || '0';
+    pkCount.textContent = data.packet || '0';
+    recEl.value = data.rec || '';
+    edrEl.value = data.edr || '';
+    ibanEl.value = data.iban || '';
+    linkEl.value = data.link || '';
+  }
   const txtArea     = document.getElementById('payment-text');
   const toast       = document.getElementById('toast');
-  const warningEl   = document.getElementById('end-warning');
 
   // Theme toggle
   const savedTheme = localStorage.getItem('theme') || 'light';
@@ -45,7 +130,7 @@
     themeBtn.textContent = next === 'light' ? '🌙' : '☀️';
   });
 
-  // Translations + selects
+  // Translations + populate selects
   const translations = {
     uk: {
       calc_title: "Калькулятор оренди індивідуального сейфу",
@@ -112,8 +197,8 @@
       toast_copied: "Copied!"
     }
   };
-
   function applyTranslations(lang) {
+    // populate selects
     const catLabels = lang==='uk'
       ? ['1 категорія','2 категорія','3 категорія','4 категорія','5 категорія']
       : ['Category 1','Category 2','Category 3','Category 4','Category 5'];
@@ -122,44 +207,76 @@
     contractEl.innerHTML = conLabels.map((t,i)=>`<option value="${i===0?'new':'prolong'}">${t}</option>`).join('');
     const covLabels = lang==='uk' ? ['Страхування ключа','Грошове покриття'] : ['Key Insurance','Cash Deposit'];
     coverageEl.innerHTML = covLabels.map((t,i)=>`<option value="${i===0?'insurance':'deposit'}">${t}</option>`).join('');
+    // translate text
     document.querySelectorAll('[data-i18n-key]').forEach(el=>{
       const key = el.dataset.i18nKey;
       if(translations[lang][key]) el.textContent = translations[lang][key];
     });
+    // placeholders & hints
     recEl.placeholder = translations[lang].label_rec;
     edrEl.placeholder = '1234567890';
-    document.querySelector('#edrpou + .tooltiptext').textContent = translations[lang].hint_edr;
+    document.querySelector('#edrpou + .form-hint').textContent = translations[lang].hint_edr;
     ibanEl.placeholder = 'UA1234...';
-    document.querySelector('#iban + .tooltiptext').textContent = translations[lang].hint_iban;
+    document.querySelector('#iban + .form-hint').textContent = translations[lang].hint_iban;
     linkEl.placeholder = 'https://...';
   }
-
-  // Check weekend
-  function checkWeekend(dateStr) {
-    const date = new Date(dateStr);
-    const day = date.getDay();
-    if (day === 0 || day === 6) {
-      warningEl.style.display = 'block';
-    } else {
-      warningEl.style.display = 'none';
-    }
+  const savedLang = localStorage.getItem('lang') || 'uk';
+  langSelect.value = savedLang;
+  applyTranslations(savedLang);
+  // Якщо вибрано клієнта зі списку — підставити дані
+  const selectedClient = localStorage.getItem('selectedClient');
+  if (selectedClient) {
+    const c = JSON.parse(selectedClient);
+    recEl.value = c.name || '';
+    edrEl.value = c.ipn || '';
+    categoryEl.value = c.category ? (c.category[0]||'1') : '1';
+    coverageEl.value = c.coverage || 'insurance';
+    ibanEl.value = c.iban || '';
+    if (c.start) startEl.value = c.start;
+    // email, phone — не підставляємо у калькулятор
+    localStorage.removeItem('selectedClient');
+  } else {
+    loadForm();
   }
+  langSelect.addEventListener('change', () => {
+    localStorage.setItem('lang', langSelect.value);
+    applyTranslations(langSelect.value);
+  });
 
-  // Rates
-  const dailyRates = [
-    {min:1,max:30,  rates:{1:39,2:51,3:63,4:63,5:63}},
-    {min:31,max:90, rates:{1:25,2:26,3:28,4:35,5:43}},
-    {min:91,max:180,rates:{1:22,2:24,3:26,4:33,5:41}},
-    {min:181,max:365,rates:{1:20,2:22,3:24,4:29,5:40}}
-  ];
-  const insuranceRates = [
-    {min:1,max:90,  cost:285},
-    {min:91,max:180,cost:370},
-    {min:181,max:270,cost:430},
-    {min:271,max:365,cost:550}
-  ];
-  const attorneyTariff=300, packetTariff=30, depositAmount=3000;
+  // Initialize dates
+  const today = new Date().toISOString().slice(0,10);
+  if (!startEl.value) startEl.value = today;
+  if (!endEl.value) endEl.value = today;
 
+  // Завантаження тарифів з rates.json
+  let dailyRates = [], insuranceRates = [], attorneyTariff = 0, packetTariff = 0, depositAmount = 0;
+  fetch('rates.json')
+    .then(r=>r.json())
+    .then(data=>{
+      // Преобразуємо dailyRates для швидкого пошуку
+      dailyRates = data.dailyRates.map((row,i)=>({
+        min: [1,31,91,181][i],
+        max: [30,90,180,365][i],
+        rates: {
+          1: row.rates['1 категорія'],
+          2: row.rates['2 категорія'],
+          3: row.rates['3 категорія'],
+          4: row.rates['4 категорія'],
+          5: row.rates['5 категорія']
+        }
+      }));
+      insuranceRates = data.insuranceRates.map((row,i)=>({
+        min: [1,91,181,271][i],
+        max: [90,180,270,365][i],
+        cost: row.cost
+      }));
+      attorneyTariff = data.attorneyTariff;
+      packetTariff = data.packetTariff;
+      depositAmount = data.depositAmount;
+      calculateAll();
+    });
+
+  // Helpers
   function getTermDays(){
     const v = parseInt(daysEl.value,10);
     if(v>0) return v;
@@ -177,8 +294,31 @@
           diff=Math.floor((ed-sd)/(1000*60*60*24))+1;
     daysEl.value = diff>0?diff:1;
   }
-
   function calculateAll(){
+    // Валідація та підказки
+    let valid = true;
+    // EDRPOU
+    if (edrEl.value && !validateEDRPOU(edrEl.value)) {
+      showHint('edrpou', langSelect.value==='uk' ? 'Має бути 10 цифр' : 'Should be 10 digits', true);
+      setError(edrEl, true); valid = false;
+    } else {
+      showHint('edrpou', '', false); setError(edrEl, false);
+    }
+    // IBAN
+    if (ibanEl.value && !validateIBAN(ibanEl.value)) {
+      showHint('iban', langSelect.value==='uk' ? 'Формат: UA + 27 цифр' : 'Format: UA + 27 digits', true);
+      setError(ibanEl, true); valid = false;
+    } else {
+      showHint('iban', '', false); setError(ibanEl, false);
+    }
+    // Дати
+    if (startEl.value && endEl.value && startEl.value > endEl.value) {
+      showHint('end-date', langSelect.value==='uk' ? 'Дата закінчення не може бути раніше початку' : 'End date cannot be before start', true);
+      setError(endEl, true); valid = false;
+    } else {
+      showHint('end-date', '', false); setError(endEl, false);
+    }
+    saveForm();
     const days=getTermDays();
     const rateObj=dailyRates.find(r=>days>=r.min&&days<=r.max)||{rates:{}};
     const dailyRate=rateObj.rates[categoryEl.value]||0;
@@ -189,32 +329,47 @@
     rentCost.textContent = rentAmt.toFixed(2)+' грн';
     const insObj=insuranceRates.find(r=>days>=r.min&&days<=r.max)||{};
     const covAmt=coverageEl.value==='insurance'?insObj.cost:(contractEl.value==='new'?depositAmount:0);
+    // Відображення типу покриття
+    let coverageText = '';
+    if (coverageEl.value === 'insurance') {
+      coverageText = langSelect.value === 'uk' ? 'Страхування ключа' : 'Key insurance';
+    } else {
+      coverageText = langSelect.value === 'uk' ? 'Грошове покриття' : 'Cash deposit';
+    }
+    document.querySelector('[data-i18n-key="summary_cov"]').textContent = coverageText + ':';
     covCost.textContent = covAmt.toFixed(2)+' грн';
+    document.getElementById('coverage-summary').style.display = covAmt > 0 ? '' : 'none';
     const aCost=parseInt(atCount.textContent,10)*attorneyTariff;
     atCost.textContent = aCost.toFixed(2)+' грн';
     const pCost=parseFloat(penaltyEl.value)||0;
     penCost.textContent = pCost.toFixed(2)+' грн';
     const pkCost=parseInt(pkCount.textContent,10)*packetTariff;
+    // Показувати довіреності, пакети і пеню лише якщо не 0
+    document.getElementById('attorney-summary').style.display = aCost > 0 ? '' : 'none';
+    document.getElementById('packet-summary').style.display = pkCost > 0 ? '' : 'none';
+    document.getElementById('penalty-summary').style.display = pCost > 0 ? '' : 'none';
     totCost.textContent = (rentAmt+covAmt+aCost+pCost+pkCost).toFixed(2)+' грн';
-    checkWeekend(endEl.value);
   }
-
-  const savedLang = localStorage.getItem('lang') || 'uk';
-  langSelect.value = savedLang;
-  applyTranslations(savedLang);
 
   // Events
   daysEl.addEventListener('input',()=>{ syncEndDate(); calculateAll(); });
   startEl.addEventListener('change',()=>{ syncDays(); calculateAll(); });
   endEl.addEventListener('change',()=>{ syncDays(); calculateAll(); });
-  [categoryEl,contractEl,coverageEl,penaltyEl].forEach(el=>el.addEventListener('change',calculateAll));
+  [categoryEl,contractEl,coverageEl,penaltyEl,recEl,edrEl,ibanEl,linkEl].forEach(el=>el.addEventListener('input',calculateAll));
   atDec.addEventListener('click',()=>{ atCount.textContent=Math.max(0,parseInt(atCount.textContent)-1); calculateAll(); });
   atInc.addEventListener('click',()=>{ atCount.textContent=parseInt(atCount.textContent)+1; calculateAll(); });
   pkDec.addEventListener('click',()=>{ pkCount.textContent=Math.max(0,parseInt(pkCount.textContent)-1); calculateAll(); });
   pkInc.addEventListener('click',()=>{ pkCount.textContent=parseInt(pkCount.textContent)+1; calculateAll(); });
 
+  // Generate
   genBtn.addEventListener('click',()=>{
     calculateAll();
+    if (document.querySelector('.input-error')) {
+      toast.textContent = langSelect.value==='uk' ? 'Виправте помилки у формі!' : 'Please fix form errors!';
+      toast.classList.add('show');
+      setTimeout(()=>toast.classList.remove('show'),2000);
+      return;
+    }
     const days=getTermDays();
     const rateObj=dailyRates.find(r=>days>=r.min&&days<=r.max)||{rates:{}};
     const dailyRate=rateObj.rates[categoryEl.value]||0;
@@ -222,17 +377,33 @@
     const penaltyAmount=parseFloat(penaltyEl.value)||0;
     const totalAmount=rentAmount+penaltyAmount;
     const lines=[
-      'Для дистанційного продовження строку дії індивідуального сейфу просимо здійснити оплату:',
+      langSelect.value==='uk'
+        ? 'Для дистанційного продовження строку дії індивідуального сейфу просимо здійснити оплату:'
+        : 'To remotely extend the term of your individual safe, please make a payment:',
       '',
-      `💳 Сума до сплати: ${totalAmount.toFixed(2)} грн`,
-      `👤 Отримувач: ${recEl.value||'—'}`,
-      `🆔 Код ЄДРПОУ: ${edrEl.value||'—'}`,
-      `🏦 IBAN: ${ibanEl.value||'—'}`,
+      (langSelect.value==='uk'
+        ? `💳 Сума до сплати: ${totalAmount.toFixed(2)} грн`
+        : `💳 Amount to pay: ${totalAmount.toFixed(2)} UAH`),
+      (langSelect.value==='uk'
+        ? `👤 Отримувач: ${recEl.value||'—'}`
+        : `👤 Recipient: ${recEl.value||'—'}`),
+      (langSelect.value==='uk'
+        ? `🆔 Код ЄДРПОУ: ${edrEl.value||'—'}`
+        : `🆔 EDRPOU: ${edrEl.value||'—'}`),
+      (langSelect.value==='uk'
+        ? `🏦 IBAN: ${ibanEl.value||'—'}`
+        : `🏦 IBAN: ${ibanEl.value||'—'}`),
       '',
-      '📝 Призначення платежу:',
-      'Продовження строку дії індивідуального сейфу',
+      (langSelect.value==='uk'
+        ? '📝 Призначення платежу:'
+        : '📝 Payment purpose:'),
+      (langSelect.value==='uk'
+        ? 'Продовження строку дії індивідуального сейфу'
+        : 'Extension of individual safe rental period'),
       '',
-      '🔗 Посилання на сплату страхування:',
+      (langSelect.value==='uk'
+        ? '🔗 Посилання на сплату страхування:'
+        : '🔗 Insurance payment link:'),
       linkEl.value.trim()||'https://ars.aiwa.in.ua/docs/sdb/newID'
     ];
     txtArea.value=lines.join('\n');
@@ -241,7 +412,9 @@
     setTimeout(()=>toast.classList.remove('show'),1500);
   });
 
+  // Copy
   copyBtn.addEventListener('click',()=>{
+    if (!txtArea.value.trim()) return;
     navigator.clipboard.writeText(txtArea.value).then(()=>{
       toast.textContent=translations[langSelect.value].toast_copied;
       toast.classList.add('show');
@@ -249,16 +422,8 @@
     });
   });
 
-  printBtn.addEventListener('click',()=>{
-    const inv=document.getElementById('invoice-print');
-    inv.innerHTML=`<pre>${txtArea.value}</pre>`;
-    inv.removeAttribute('aria-hidden');
-    window.print();
-    inv.setAttribute('aria-hidden','true');
-  });
+  // Auto-send
 
-  // Init
-  const today = new Date().toISOString().slice(0,10);
-  startEl.value = endEl.value = today;
+  // Initial calculate
   calculateAll();
 });
