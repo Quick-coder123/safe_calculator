@@ -15,12 +15,14 @@
     </nav>
   </div>
   <main class="panel" style="max-width:600px;margin:24px auto;">
-    <h1>Анкета клієнта</h1>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
+      <h1 style="margin:0;">Анкета клієнта</h1>
+      <button id="edit-client-btn" type="button" class="action-btn secondary">Редагувати анкету</button>
+    </div>
     <form id="client-form" class="client-info-boxes"></form>
     <div id="safes-section" class="client-safes-boxes"></div>
     <div style="display:flex;gap:10px;margin-top:16px;">
       <button id="add-safe-btn" type="button" class="action-btn secondary">Додати сейф</button>
-      <button id="edit-client-btn" type="button" class="action-btn secondary">Редагувати анкету</button>
       <button id="save-client-btn" type="submit" class="action-btn" style="display:none;">Зберегти зміни</button>
       <a href="clients.html" class="action-btn secondary">Назад до списку</a>
     </div>
