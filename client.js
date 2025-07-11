@@ -71,13 +71,22 @@ window.updateSafeDate = function(idx, value) {
 
 document.getElementById('add-safe-btn').onclick = function() {
   if (!editMode) return;
-  // Показати форму додавання сейфу
+  // Показати форму додавання сейфу з вибором категорії
   const box = document.getElementById('safes-section');
   const formDiv = document.createElement('div');
   formDiv.className = 'client-box';
   formDiv.innerHTML = `
     <form id="add-safe-form">
       <div class="form-group"><label>№ сейфу<input type="text" name="safeNumber" required></label></div>
+      <div class="form-group"><label>Категорія
+        <select name="category" required>
+          <option value="1">1 категорія</option>
+          <option value="2">2 категорія</option>
+          <option value="3">3 категорія</option>
+          <option value="4">4 категорія</option>
+          <option value="5">5 категорія</option>
+        </select>
+      </label></div>
       <div class="form-group"><label>Дата закінчення<input type="date" name="endDate" required></label></div>
       <div class="form-group"><label>Тип покриття
         <select name="coverage" required>
@@ -100,9 +109,9 @@ document.getElementById('add-safe-btn').onclick = function() {
     const fd = new FormData(this);
     const safe = {
       safeNumber: fd.get('safeNumber'),
+      category: fd.get('category'),
       endDate: fd.get('endDate'),
       coverage: fd.get('coverage'),
-      category: fd.get('coverage'),
     };
     currentClient.safes = currentClient.safes || [];
     currentClient.safes.push(safe);
