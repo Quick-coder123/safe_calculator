@@ -1,3 +1,90 @@
+@media (max-width: 600px) {
+  .panel {
+    padding: 4vw 2vw;
+    border-radius: 8px;
+    margin: 0;
+    box-shadow: none;
+    width: 100vw;
+    max-width: 100vw;
+  }
+  .client-info-boxes, .client-safes-boxes {
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 0;
+  }
+  .client-box {
+    padding: 10px 6px;
+    font-size: 0.98em;
+    border-radius: 7px;
+  }
+  .clients-table, .clients-table th, .clients-table td {
+    font-size: 0.92em;
+    padding: 6px 4px;
+    min-width: unset;
+    max-width: unset;
+    white-space: normal;
+  }
+  .clients-table {
+    display: block;
+    overflow-x: auto;
+    width: 100vw;
+    min-width: unset;
+  }
+  .sidebar {
+    position: static;
+    width: 100vw;
+    height: auto;
+    flex-direction: row;
+    padding: 0;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    z-index: 1000;
+  }
+  .sidebar nav {
+    flex-direction: row;
+    gap: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .nav-link {
+    border-radius: 0;
+    padding: 10px 4px;
+    text-align: center;
+    font-size: 1em;
+  }
+  .action-btn {
+    font-size: 1em;
+    padding: 8px 10px;
+    min-width: 60px;
+    margin-right: 0;
+    margin-top: 6px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .form-group {
+    margin-bottom: 8px;
+  }
+  input, select, textarea {
+    font-size: 1em;
+    padding: 8px 6px;
+    border-radius: 6px;
+  }
+  .header {
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas: "form" "summary" "payment";
+    padding: 0 2vw 2vw;
+    gap: 8px;
+  }
+  .summary-panel {
+    padding: 8px;
+    border-radius: 8px;
+  }
+}
 .client-safes-boxes {
   display: flex;
   flex-direction: column;

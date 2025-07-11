@@ -47,9 +47,8 @@ function renderSafes() {
     div.className = 'client-box';
     div.innerHTML = `
       <b>Сейф №${s.safeNumber || '-'} (${s.category || '-'})</b><br>
-      <span><b>Дата закінчення:</b> <input type="date" value="${s.endDate||''}" ${editMode?'':'readonly'} onchange="window.updateSafeDate(${idx},this.value)"></span><br>
+      <span><b>Дата закінчення:</b> <input type="date" value="${s.endDate||''}" ${editMode?'':'readonly'} onchange="window.updateSafeDate(${idx},this.value)" ${s.safeNumber? '':'disabled'}></span><br>
       <span><b>Покриття:</b> ${s.coverage || '-'}</span>
-      <button class="action-btn secondary" type="button" onclick="window.editSafe(${idx})" style="margin-top:8px;${editMode?'':'display:none;'}">Редагувати</button>
       <button class="action-btn danger" type="button" onclick="window.deleteSafe(${idx})" style="margin-top:8px;${editMode?'':'display:none;'}">Видалити</button>
     `;
     box.appendChild(div);
@@ -72,9 +71,45 @@ window.updateSafeDate = function(idx, value) {
 
 document.getElementById('add-safe-btn').onclick = function() {
   if (!editMode) return;
-  currentClient.safes = currentClient.safes || [];
-  currentClient.safes.push({category:'',safeNumber:'',endDate:'',coverage:''});
-  renderSafes();
+  // Показати форму додавання сейфу
+  const box = document.getElementById('safes-section');
+  const formDiv = document.createElement('div');
+  formDiv.className = 'client-box';
+  formDiv.innerHTML = `
+    <form id="add-safe-form">
+      <div class="form-group"><label>№ сейфу<input type="text" name="safeNumber" required></label></div>
+      <div class="form-group"><label>Дата закінчення<input type="date" name="endDate" required></label></div>
+      <div class="form-group"><label>Тип покриття
+        <select name="coverage" required>
+          <option value="Страховка">Страховка</option>
+          <option value="Депозит">Депозит</option>
+        </select>
+      </label></div>
+      <button type="submit" class="action-btn">Додати сейф</button>
+      <button type="button" class="action-btn secondary" id="cancel-add-safe">Скасувати</button>
+    </form>
+  `;
+  box.prepend(formDiv);
+  document.getElementById('add-safe-btn').disabled = true;
+  formDiv.querySelector('#cancel-add-safe').onclick = function() {
+    formDiv.remove();
+    document.getElementById('add-safe-btn').disabled = false;
+  };
+  formDiv.querySelector('#add-safe-form').onsubmit = function(e) {
+    e.preventDefault();
+    const fd = new FormData(this);
+    const safe = {
+      safeNumber: fd.get('safeNumber'),
+      endDate: fd.get('endDate'),
+      coverage: fd.get('coverage'),
+      category: fd.get('coverage'),
+    };
+    currentClient.safes = currentClient.safes || [];
+    currentClient.safes.push(safe);
+    formDiv.remove();
+    document.getElementById('add-safe-btn').disabled = false;
+    renderSafes();
+  };
 };
 
 document.getElementById('edit-client-btn').onclick = function() {
@@ -91,13 +126,41 @@ document.getElementById('client-form').onsubmit = async function(e) {
   currentClient.email = fd.get('email');
   currentClient.phone = fd.get('phone');
   // PATCH/PUT до API
-  await fetch(`/api/clients?id=${encodeURIComponent(currentClient.id)}`, {
+  const resp = await fetch(`/api/clients?id=${encodeURIComponent(currentClient.id)}`, {
     method: 'PATCH',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify(currentClient)
   });
-  editMode = false;
-  await renderClient();
+  if (resp.ok) {
+    editMode = false;
+    await renderClient();
+    showMessage('Зміни збережено!', 'success');
+  } else {
+    const err = await resp.json();
+    showMessage('Помилка збереження: ' + (err.error || resp.status), 'error');
+  }
+// Показ повідомлень
+function showMessage(msg, type) {
+  let box = document.getElementById('msg-box');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'msg-box';
+    box.style.position = 'fixed';
+    box.style.top = '20px';
+    box.style.right = '20px';
+    box.style.zIndex = 1000;
+    box.style.padding = '12px 20px';
+    box.style.borderRadius = '8px';
+    box.style.fontWeight = 'bold';
+    document.body.appendChild(box);
+  }
+  box.textContent = msg;
+  box.style.background = type === 'success' ? '#d4edda' : '#f8d7da';
+  box.style.color = type === 'success' ? '#155724' : '#721c24';
+  box.style.border = type === 'success' ? '1px solid #c3e6cb' : '1px solid #f5c6cb';
+  box.style.display = 'block';
+  setTimeout(() => { box.style.display = 'none'; }, 2500);
+}
 };
 
 renderClient();
