@@ -46,7 +46,7 @@ function renderSafes() {
     const div = document.createElement('div');
     div.className = 'client-box';
     div.innerHTML = `
-      <b>Сейф №${s.safeNumber || '-'} (${s.category || '-'})</b><br>
+      <b>Сейф №${s.safeNumber || '-'} (${s.category ? s.category + ' категорія' : '-'})</b><br>
       <span><b>Дата закінчення:</b> <input type="date" value="${s.endDate||''}" ${editMode?'':'readonly'} onchange="window.updateSafeDate(${idx},this.value)" ${s.safeNumber? '':'disabled'}></span><br>
       <span><b>Покриття:</b> ${s.coverage || '-'}</span>
       <button class="action-btn danger" type="button" onclick="window.deleteSafe(${idx})" style="margin-top:8px;${editMode?'':'display:none;'}">Видалити</button>
