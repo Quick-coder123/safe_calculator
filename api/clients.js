@@ -8,6 +8,7 @@ export default async function handler(req, res) {
     if (id) query = query.eq('id', id);
     const { data, error } = await query;
     if (error) return res.status(500).json({ error: error.message });
+    if (!data) return res.status(404).json({ error: 'Client not found' });
     res.status(200).json(data);
   } else if (req.method === 'POST') {
     const { data: inserted, error } = await supabase.from('clients').insert([req.body]);
@@ -18,6 +19,7 @@ export default async function handler(req, res) {
     if (!id) return res.status(400).json({ error: 'Missing id' });
     const { data, error } = await supabase.from('clients').update(req.body).eq('id', id).select();
     if (error) return res.status(500).json({ error: error.message });
+    if (!data) return res.status(404).json({ error: 'Client not found' });
     res.status(200).json(data && data.length ? data[0] : {});
   } else {
     res.status(405).end();
