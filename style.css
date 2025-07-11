@@ -309,6 +309,34 @@ textarea:hover + .form-hint {
     padding: 8px;
   }
 }
+/* Стилі для анкети клієнта - зменшені відступи */
+.client-info-boxes .form-group {
+  margin-bottom: 2px;
+}
+
+.client-info-boxes .form-group label {
+  margin-bottom: 2px;
+}
+
+.client-safes-boxes {
+  margin-top: 8px;
+}
+
+.client-safes-boxes .client-box {
+  margin-bottom: 8px;
+}
+/* Стилі для кнопки Прорахувати */
+.client-box .action-btn[onclick*="calculateSafe"] {
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.9em;
+  padding: 6px 12px;
+}
+
+.client-box .action-btn[onclick*="calculateSafe"]:hover {
+  background: #007a37;
+  transform: translateY(-1px);
+}
 :root {
   --bg-light:    #F9F9F9;
   --bg-dark:     #222;

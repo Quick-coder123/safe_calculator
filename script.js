@@ -116,6 +116,29 @@ function showHint(id, msg, isError) {
     ibanEl.value = data.iban || '';
     linkEl.value = data.link || '';
   }
+
+  // Завантаження попередньо заповнених даних з анкети клієнта
+  function loadCalculatorPreset() {
+    const preset = JSON.parse(localStorage.getItem('calculatorPreset')||'null');
+    if (!preset) return;
+    
+    // Заповнюємо поля калькулятора
+    if (preset.category) categoryEl.value = preset.category;
+    if (preset.coverage) coverageEl.value = preset.coverage;
+    if (preset.contractType) contractEl.value = preset.contractType;
+    if (preset.startDate) startEl.value = preset.startDate;
+    
+    // Заповнюємо реквізити
+    if (preset.name) recEl.value = preset.name;
+    if (preset.ipn) edrEl.value = preset.ipn;
+    if (preset.iban) ibanEl.value = preset.iban;
+    
+    // Очищаємо preset після використання
+    localStorage.removeItem('calculatorPreset');
+    
+    // Перерахуємо після заповнення
+    calculate();
+  }
   const txtArea     = document.getElementById('payment-text');
   const toast       = document.getElementById('toast');
 
@@ -238,6 +261,9 @@ function showHint(id, msg, isError) {
   } else {
     loadForm();
   }
+  
+  // Завантажуємо попередньо заповнені дані з анкети клієнта (якщо є)
+  loadCalculatorPreset();
   langSelect.addEventListener('change', () => {
     localStorage.setItem('lang', langSelect.value);
     applyTranslations(langSelect.value);

@@ -67,7 +67,7 @@ function renderClientForm() {
             <div class="form-group"><label>Тип покриття
               <select name="coverage" required>
                 <option value="Страховка">Страховка</option>
-                <option value="Депозит">Депозит</option>
+                <option value="Грошове покриття">Грошове покриття</option>
               </select>
             </label></div>
             <button type="submit" class="action-btn">Додати сейф</button>
@@ -106,11 +106,16 @@ function renderSafes() {
   (currentClient.safes||[]).forEach((s, idx) => {
     const div = document.createElement('div');
     div.className = 'client-box';
+    // Замінюємо старі значення "Депозит" на "Грошове покриття" для відображення
+    const coverageDisplay = s.coverage === 'Депозит' ? 'Грошове покриття' : (s.coverage || '-');
     div.innerHTML = `
       <b>Сейф №${s.safeNumber || '-'} (${s.category ? s.category + ' категорія' : '-'})</b><br>
       <span><b>Дата закінчення:</b> <input type="date" value="${s.endDate||''}" ${editMode?'':'readonly'} onchange="window.updateSafeDate(${idx},this.value)" ${s.safeNumber? '':'disabled'}></span><br>
-      <span><b>Покриття:</b> ${s.coverage || '-'}</span>
-      <button class="action-btn danger" type="button" onclick="window.deleteSafe(${idx})" style="margin-top:8px;${editMode?'':'display:none;'}">Видалити</button>
+      <span><b>Покриття:</b> ${coverageDisplay}</span><br>
+      <div style="margin-top:8px; display:flex; gap:8px;">
+        <button class="action-btn" type="button" onclick="window.calculateSafe(${idx})" style="font-size:0.9em;">Прорахувати</button>
+        <button class="action-btn danger" type="button" onclick="window.deleteSafe(${idx})" style="${editMode?'':'display:none;'}">Видалити</button>
+      </div>
     `;
     box.appendChild(div);
   });
@@ -184,8 +189,10 @@ function showMessage(msg, type) {
 renderClient();
 
 window.calculateSafe = function(idx) {
-  const c = JSON.parse(localStorage.getItem('viewClient'));
-  const s = Array.isArray(c.safes) ? c.safes[idx] : c;
+  if (!currentClient) return;
+  const s = currentClient.safes[idx];
+  if (!s) return;
+  
   // Наступний день після дати закінчення
   let startDate = '';
   if (s.endDate) {
@@ -193,16 +200,28 @@ window.calculateSafe = function(idx) {
     d.setDate(d.getDate() + 1);
     startDate = d.toISOString().slice(0,10);
   }
+  
   // Підготувати дані для калькулятора
-  const selected = {
-    name: c.name,
-    ipn: c.ipn,
-    iban: c.iban,
-    category: s.category,
-    coverage: s.coverage === 'Страховка' ? 'insurance' : 'deposit',
-    start: startDate,
-    // інші поля калькулятора залишити порожніми
+  const calculatorData = {
+    // Дані клієнта
+    name: currentClient.name || '',
+    ipn: currentClient.ipn || '',
+    iban: currentClient.iban || '',
+    
+    // Дані сейфу
+    category: s.category || '',
+    coverage: (s.coverage === 'Страховка') ? 'insurance' : 'deposit', // Депозит або Грошове покриття -> deposit
+    contractType: 'prolong', // Тип договору "пролонгація"
+    startDate: startDate,
+    
+    // Додаткові дані для ідентифікації
+    safeNumber: s.safeNumber || '',
+    clientId: currentClient.id || ''
   };
-  localStorage.setItem('selectedClient', JSON.stringify(selected));
+  
+  // Зберігаємо дані в localStorage для передачі на калькулятор
+  localStorage.setItem('calculatorPreset', JSON.stringify(calculatorData));
+  
+  // Перенаправляємо на калькулятор
   window.location.href = 'index.html';
 }
