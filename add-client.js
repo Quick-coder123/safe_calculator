@@ -70,6 +70,10 @@ form.onsubmit = function(e) {
     body: JSON.stringify(data)
   })
   .then(()=>{
+    // Оновлюємо список термінових сейфів перед переходом
+    if (window.expiringSafesManager) {
+      window.expiringSafesManager.loadClients();
+    }
     window.location.href = 'clients.html';
   });
 };

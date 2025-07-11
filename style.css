@@ -1,4 +1,10 @@
 @media (max-width: 600px) {
+  /* Загальні налаштування для мобільних */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  
   .panel {
     padding: 4vw 2vw;
     border-radius: 8px;
@@ -7,16 +13,35 @@
     width: 100vw;
     max-width: 100vw;
   }
+  
+  /* Налаштування для анкети клієнта */
   .client-info-boxes, .client-safes-boxes {
     gap: 8px;
     margin-bottom: 12px;
     padding: 0;
   }
+  
   .client-box {
     padding: 10px 6px;
     font-size: 0.98em;
     border-radius: 7px;
   }
+  
+  /* Кнопки в мобільному режимі для анкети клієнта */
+  .client-box .action-btn {
+    font-size: 0.85em;
+    padding: 6px 8px;
+    margin: 2px;
+    min-width: auto;
+    flex: 1;
+  }
+  
+  .client-box > div {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  /* Таблиця клієнтів */
   .clients-table, .clients-table th, .clients-table td {
     font-size: 0.92em;
     padding: 6px 4px;
@@ -24,12 +49,15 @@
     max-width: unset;
     white-space: normal;
   }
+  
   .clients-table {
     display: block;
     overflow-x: auto;
     width: 100vw;
     min-width: unset;
   }
+  
+  /* Бокове меню */
   .sidebar {
     position: static;
     width: 100vw;
@@ -40,20 +68,30 @@
     border-bottom: 1px solid #e0e0e0;
     z-index: 1000;
   }
+  
   .sidebar nav {
     flex-direction: row;
     gap: 0;
     width: 100%;
     justify-content: space-between;
   }
+  
+  /* Приховуємо термінові сейфи на мобільних */
+  .expiring-safes-section {
+    display: none;
+  }
+  
   .nav-link {
     border-radius: 0;
     padding: 10px 4px;
     text-align: center;
-    font-size: 1em;
+    font-size: 0.9em;
+    flex: 1;
   }
+  
+  /* Кнопки */
   .action-btn {
-    font-size: 1em;
+    font-size: 0.9em;
     padding: 8px 10px;
     min-width: 60px;
     margin-right: 0;
@@ -61,28 +99,240 @@
     width: 100%;
     box-sizing: border-box;
   }
+  
+  /* Кнопки в рядок */
+  .action-btn:not(:only-child) {
+    width: auto;
+    flex: 1;
+  }
+  
+  /* Групи форми */
   .form-group {
     margin-bottom: 8px;
   }
+  
+  /* Поля вводу */
   input, select, textarea {
     font-size: 1em;
     padding: 8px 6px;
     border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
   }
+  
+  /* Заголовки */
+  h1 {
+    font-size: 1.4em;
+    margin-bottom: 12px;
+  }
+  
+  /* Хедер */
   .header {
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    flex-wrap: wrap;
   }
+  
+  /* Лейаут */
   .layout {
     grid-template-columns: 1fr;
     grid-template-areas: "form" "summary" "payment";
     padding: 0 2vw 2vw;
     gap: 8px;
+    max-width: 100vw;
+    margin: 0;
   }
+  
+  /* Панель підсумків */
   .summary-panel {
     padding: 8px;
     border-radius: 8px;
+  }
+  
+  /* Спеціальні налаштування для калькулятора */
+  .form-panel h1 {
+    font-size: 1.3em;
+    line-height: 1.2;
+  }
+  
+  /* Inline групи для мобільних */
+  .inline-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+  
+  .qty-control {
+    margin-left: 0;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  
+  /* Контроли кількості */
+  .qty-btn {
+    padding: 8px 12px;
+    font-size: 1em;
+  }
+  
+  #attorney-count, #packet-count {
+    min-width: 40px;
+    text-align: center;
+    font-size: 1.1em;
+    padding: 0 8px;
+  }
+  
+  /* Текстове поле платежу */
+  textarea {
+    height: 100px;
+    font-size: 0.9em;
+  }
+  
+  /* Налаштування для додавання клієнта */
+  #safes-list .client-box {
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+  
+  #safes-list input, #safes-list select {
+    margin-bottom: 4px;
+    margin-right: 0;
+  }
+  
+  /* Налаштування для форми сейфу в анкеті клієнта */
+  #add-safe-form .form-group {
+    margin-bottom: 6px;
+  }
+  
+  #add-safe-form input, #add-safe-form select {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  
+  /* Кнопки в формі додавання сейфу */
+  #add-safe-form button {
+    width: 100%;
+    margin: 2px 0;
+  }
+  
+  /* Інформаційні іконки */
+  .info-icon {
+    margin-left: 4px;
+    font-size: 0.9em;
+  }
+  
+  /* Селект мови та тема */
+  .select-small {
+    min-width: 45px;
+    font-size: 0.9em;
+    padding: 4px 6px;
+  }
+  
+  .btn-icon {
+    font-size: 1.1em;
+    padding: 4px;
+  }
+}
+/* Стилі для планшетів */
+@media (max-width: 768px) and (min-width: 601px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas: "form" "summary" "payment";
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 20px 20px;
+  }
+  
+  .panel {
+    padding: 20px;
+  }
+  
+  .sidebar nav {
+    gap: 8px;
+  }
+  
+  .nav-link {
+    padding: 12px 8px;
+    font-size: 0.95em;
+  }
+  
+  h1 {
+    font-size: 1.6em;
+  }
+  
+  .action-btn {
+    font-size: 0.95em;
+    padding: 10px 12px;
+  }
+  
+  .clients-table {
+    font-size: 0.95em;
+  }
+}
+
+/* Додаткові стилі для дуже маленьких екранів */
+@media (max-width: 480px) {
+  .panel {
+    padding: 3vw 1vw;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .nav-link {
+    font-size: 0.8em;
+    padding: 8px 2px;
+  }
+  
+  h1 {
+    font-size: 1.2em;
+  }
+  
+  .form-group label {
+    font-size: 0.9em;
+  }
+  
+  input, select, textarea {
+    font-size: 0.9em;
+    padding: 6px 4px;
+  }
+  
+  .action-btn {
+    font-size: 0.85em;
+    padding: 6px 8px;
+  }
+  
+  .client-box {
+    padding: 8px 4px;
+  }
+  
+  .header {
+    padding: 6px 8px;
+  }
+  
+  .select-small {
+    min-width: 40px;
+    font-size: 0.8em;
+  }
+  
+  .btn-icon {
+    font-size: 1em;
+  }
+  
+  /* Спрощені кнопки для дуже маленьких екранів */
+  .client-box .action-btn {
+    font-size: 0.8em;
+    padding: 4px 6px;
+  }
+  
+  /* Компактні inline групи */
+  .inline-group label {
+    font-size: 0.85em;
+  }
+  
+  .qty-btn {
+    padding: 6px 10px;
+    font-size: 0.9em;
   }
 }
 .client-safes-boxes {
@@ -225,6 +475,12 @@ body {
   .nav-link { border-radius: 0; padding: 10px 8px; text-align: center; }
   body { padding-left: 0; }
 }
+/* Темна тема для sidebar */
+html[data-theme="dark"] .sidebar {
+  background: #2a2a2a;
+  border-right-color: #444;
+}
+
 /* Info icon styles */
 .info-icon {
   font-size: 1em;
@@ -453,4 +709,441 @@ textarea { height:120px; resize:none; margin-top:8px; cursor:not-allowed; }
   body * { visibility:hidden; }
   .invoice, .invoice * { visibility:visible; }
   .invoice { position:absolute; top:0; left:0; width:100%; padding:20px; }
+}
+
+/* Покращена навігація для мобільних */
+@media (max-width: 600px) {
+  .sidebar {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid #e0e0e0;
+    padding-top: 0;
+  }
+  
+  html[data-theme="dark"] .sidebar {
+    background: rgba(34, 34, 34, 0.95);
+    border-bottom-color: #444;
+  }
+  
+  /* Приховуємо термінові сейфи на мобільних */
+  .expiring-safes-section {
+    display: none;
+  }
+  
+  /* Скролл для довгих таблиць */
+  .clients-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Покращення touch targets */
+  .action-btn, .nav-link, .qty-btn {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Кращий відступ для touch */
+  .client-box .action-btn {
+    min-height: 40px;
+  }
+  
+  /* Покращена форма для додавання сейфу на мобільних */
+  #add-safe-form {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+  }
+  
+  html[data-theme="dark"] #add-safe-form {
+    background: #2a2a2a;
+    border-color: #555;
+  }
+  
+  /* Контейнер для кнопок в ряд */
+  .button-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .button-row .action-btn {
+    flex: 1;
+    min-width: 100px;
+  }
+}
+
+/* Фінальні налаштування UX для мобільних */
+@media (max-width: 600px) {
+  /* Підтримка горизонтального скролу без втрати контенту */
+  .clients-table-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+  }
+  
+  html[data-theme="dark"] .clients-table-container {
+    border-color: #555;
+    background: #2a2a2a;
+  }
+  
+  /* Кращий focus для accessibility */
+  input:focus, select:focus, textarea:focus, .action-btn:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  
+  /* Плавна анімація для кнопок */
+  .action-btn {
+    transition: all 0.2s ease;
+  }
+  
+  .action-btn:active {
+    transform: scale(0.98);
+  }
+  
+  /* Покращена видимість форм на мобільних */
+  .form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  
+  /* Краща підтримка темної теми для форм */
+  html[data-theme="dark"] input,
+  html[data-theme="dark"] select,
+  html[data-theme="dark"] textarea {
+    background: #2a2a2a;
+    border-color: #555;
+    color: #eee;
+  }
+  
+  html[data-theme="dark"] input:focus,
+  html[data-theme="dark"] select:focus,
+  html[data-theme="dark"] textarea:focus {
+    border-color: var(--accent);
+    background: #333;
+  }
+  
+  /* Спеціальні налаштування для select */
+  select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 32px;
+  }
+  
+  /* Відступи для touch targets */
+  .client-box input[type="date"] {
+    padding: 8px;
+    min-height: 40px;
+    box-sizing: border-box;
+  }
+}
+
+/* Стилі для секції термінових сейфів у sidebar */
+.expiring-safes-section {
+  margin-top: auto;
+  padding: 12px 16px;
+  border-top: 1px solid #e0e0e0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+html[data-theme="dark"] .expiring-safes-section {
+  border-top-color: #444;
+}
+
+.expiring-title {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #666;
+  margin: 0 0 8px 0;
+  text-align: center;
+  padding: 4px 8px;
+  background: linear-gradient(90deg, transparent, #f0f0f0, transparent);
+  border-radius: 4px;
+  position: relative;
+}
+
+.expiring-title::before {
+  content: '⚠️';
+  margin-right: 4px;
+}
+
+html[data-theme="dark"] .expiring-title {
+  color: #aaa;
+  background: linear-gradient(90deg, transparent, #333, transparent);
+}
+
+.expiring-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.expiring-item {
+  background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: var(--text);
+  display: block;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.expiring-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.expiring-item:hover::before {
+  transform: translateX(100%);
+}
+
+.expiring-item:hover {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.expiring-item:active {
+  animation: click-effect 0.2s ease;
+}
+
+@keyframes click-effect {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.expiring-item.expired {
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 0 0 0 rgba(231, 76, 60, 0.4); }
+  50% { box-shadow: 0 4px 8px rgba(0,0,0,0.15), 0 0 0 4px rgba(231, 76, 60, 0.1); }
+  100% { box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 0 0 0 rgba(231, 76, 60, 0.4); }
+}
+
+.expiring-item.expiring-soon {
+  animation: pulse-orange 3s infinite;
+}
+
+@keyframes pulse-orange {
+  0% { box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 0 0 0 rgba(243, 156, 18, 0.3); }
+  50% { box-shadow: 0 4px 8px rgba(0,0,0,0.15), 0 0 0 3px rgba(243, 156, 18, 0.1); }
+  100% { box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 0 0 0 rgba(243, 156, 18, 0.3); }
+}
+
+.expiring-item.expired {
+  border-left: 4px solid #e74c3c;
+  background: linear-gradient(135deg, #fdf2f2 0%, #fce4e4 100%);
+  border-color: #f5c6cb;
+}
+
+.expiring-item.expired:hover {
+  background: linear-gradient(135deg, #f8e8e8 0%, #f0d0d0 100%);
+  border-color: #e74c3c;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+}
+
+.expiring-item.expiring-soon {
+  border-left: 4px solid #f39c12;
+  background: linear-gradient(135deg, #fef9e7 0%, #fdf4d3 100%);
+  border-color: #f7dc6f;
+}
+
+.expiring-item.expiring-soon:hover {
+  background: linear-gradient(135deg, #fdf0c4 0%, #f9e79f 100%);
+  border-color: #f39c12;
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.2);
+}
+
+html[data-theme="dark"] .expiring-item {
+  background: linear-gradient(135deg, #2a2a2a 0%, #252525 100%);
+  border-color: #444;
+  color: #eee;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+html[data-theme="dark"] .expiring-item:hover {
+  background: linear-gradient(135deg, #333 0%, #2e2e2e 100%);
+  border-color: var(--accent);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+html[data-theme="dark"] .expiring-item.expired {
+  background: linear-gradient(135deg, #2a1f1f 0%, #251a1a 100%);
+  border-left-color: #e74c3c;
+  border-color: #5a3636;
+}
+
+html[data-theme="dark"] .expiring-item.expired:hover {
+  background: linear-gradient(135deg, #332222 0%, #2b1d1d 100%);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+html[data-theme="dark"] .expiring-item.expiring-soon {
+  background: linear-gradient(135deg, #2a251f 0%, #25221a 100%);
+  border-left-color: #f39c12;
+  border-color: #5a5136;
+}
+
+html[data-theme="dark"] .expiring-item.expiring-soon:hover {
+  background: linear-gradient(135deg, #332b22 0%, #2b261d 100%);
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+}
+
+.expiring-item-name {
+  font-weight: 500;
+  margin-bottom: 2px;
+  font-size: 0.85em;
+}
+
+.expiring-item-safe {
+  color: #666;
+  font-size: 0.75em;
+}
+
+html[data-theme="dark"] .expiring-item-safe {
+  color: #aaa;
+}
+
+.expiring-item-date {
+  color: #888;
+  font-size: 0.7em;
+  margin-top: 2px;
+}
+
+html[data-theme="dark"] .expiring-item-date {
+  color: #999;
+}
+
+.expiring-item.expired .expiring-item-date {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+.expiring-item.expiring-soon .expiring-item-date {
+  color: #f39c12;
+  font-weight: 500;
+}
+
+/* Скрол для списку */
+.expiring-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.expiring-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.expiring-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 2px;
+}
+
+html[data-theme="dark"] .expiring-list::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+/* Стилі для підсвічування вибраного сейфу */
+.client-box.highlighted-safe {
+  border: 2px solid var(--accent);
+  background: linear-gradient(135deg, #e6f4ea 0%, #d4edda 100%);
+  animation: highlight-pulse 1s ease-in-out 3;
+  position: relative;
+}
+
+html[data-theme="dark"] .client-box.highlighted-safe {
+  background: linear-gradient(135deg, #1a2e1f 0%, #1d3323 100%);
+  border-color: var(--accent);
+}
+
+@keyframes highlight-pulse {
+  0% { 
+    box-shadow: 0 0 0 0 rgba(0, 153, 68, 0.4);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 0 8px rgba(0, 153, 68, 0.1);
+    transform: scale(1.02);
+  }
+  100% { 
+    box-shadow: 0 0 0 0 rgba(0, 153, 68, 0.4);
+    transform: scale(1);
+  }
+}
+
+/* Індикатор нового сейфу */
+.client-box.highlighted-safe::before {
+  content: '👆 Цей сейф потребує уваги';
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7em;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* Стилі для лічильника термінових сейфів */
+.count-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.7em;
+  font-weight: 700;
+  margin-left: 4px;
+  min-width: 16px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.count-badge.badge-danger {
+  background: #e74c3c;
+  color: white;
+  animation: badge-pulse-red 2s infinite;
+}
+
+.count-badge.badge-warning {
+  background: #f39c12;
+  color: white;
+  animation: badge-pulse-orange 3s infinite;
+}
+
+@keyframes badge-pulse-red {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes badge-pulse-orange {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }

@@ -14,6 +14,14 @@
       <a href="clients.html" class="nav-link">Клієнти</a>
       <a href="add-client.html" class="nav-link">Додати клієнта</a>
     </nav>
+    
+    <!-- Секція термінових сейфів -->
+    <div class="expiring-safes-section">
+      <h3 class="expiring-title">Термінові сейфи</h3>
+      <div id="expiring-safes-list" class="expiring-list">
+        <!-- Список буде заповнюватися JavaScript -->
+      </div>
+    </div>
   </div>
   <header class="header">
     <button id="theme-toggle" class="btn-icon" aria-label="Перемикач теми">🌙</button>
@@ -30,17 +38,16 @@
       <div class="form-group" style="max-width: 400px; margin-bottom: 20px;">
         <input type="text" id="client-search" placeholder="Пошук по ПІБ..." style="width:100%;">
       </div>
-      
-      <div style="overflow-x:auto;">
+       <div class="clients-table-container" style="overflow-x:auto;">
         <table id="clients-table" class="clients-table" style="width:100%;">
           <thead>
-          <tr>
-            <th>ПІБ</th>
-            <th>Дії</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+            <tr>
+              <th>ПІБ</th>
+              <th>Дії</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
       
       <button id="export-btn" class="action-btn secondary" style="margin-top:16px;">Експортувати в Excel</button>
@@ -59,6 +66,7 @@
       themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
     });
   </script>
+  <script src="expiring-safes.js"></script>
   <script src="clients.js"></script>
 </body>
 </html>

@@ -14,6 +14,14 @@
       <a href="clients.html" class="nav-link">Клієнти</a>
       <a href="add-client.html" class="nav-link">Додати клієнта</a>
     </nav>
+    
+    <!-- Секція термінових сейфів -->
+    <div class="expiring-safes-section">
+      <h3 class="expiring-title">Термінові сейфи</h3>
+      <div id="expiring-safes-list" class="expiring-list">
+        <!-- Список буде заповнюватися JavaScript -->
+      </div>
+    </div>
   </div>
   
   <header class="header">
@@ -60,7 +68,7 @@
           <input type="tel" id="client-phone" name="phone" required>
         </div>
         
-        <div style="display:flex;gap:10px;margin-top:20px;">
+        <div class="button-row" style="margin-top:20px;">
           <button type="submit" class="action-btn">Зберегти клієнта</button>
           <a href="clients.html" class="action-btn secondary">Скасувати</a>
         </div>
@@ -80,6 +88,7 @@
       themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
     });
   </script>
+  <script src="expiring-safes.js"></script>
   <script src="add-client.js"></script>
 </body>
 </html>

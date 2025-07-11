@@ -35,7 +35,7 @@ function renderClientForm() {
     <div class="form-group"><label>IBAN<input type="text" name="iban" value="${currentClient.iban||''}" ${editMode?'':'readonly'} required></label></div>
     <div class="form-group"><label>Email<input type="email" name="email" value="${currentClient.email||''}" ${editMode?'':'readonly'} required></label></div>
     <div class="form-group"><label>Телефон<input type="tel" name="phone" value="${currentClient.phone||''}" ${editMode?'':'readonly'} required></label></div>
-    <div style="display:${editMode ? 'flex' : 'none'};gap:10px;margin-top:8px;">
+    <div style="display:${editMode ? 'flex' : 'none'};gap:10px;margin-top:8px;flex-wrap:wrap;" class="button-row">
       <button id="save-client-btn" type="submit" class="action-btn">Зберегти зміни</button>
       <button id="add-safe-btn" type="button" class="action-btn secondary">Додати сейф</button>
     </div>
@@ -70,8 +70,10 @@ function renderClientForm() {
                 <option value="Грошове покриття">Грошове покриття</option>
               </select>
             </label></div>
-            <button type="submit" class="action-btn">Додати сейф</button>
-            <button type="button" class="action-btn secondary" id="cancel-add-safe">Скасувати</button>
+            <div class="button-row" style="margin-top:8px;">
+              <button type="submit" class="action-btn">Додати сейф</button>
+              <button type="button" class="action-btn secondary" id="cancel-add-safe">Скасувати</button>
+            </div>
           </form>
         `;
         box.prepend(formDiv);
@@ -103,16 +105,41 @@ function renderClientForm() {
 function renderSafes() {
   const box = document.getElementById('safes-section');
   box.innerHTML = '';
+  
+  // Перевіряємо, чи потрібно підсвітити конкретний сейф
+  const highlightData = localStorage.getItem('highlightSafe');
+  let highlightSafeIndex = -1;
+  if (highlightData) {
+    try {
+      const parsed = JSON.parse(highlightData);
+      if (parsed.clientId === currentClient?.id) {
+        highlightSafeIndex = parsed.safeIndex;
+        localStorage.removeItem('highlightSafe'); // Використовуємо тільки один раз
+      }
+    } catch (e) {
+      console.error('Помилка парсингу highlightSafe:', e);
+    }
+  }
+  
   (currentClient.safes||[]).forEach((s, idx) => {
     const div = document.createElement('div');
     div.className = 'client-box';
+    
+    // Додаємо підсвічування для вибраного сейфу
+    if (idx === highlightSafeIndex) {
+      div.className += ' highlighted-safe';
+      setTimeout(() => {
+        div.classList.remove('highlighted-safe');
+      }, 3000); // Прибираємо підсвічування через 3 секунди
+    }
+    
     // Замінюємо старі значення "Депозит" на "Грошове покриття" для відображення
     const coverageDisplay = s.coverage === 'Депозит' ? 'Грошове покриття' : (s.coverage || '-');
     div.innerHTML = `
       <b>Сейф №${s.safeNumber || '-'} (${s.category ? s.category + ' категорія' : '-'})</b><br>
       <span><b>Дата закінчення:</b> <input type="date" value="${s.endDate||''}" ${editMode?'':'readonly'} onchange="window.updateSafeDate(${idx},this.value)" ${s.safeNumber? '':'disabled'}></span><br>
       <span><b>Покриття:</b> ${coverageDisplay}</span><br>
-      <div style="margin-top:8px; display:flex; gap:8px;">
+      <div class="button-row" style="margin-top:8px;">
         <button class="action-btn" type="button" onclick="window.calculateSafe(${idx})" style="font-size:0.9em;">Прорахувати</button>
         <button class="action-btn danger" type="button" onclick="window.deleteSafe(${idx})" style="${editMode?'':'display:none;'}">Видалити</button>
       </div>
@@ -129,10 +156,18 @@ window.deleteSafe = function(idx) {
   if (!confirm('Видалити сейф?')) return;
   currentClient.safes.splice(idx,1);
   renderSafes();
+  // Оновлюємо список термінових сейфів
+  if (window.expiringSafesManager) {
+    setTimeout(() => window.expiringSafesManager.loadClients(), 100);
+  }
 }
 
 window.updateSafeDate = function(idx, value) {
   currentClient.safes[idx].endDate = value;
+  // Оновлюємо список термінових сейфів при зміні дати
+  if (window.expiringSafesManager) {
+    setTimeout(() => window.expiringSafesManager.loadClients(), 100);
+  }
 }
 
 document.getElementById('edit-client-btn').onclick = function() {
@@ -158,6 +193,10 @@ document.getElementById('client-form').onsubmit = async function(e) {
     editMode = false;
     await renderClient();
     showMessage('Зміни збережено!', 'success');
+    // Оновлюємо список термінових сейфів
+    if (window.expiringSafesManager) {
+      window.expiringSafesManager.loadClients();
+    }
   } else {
     const err = await resp.json();
     showMessage('Помилка збереження: ' + (err.error || resp.status), 'error');
