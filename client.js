@@ -35,8 +35,8 @@ function renderClientForm() {
     <div class="form-group"><label>IBAN<input type="text" name="iban" value="${currentClient.iban||''}" ${editMode?'':'readonly'} required></label></div>
     <div class="form-group"><label>Email<input type="email" name="email" value="${currentClient.email||''}" ${editMode?'':'readonly'} required></label></div>
     <div class="form-group"><label>Телефон<input type="tel" name="phone" value="${currentClient.phone||''}" ${editMode?'':'readonly'} required></label></div>
+    <button id="save-client-btn" type="submit" class="action-btn" style="display:${editMode ? '' : 'none'};margin-top:8px;">Зберегти зміни</button>
   `;
-  document.getElementById('save-client-btn').style.display = editMode ? '' : 'none';
 }
 
 function renderSafes() {
