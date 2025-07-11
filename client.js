@@ -8,7 +8,7 @@ function getIdFromUrl() {
 }
 
 async function fetchClient(id) {
-  const res = await fetch(`/api/clients?id=eq.${encodeURIComponent(id)}`);
+  const res = await fetch(`/api/clients?id=${encodeURIComponent(id)}`);
   const data = await res.json();
   return data && data.length ? data[0] : null;
 }
