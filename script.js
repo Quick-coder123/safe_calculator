@@ -85,155 +85,6 @@ function toggleElementWithAnimation(element, show) {
   }
 }
 
-// ========== РОЗШИРЕНІ АНІМАЦІЙНІ ФУНКЦІЇ ==========
-
-// Функція для анімації кнопки копіювання
-function animateCopyButton(button) {
-  button.classList.add('copied');
-  setTimeout(() => {
-    button.classList.remove('copied');
-  }, 1000);
-}
-
-// Функція для анімації кнопки генерації
-function animateGenerateButton(button) {
-  button.classList.add('generating');
-  setTimeout(() => {
-    button.classList.remove('generating');
-  }, 1000);
-}
-
-// Функція для анімації валідаційних помилок
-function animateValidationError(input) {
-  input.classList.add('validation-error');
-  setTimeout(() => {
-    input.classList.remove('validation-error');
-  }, 500);
-}
-
-// Функція для анімації підтвердження дії
-function animateConfirmAction(element) {
-  element.classList.add('confirm-action');
-  setTimeout(() => {
-    element.classList.remove('confirm-action');
-  }, 600);
-}
-
-// Функція для додавання typing ефекту
-function addTypingEffect(element) {
-  element.classList.add('typing');
-  setTimeout(() => {
-    element.classList.remove('typing');
-  }, 2000);
-}
-
-// Функція для плавного скролу до елемента
-function smoothScrollTo(element) {
-  element.scrollIntoView({
-    behavior: 'smooth',
-    block: 'center'
-  });
-  
-  // Додаємо підсвічування
-  element.style.transition = 'all 0.3s ease';
-  element.style.background = 'rgba(74, 144, 226, 0.1)';
-  element.style.transform = 'scale(1.02)';
-  
-  setTimeout(() => {
-    element.style.background = '';
-    element.style.transform = '';
-  }, 1500);
-}
-
-// Функція для анімації оновлення теми
-function animateThemeChange() {
-  document.body.style.transition = 'all 0.3s ease';
-  document.body.style.opacity = '0.8';
-  
-  setTimeout(() => {
-    document.body.style.opacity = '1';
-  }, 150);
-}
-
-// Функція для анімації зміни мови
-function animateLanguageChange() {
-  const elements = document.querySelectorAll('[data-i18n-key]');
-  elements.forEach((el, index) => {
-    setTimeout(() => {
-      el.style.transition = 'all 0.2s ease';
-      el.style.transform = 'scale(1.05)';
-      el.style.color = 'var(--primary-color)';
-      
-      setTimeout(() => {
-        el.style.transform = '';
-        el.style.color = '';
-      }, 200);
-    }, index * 50);
-  });
-}
-
-// Функція для додавання hover ефектів
-function addHoverEffects() {
-  // Додаємо hover ефекти для форм
-  const formGroups = document.querySelectorAll('.form-group');
-  formGroups.forEach(group => {
-    group.addEventListener('focusin', () => {
-      group.classList.add('active');
-    });
-    
-    group.addEventListener('focusout', () => {
-      group.classList.remove('active');
-    });
-  });
-  
-  // Додаємо pulse ефект для важливих кнопок
-  const importantButtons = document.querySelectorAll('#generate-btn, #copy-btn');
-  importantButtons.forEach(btn => {
-    btn.addEventListener('mouseenter', () => {
-      if (!btn.classList.contains('generating') && !btn.classList.contains('copied')) {
-        btn.classList.add('pulse');
-      }
-    });
-    
-    btn.addEventListener('mouseleave', () => {
-      btn.classList.remove('pulse');
-    });
-  });
-}
-
-// Функція для анімації skeleton loading
-function showSkeletonLoading(container) {
-  container.innerHTML = `
-    <div class="loading-skeleton" style="height: 20px; margin: 8px 0; border-radius: 4px;"></div>
-    <div class="loading-skeleton" style="height: 20px; margin: 8px 0; border-radius: 4px; width: 80%;"></div>
-    <div class="loading-skeleton" style="height: 20px; margin: 8px 0; border-radius: 4px; width: 60%;"></div>
-  `;
-}
-
-// Функція для progressive enhancement
-function enableProgressiveAnimations() {
-  // Перевіряємо підтримку анімацій
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  
-  if (prefersReducedMotion) {
-    // Відключаємо складні анімації для користувачів з обмеженими можливостями
-    document.documentElement.style.setProperty('--animation-duration', '0.01s');
-    return;
-  }
-  
-  // Додаємо hardware acceleration для кращої продуктивності
-  const animatedElements = document.querySelectorAll('.panel, .action-btn, .nav-link, .form-group');
-  animatedElements.forEach(el => {
-    el.classList.add('hardware-accelerated');
-  });
-}
-
-// Ініціалізація розширених анімацій
-function initAdvancedAnimations() {
-  addHoverEffects();
-  enableProgressiveAnimations();
-}
-
 // Ініціалізація анімацій при завантаженні сторінки
 initPageAnimation();
 
@@ -386,9 +237,6 @@ function showHint(id, msg, isError) {
   document.documentElement.setAttribute('data-theme', savedTheme);
   themeBtn.textContent = savedTheme === 'light' ? '🌙' : '☀️';
   themeBtn.addEventListener('click', () => {
-    // Анімація перемикання теми
-    animateThemeChange();
-    
     const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
@@ -509,8 +357,6 @@ function showHint(id, msg, isError) {
   langSelect.addEventListener('change', () => {
     localStorage.setItem('lang', langSelect.value);
     applyTranslations(langSelect.value);
-    // Анімація зміни мови
-    animateLanguageChange();
   });
 
   // Initialize dates
@@ -663,15 +509,8 @@ function showHint(id, msg, isError) {
 
   // Generate
   genBtn.addEventListener('click',()=>{
-    // Анімація кнопки генерації
-    animateGenerateButton(genBtn);
-    
     calculateAll();
     if (document.querySelector('.input-error')) {
-      // Анімація помилки валідації
-      const errorInputs = document.querySelectorAll('.input-error');
-      errorInputs.forEach(input => animateValidationError(input));
-      
       toast.textContent = langSelect.value==='uk' ? 'Виправте помилки у формі!' : 'Please fix form errors!';
       toast.classList.add('show');
       setTimeout(()=>toast.classList.remove('show'),2000);
@@ -717,8 +556,6 @@ function showHint(id, msg, isError) {
     
     // Додаємо анімацію генерації
     animateGeneration();
-    // Анімація підтвердження
-    animateConfirmAction(genBtn);
     
     toast.textContent=translations[langSelect.value].toast_generated;
     toast.classList.add('show');
@@ -734,7 +571,6 @@ function showHint(id, msg, isError) {
     navigator.clipboard.writeText(txtArea.value).then(()=>{
       // Анімація успішного копіювання
       animateSuccess(copyBtn);
-      animateCopyButton(copyBtn);
       
       toast.textContent=translations[langSelect.value].toast_copied;
       toast.classList.add('show');

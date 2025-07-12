@@ -591,14 +591,43 @@ body {
   margin-bottom: 20px;
 }
 .client-safes-boxes .client-box {
-  background: #f8f8f8;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  padding: 12px 16px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 16px 20px;
   font-size: 1em;
   display: flex;
   flex-direction: column;
-  border-left: 4px solid #bbb;
+  border-left: 4px solid transparent;
+  border-image: var(--gradient-accent) 1;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.client-safes-boxes .client-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--gradient-accent);
+}
+
+.client-safes-boxes .client-box:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(145deg, #ffffff 0%, #f1f3f4 100%);
+}
+
+html[data-theme="dark"] .client-safes-boxes .client-box {
+  background: linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 100%);
+  border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .client-safes-boxes .client-box:hover {
+  background: linear-gradient(145deg, #4a4a4a 0%, #3a3a3a 100%);
 }
 .client-safes-boxes .client-box b {
   color: #555;
@@ -687,13 +716,15 @@ body {
   left: 0;
   width: 180px;
   height: 100vh;
-  background: #f4f4f4;
-  border-right: 1px solid #e0e0e0;
+  background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding-top: 32px;
   z-index: 1000;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(10px);
 }
 .sidebar nav {
   width: 100%;
@@ -705,15 +736,41 @@ body {
   display: block;
   width: 100%;
   padding: 12px 24px;
-  color: #222;
+  color: #333;
   text-decoration: none;
   font-weight: 500;
-  border-radius: 0 20px 20px 0;
-  transition: background 0.2s, color 0.2s;
+  border-radius: 0 var(--border-radius-xl) var(--border-radius-xl) 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  margin: 2px 0;
 }
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.nav-link:hover::before {
+  left: 100%;
+}
+
 .nav-link:hover, .nav-link.active {
-  background: var(--accent, #009944);
+  background: var(--gradient-accent);
   color: #fff;
+  transform: translateX(5px);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-link.active {
+  background: var(--gradient-primary);
+  box-shadow: var(--shadow-primary);
 }
 body {
   padding-left: 180px;
@@ -726,8 +783,18 @@ body {
 }
 /* Темна тема для sidebar */
 html[data-theme="dark"] .sidebar {
-  background: #2a2a2a;
-  border-right-color: #444;
+  background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+  border-right-color: rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-2xl);
+}
+
+html[data-theme="dark"] .nav-link {
+  color: #e9ecef;
+}
+
+html[data-theme="dark"] .nav-link:hover,
+html[data-theme="dark"] .nav-link.active {
+  color: #fff;
 }
 
 /* Info icon styles */
@@ -843,21 +910,105 @@ textarea:hover + .form-hint {
   transform: translateY(-1px);
 }
 :root {
+  /* ========== ОСНОВНІ КОЛЬОРИ ========== */
   --bg-light:    #F9F9F9;
   --bg-dark:     #222;
   --text-light:  #333;
   --text-dark:   #EEE;
   --accent:      #009944;
   --light-green: #E6F4EA;
+  --primary-color: #4A90E2;
+  --secondary-color: #6C757D;
+  --success-color: #28A745;
+  --warning-color: #FFC107;
+  --danger-color: #DC3545;
+  
+  /* ========== ГРАДІЄНТИ ========== */
+  --gradient-primary: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  --gradient-secondary: linear-gradient(135deg, #6C757D 0%, #495057 100%);
+  --gradient-success: linear-gradient(135deg, #28A745 0%, #1E7E34 100%);
+  --gradient-warning: linear-gradient(135deg, #FFC107 0%, #E0A800 100%);
+  --gradient-danger: linear-gradient(135deg, #DC3545 0%, #C82333 100%);
+  --gradient-accent: linear-gradient(135deg, #009944 0%, #007A37 100%);
+  
+  /* ========== ГРАДІЄНТИ ФОНУ ========== */
+  --gradient-bg-light: linear-gradient(145deg, #FFFFFF 0%, #F8F9FA 100%);
+  --gradient-bg-dark: linear-gradient(145deg, #2C3E50 0%, #34495E 100%);
+  --gradient-card-light: linear-gradient(145deg, #FFFFFF 0%, #F1F3F4 100%);
+  --gradient-card-dark: linear-gradient(145deg, #3A3A3A 0%, #2A2A2A 100%);
+  
+  /* ========== ТІНІ ========== */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.15);
+  
+  /* ========== КОЛЬОРОВІ ТІНІ ========== */
+  --shadow-primary: 0 4px 14px rgba(74, 144, 226, 0.25);
+  --shadow-success: 0 4px 14px rgba(40, 167, 69, 0.25);
+  --shadow-warning: 0 4px 14px rgba(255, 193, 7, 0.25);
+  --shadow-danger: 0 4px 14px rgba(220, 53, 69, 0.25);
+  --shadow-accent: 0 4px 14px rgba(0, 153, 68, 0.25);
+  
+  /* ========== ВНУТРІШНІ ТІНІ ========== */
+  --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-inset-lg: inset 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+  /* ========== ТІНІ ДЛЯ ТЕКСТІВ ========== */
+  --text-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --text-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --text-shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.3);
+  
+  /* ========== РАДІАЛЬНІ ГРАДІЄНТИ ========== */
+  --gradient-radial-light: radial-gradient(circle at center, #FFFFFF 0%, #F8F9FA 100%);
+  --gradient-radial-dark: radial-gradient(circle at center, #3A3A3A 0%, #1A1A1A 100%);
+  
+  /* ========== BORDER RADIUS ========== */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-2xl: 24px;
+  --border-radius-full: 50%;
 }
-html[data-theme="light"] { --bg: var(--bg-light);  --text: var(--text-light); }
-html[data-theme="dark"]  { --bg: var(--bg-dark);   --text: var(--text-dark); }
+html[data-theme="light"] { 
+  --bg: var(--gradient-bg-light);  
+  --text: var(--text-light);
+  --card-bg: var(--gradient-card-light);
+  --shadow-main: var(--shadow-md);
+  --border-color: rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="dark"] { 
+  --bg: var(--gradient-bg-dark);   
+  --text: var(--text-dark);
+  --card-bg: var(--gradient-card-dark);
+  --shadow-main: var(--shadow-xl);
+  --border-color: rgba(255, 255, 255, 0.1);
+}
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family:'Roboto',sans-serif;
   background: var(--bg);
   color: var(--text);
   transition: background .3s, color .3s;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Додаємо декоративний градієнт фону */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  z-index: -1;
+  transition: background .3s;
 }
 .header { display:flex; justify-content:flex-end; align-items:center; padding:16px; gap:8px; }
 .btn-icon { background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text); transition:color .3s; }
@@ -885,11 +1036,36 @@ body {
   padding:0 16px 16px;
 }
 .panel {
-  background:#fff; border-radius:12px; padding:16px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1); transition:box-shadow .3s;
+  background: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-main);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
 }
-.panel:hover { box-shadow:0 8px 20px rgba(0,0,0,0.15); }
-html[data-theme="dark"] .panel { background:#333; }
+
+/* Додаємо тонкий градієнт зверху */
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-accent);
+}
+
+.panel:hover { 
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-2px);
+}
+
+html[data-theme="dark"] .panel { 
+  background: var(--gradient-card-dark);
+  border-color: rgba(255, 255, 255, 0.1);
+}
 .form-panel h1, .summary-panel h2, .payment-panel h2 {
   font-family:'Inter',sans-serif; font-weight:600; margin-bottom:12px; color:var(--accent);
 }
@@ -897,23 +1073,82 @@ html[data-theme="dark"] .panel { background:#333; }
 .form-group.small { margin-bottom:8px; }
 .form-group label { display:block; margin-bottom:4px; font-weight:500; }
 input, select, textarea {
-  width:100%; padding:8px; font-size:0.95rem;
-  border:1px solid #ccc; border-radius:6px;
-  transition:border-color .3s, box-shadow .3s;
-  background:#fff; color:#000;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #fff;
+  color: #333;
+  box-shadow: var(--shadow-inset);
+  position: relative;
 }
+
 input:focus, select:focus, textarea:focus {
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(0,153,68,0.2); outline:none;
+  border-color: var(--accent);
+  box-shadow: var(--shadow-sm), 0 0 0 3px rgba(0, 153, 68, 0.15);
+  outline: none;
+  transform: scale(1.01);
+  background: linear-gradient(145deg, #fff 0%, #fafafa 100%);
+}
+
+/* Темна тема для полів вводу */
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+  background: linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 100%);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] select:focus,
+html[data-theme="dark"] textarea:focus {
+  background: linear-gradient(145deg, #4a4a4a 0%, #3a3a3a 100%);
+  border-color: var(--accent);
 }
 textarea { height:120px; resize:none; margin-top:8px; cursor:not-allowed; }
 .inline-group { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
 .qty-control { margin-left:auto; display:flex; gap:4px; }
 .qty-btn {
-  background:var(--accent); color:#fff; border:none; padding:4px 8px;
-  border-radius:6px; cursor:pointer; transition:background .3s;
+  background: var(--gradient-accent);
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  font-weight: 500;
+  min-width: 32px;
+  position: relative;
+  overflow: hidden;
 }
-.qty-btn:hover { background:#008f3c; }
+
+.qty-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+.qty-btn:hover::before {
+  width: 100px;
+  height: 100px;
+}
+
+.qty-btn:hover { 
+  background: linear-gradient(135deg, #007a37 0%, #005a2a 100%);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
 .tooltip { position:relative; }
 .tooltip .tooltiptext {
   visibility:hidden; opacity:0; width:140px; background:var(--accent);
@@ -925,34 +1160,152 @@ textarea { height:120px; resize:none; margin-top:8px; cursor:not-allowed; }
 .summary-item, .summary-total {
   display:flex; justify-content:space-between; margin-bottom:8px;
 }
-.summary-panel { background:var(--light-green); }
-.summary-panel hr { border:none; border-top:1px solid #c8e5d1; margin:12px 0; }
+.summary-panel { 
+  background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+  border: 1px solid rgba(40, 167, 69, 0.2);
+  position: relative;
+}
+
+.summary-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-success);
+}
+
+html[data-theme="dark"] .summary-panel {
+  background: linear-gradient(135deg, #1a3a1a 0%, #0f2a0f 100%);
+  border-color: rgba(40, 167, 69, 0.3);
+}
+
+.summary-panel hr { 
+  border: none; 
+  border-top: 1px solid rgba(40, 167, 69, 0.3); 
+  margin: 12px 0;
+  background: linear-gradient(90deg, transparent, rgba(40, 167, 69, 0.3), transparent);
+  height: 1px;
+}
 .action-btn {
   width: auto;
   min-width: 80px;
-  padding: 5px 10px;
+  padding: 8px 16px;
   margin-top: 4px;
   font-size: 0.92rem;
   font-weight: 500;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  background: var(--accent);
+  background: var(--gradient-accent);
   color: #fff;
-  transition: background .3s, transform .2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-right: 4px;
+  box-shadow: var(--shadow-accent);
+  position: relative;
+  overflow: hidden;
 }
-.action-btn:hover { transform:translateY(-2px); }
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.action-btn:hover::before {
+  left: 100%;
+}
+
+.action-btn:hover { 
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), var(--shadow-accent);
+}
+
 .action-btn.secondary {
-  background:#fff; color:var(--accent); border:2px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  box-shadow: var(--shadow-sm);
 }
-.action-btn:disabled { opacity:0.6; cursor:not-allowed; }
+
+.action-btn.secondary:hover {
+  background: var(--gradient-accent);
+  color: white;
+  border-color: transparent;
+}
+
+.action-btn.primary {
+  background: var(--gradient-primary);
+  box-shadow: var(--shadow-primary);
+}
+
+.action-btn.success {
+  background: var(--gradient-success);
+  box-shadow: var(--shadow-success);
+}
+
+.action-btn.warning {
+  background: var(--gradient-warning);
+  box-shadow: var(--shadow-warning);
+  color: #212529;
+}
+
+.action-btn.danger {
+  background: var(--gradient-danger);
+  box-shadow: var(--shadow-danger);
+}
+
+.action-btn:disabled { 
+  opacity: 0.6; 
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
 .toast {
-  position:fixed; bottom:16px; right:16px;
-  background:var(--accent); color:#fff; padding:12px 20px;
-  border-radius:6px; opacity:0; pointer-events:none; transition:opacity .3s;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--gradient-accent);
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: var(--border-radius-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: translateX(100px) scale(0.8);
+  box-shadow: var(--shadow-xl);
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
-.toast.show { opacity:1; }
+
+.toast.show { 
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+
+.toast.success {
+  background: var(--gradient-success);
+  box-shadow: var(--shadow-success);
+}
+
+.toast.error {
+  background: var(--gradient-danger);
+  box-shadow: var(--shadow-danger);
+}
+
+.toast.warning {
+  background: var(--gradient-warning);
+  color: #212529;
+  box-shadow: var(--shadow-warning);
+}
 .invoice { display:none; }
 @media print {
   body * { visibility:hidden; }
@@ -1605,194 +1958,148 @@ html[data-theme="dark"] .client-box.highlighted-safe {
   }
 }
 
-/* ========== ДОДАТКОВІ МІКРО-АНІМАЦІЇ ========== */
+/* ========== ДОДАТКОВІ КЛАСИ ДЛЯ АНІМАЦІЙ ========== */
 
-/* Анімація для перемикача теми - більш плавна */
-#theme-toggle {
-  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+/* Стилі для summary-value елементів */
+.summary-value {
+  display: inline-block;
+  font-weight: 500;
 }
 
-#theme-toggle:hover {
-  transform: rotate(360deg) scale(1.1);
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+/* Стилі для qty-count елементів */
+.qty-count {
+  font-weight: bold;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
 }
 
-/* Анімація для селектора мови */
-#lang-select:focus {
-  transform: scale(1.05);
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+/* Покращені переходи для помилок валідації */
+.input-error {
+  animation: inputError 0.3s ease;
 }
 
-/* Покращені анімації для header */
-.header {
-  transition: all 0.3s ease;
+@keyframes inputError {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
 }
 
-.header:hover {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+/* Анімація для підказок */
+.form-hint {
+  pointer-events: none;
+  white-space: nowrap;
 }
 
-/* Анімації для іконок info */
-.info-icon {
+/* Покращена анімація для toast */
+.toast {
+  transform: translateX(100%);
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.info-icon:hover {
-  transform: scale(1.3) rotate(15deg);
-  color: var(--primary-color);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.toast.show {
+  transform: translateX(0);
 }
 
-/* Анімації для активних станів форм */
-.form-group.active {
-  transform: scale(1.02);
-  background: rgba(74, 144, 226, 0.02);
-  border-radius: 8px;
-  padding: 4px;
-  margin: 0 -4px;
+/* Анімація для переключення теми */
+html[data-theme="dark"] {
+  transition: all 0.3s ease;
 }
 
-/* Pulse анімація для важливих елементів */
-.pulse {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-/* Анімація typing для placeholder тексту */
-.typing::after {
-  content: '|';
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-/* Анімація для кнопки копіювання */
-#copy-btn.copied {
-  background: var(--success-color, #28a745) !important;
-  transform: scale(0.95);
+/* Анімація для зміни мови */
+[data-i18n-key] {
   transition: all 0.2s ease;
 }
 
-#copy-btn.copied::after {
-  content: ' ✓';
+/* Покращені hover ефекти для інтерактивних елементів */
+.client-box:hover .action-btn {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Анімація для кнопки генерації */
-#generate-btn.generating {
-  background: linear-gradient(45deg, 
-    var(--primary-color), 
-    lighten(var(--primary-color), 20%),
-    var(--primary-color)
-  );
-  background-size: 200% 200%;
-  animation: generateGradient 1s infinite;
-}
-
-@keyframes generateGradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Анімації для бейджів термінових сейфів */
-.count-badge {
-  animation: badgeBounce 0.5s ease;
-}
-
-@keyframes badgeBounce {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-
-.badge-danger {
-  animation: urgentPulse 2s infinite;
-}
-
-.badge-warning {
-  animation: warningGlow 3s infinite;
-}
-
-@keyframes warningGlow {
-  0%, 100% { box-shadow: 0 0 5px rgba(255, 193, 7, 0.5); }
-  50% { box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); }
-}
-
-/* Анімації для стану завантаження */
-.loading-skeleton {
+/* Анімація для завантаження даних */
+.loading-placeholder {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
-  animation: skeleton 1.5s infinite;
+  animation: loading 1.5s infinite;
 }
 
-@keyframes skeleton {
+@keyframes loading {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 
-/* Анімації для взаємодії з сенсорними екранами */
-@media (hover: none) and (pointer: coarse) {
-  /* Зменшуємо hover ефекти на мобільних */
-  .panel:hover,
-  .action-btn:hover,
-  .nav-link:hover {
-    transform: none;
+/* Анімація для активних елементів */
+.active-element {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+/* Стилі для анімованих іконок */
+.animated-icon {
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.animated-icon:hover {
+  transform: scale(1.2) rotate(5deg);
+}
+
+/* Покращені переходи для модальних вікон */
+.fade-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fade-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.2s ease-in;
+}
+
+/* Стилі для прогрес індикаторів */
+.progress-bar {
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-color);
+  animation: progress 2s infinite;
+}
+
+@keyframes progress {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Покращення доступності - зменшення анімацій для користувачів з обмеженими можливостями */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-  
-  /* Додаємо активні стани для touch */
-  .action-btn:active {
-    transform: scale(0.95);
-    background-color: rgba(74, 144, 226, 0.8);
-  }
-  
-  .nav-link:active {
-    background-color: rgba(74, 144, 226, 0.1);
-  }
-}
-
-/* Анімації для підтвердження дій */
-.confirm-action {
-  animation: confirmPulse 0.6s ease;
-}
-
-@keyframes confirmPulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
-  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
-}
-
-/* Анімація для відображення помилок валідації */
-.validation-error {
-  animation: errorShake 0.5s ease;
-  border-color: #e74c3c !important;
-  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2) !important;
-}
-
-@keyframes errorShake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
-  20%, 40%, 60%, 80% { transform: translateX(3px); }
-}
-
-/* Покращення продуктивності анімацій */
-.hardware-accelerated {
-  transform: translateZ(0);
-  will-change: transform, opacity;
-}
-
-/* Анімації для dark theme переключення */
-html[data-theme="dark"] * {
-  transition: background-color 0.3s ease, 
-              border-color 0.3s ease, 
-              color 0.3s ease !important;
 }

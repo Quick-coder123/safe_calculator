@@ -3,43 +3,10 @@ class ExpiringSafesManager {
   constructor() {
     this.clients = [];
     this.expiringSafes = [];
-    this.animationDelay = 100; // мс між анімаціями елементів
-  }
-
-  // ========== АНІМАЦІЙНІ МЕТОДИ ==========
-  
-  animateItemEntry(element, delay = 0) {
-    element.style.opacity = '0';
-    element.style.transform = 'translateX(-20px)';
-    
-    setTimeout(() => {
-      element.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-      element.style.opacity = '1';
-      element.style.transform = 'translateX(0)';
-    }, delay);
-  }
-
-  animateItemUpdate(element) {
-    element.style.transform = 'scale(1.05)';
-    element.style.background = 'rgba(74, 144, 226, 0.1)';
-    
-    setTimeout(() => {
-      element.style.transform = 'scale(1)';
-      element.style.background = '';
-    }, 200);
-  }
-
-  showLoadingState() {
-    const container = document.getElementById('expiring-safes-list');
-    if (container) {
-      container.innerHTML = '<div class="loading-placeholder" style="height: 30px; border-radius: 4px; margin: 4px 0;"></div>';
-    }
   }
 
   // Завантаження клієнтів з API
   async loadClients() {
-    this.showLoadingState();
-    
     try {
       const response = await fetch('/api/clients');
       if (response.ok) {
@@ -49,10 +16,6 @@ class ExpiringSafesManager {
       }
     } catch (error) {
       console.error('Помилка завантаження клієнтів:', error);
-      const container = document.getElementById('expiring-safes-list');
-      if (container) {
-        container.innerHTML = '<div style="color: #e74c3c; font-size: 0.9em; padding: 8px;">Помилка завантаження</div>';
-      }
     }
   }
 
@@ -114,9 +77,6 @@ class ExpiringSafesManager {
         const badgeClass = expiredCount > 0 ? 'badge-danger' : 'badge-warning';
         titleElement.innerHTML = `⚠️ Термінові сейфи <span class="count-badge ${badgeClass}">${this.expiringSafes.length}</span>`;
       }
-      
-      // Анімація оновлення заголовка
-      this.animateItemUpdate(titleElement);
     }
 
     if (this.expiringSafes.length === 0) {
@@ -124,35 +84,25 @@ class ExpiringSafesManager {
       return;
     }
 
-    // Очищаємо контейнер
-    container.innerHTML = '';
-
-    // Створюємо елементи з анімацією
-    this.expiringSafes.forEach((item, index) => {
+    container.innerHTML = this.expiringSafes.map((item, index) => {
       const statusClass = item.isExpired ? 'expired' : 'expiring-soon';
       const statusIcon = item.isExpired ? '🔴' : '⚠️';
       const statusText = item.isExpired 
         ? 'Прострочено!' 
         : `${item.daysLeft} дн.`;
       
-      const element = document.createElement('a');
-      element.href = `client.html?id=${encodeURIComponent(item.client.id)}`;
-      element.className = `expiring-item ${statusClass}`;
-      element.dataset.clientId = item.client.id;
-      element.dataset.safeIndex = item.safeIndex;
-      element.title = 'Натисніть, щоб перейти до анкети клієнта';
-      
-      element.innerHTML = `
-        <div class="expiring-item-name">${statusIcon} ${this.truncateName(item.client.name)}</div>
-        <div class="expiring-item-safe">🔒 Сейф №${item.safe.safeNumber || '-'}</div>
-        <div class="expiring-item-date">📅 ${statusText}</div>
+      return `
+        <a href="client.html?id=${encodeURIComponent(item.client.id)}" 
+           class="expiring-item ${statusClass}" 
+           data-client-id="${item.client.id}"
+           data-safe-index="${item.safeIndex}"
+           title="Натисніть, щоб перейти до анкети клієнта">
+          <div class="expiring-item-name">${statusIcon} ${this.truncateName(item.client.name)}</div>
+          <div class="expiring-item-safe">🔒 Сейф №${item.safe.safeNumber || '-'}</div>
+          <div class="expiring-item-date">📅 ${statusText}</div>
+        </a>
       `;
-      
-      container.appendChild(element);
-      
-      // Анімація появи з затримкою
-      this.animateItemEntry(element, index * this.animationDelay);
-    });
+    }).join('');
 
     // Додаємо обробники подій для кращого UX
     this.addClickHandlers();
