@@ -357,7 +357,7 @@ function displayClient(client) {
     }
     
     // Display safes in table
-    displaySafes(client.safes || []);
+    renderSafesNewFormat();
 }
 
 function toggleEditMode() {
@@ -505,7 +505,26 @@ function deleteClient() {
     }
 }
 
-// ...existing code...
+function getStatusClass(status) {
+    switch(status?.toLowerCase()) {
+        case 'активний': return 'success';
+        case 'заборгованість': return 'warning';
+        case 'прострочено': return 'danger';
+        case 'не активний': return 'secondary';
+        default: return 'secondary';
+    }
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('uk-UA');
+    } catch (e) {
+        return '-';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     renderClient();
     
