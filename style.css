@@ -711,7 +711,7 @@ html[data-theme="dark"] .client-safes-boxes .client-box:hover {
 }
 /* Sidebar styles */
 .sidebar {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 180px;
@@ -725,6 +725,7 @@ html[data-theme="dark"] .client-safes-boxes .client-box:hover {
   z-index: 1000;
   box-shadow: var(--shadow-lg);
   backdrop-filter: blur(10px);
+  float: left;
 }
 .sidebar nav {
   width: 100%;
@@ -773,14 +774,49 @@ html[data-theme="dark"] .client-safes-boxes .client-box:hover {
   box-shadow: var(--shadow-primary);
 }
 body {
-  padding-left: 180px;
+  display: flex;
+  margin: 0;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 0 20px;
 }
 @media (max-width: 700px) {
-  .sidebar { position: static; width: 100vw; height: auto; flex-direction: row; padding: 0; border-right: none; border-bottom: 1px solid #e0e0e0; }
-  .sidebar nav { flex-direction: row; gap: 0; width: 100%; }
-  .nav-link { border-radius: 0; padding: 10px 8px; text-align: center; }
-  body { padding-left: 0; }
+  body {
+    flex-direction: column;
+  }
+  
+  .sidebar { 
+    position: static; 
+    width: 100vw; 
+    height: auto; 
+    flex-direction: row; 
+    padding: 0; 
+    border-right: none; 
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: none;
+  }
+  
+  .sidebar nav { 
+    flex-direction: row; 
+    gap: 0; 
+    width: 100%; 
+  }
+  
+  .nav-link { 
+    border-radius: 0; 
+    padding: 10px 8px; 
+    text-align: center; 
+    transform: none;
+  }
+  
+  .main-content {
+    padding: 10px;
+  }
 }
+
 /* Темна тема для sidebar */
 html[data-theme="dark"] .sidebar {
   background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
@@ -814,7 +850,7 @@ html[data-theme="dark"] .nav-link.active {
 .form-hint {
   display: none;
   color: #888;
-  font-size: 0.95em;
+  font-size: 0.85em;
   margin-top: 2px;
   margin-bottom: 4px;
   position: absolute;
@@ -822,19 +858,42 @@ html[data-theme="dark"] .nav-link.active {
   top: 100%;
   z-index: 9999;
   background: #fff;
-  padding: 6px 14px;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-  min-width: 140px;
-  max-width: 320px;
+  padding: 6px 12px;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 120px;
+  max-width: 280px;
   pointer-events: none;
-  font-weight: 500;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: translateY(-5px);
 }
+
 .form-hint.error {
   color: #e74c3c;
-  background: #fff0f0;
+  background: #fff5f5;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
+
+html[data-theme="dark"] .form-hint {
+  background: #3a3a3a;
+  color: #e9ecef;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .form-hint.error {
+  background: #4a2c2c;
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
 .form-group { position: relative; }
+
+/* Показуємо підказки тільки при hover/focus */
 input:focus + .form-hint,
 input:hover + .form-hint,
 select:focus + .form-hint,
@@ -842,6 +901,8 @@ select:hover + .form-hint,
 textarea:focus + .form-hint,
 textarea:hover + .form-hint {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Error input styles */
@@ -1817,12 +1878,6 @@ html[data-theme="dark"] .client-box.highlighted-safe {
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   transform: translateY(-5px) scale(0.9);
   opacity: 0;
-}
-
-.form-hint:not(.error) {
-  display: block !important;
-  transform: translateY(0) scale(1);
-  opacity: 1;
 }
 
 /* ========== АНІМАЦІЇ ДЛЯ КНОПОК ДІЙ ========== */
