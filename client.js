@@ -21,7 +21,18 @@ async function renderClient() {
   const c = await fetchClient(id);
   if (!c) return;
   currentClient = JSON.parse(JSON.stringify(c));
-  renderClientForm();
+  
+  // Update new profile display if elements exist
+  const nameDisplay = document.getElementById('client-name-display');
+  const contactDisplay = document.getElementById('client-contact-display');
+  
+  if (nameDisplay && contactDisplay) {
+    displayClient(currentClient);
+  } else {
+    // Fallback to old rendering method
+    renderClientForm();
+  }
+  
   renderSafes();
 }
 
@@ -101,7 +112,17 @@ function renderClientForm() {
 }
 
 function renderSafes() {
+  // Check if new table structure exists
+  const newSafesTable = document.getElementById('safes-list');
+  if (newSafesTable) {
+    renderSafesNewFormat();
+    return;
+  }
+  
+  // Fallback to old format
   const box = document.getElementById('safes-section');
+  if (!box) return;
+  
   box.innerHTML = '';
   
   // Перевіряємо, чи потрібно підсвітити конкретний сейф
@@ -144,6 +165,56 @@ function renderSafes() {
     `;
     box.appendChild(div);
   });
+}
+
+function renderSafesNewFormat() {
+  const safesTable = document.getElementById('safes-list');
+  const safesCount = document.getElementById('safes-count');
+  
+  if (!currentClient || !currentClient.safes || currentClient.safes.length === 0) {
+    safesTable.innerHTML = `
+      <tr class="empty-row">
+        <td colspan="7">
+          <div class="empty-state">
+            <span class="empty-icon">🏦</span>
+            <span>У цього клієнта поки немає сейфів</span>
+            <button class="action-btn primary" onclick="addSafe()">➕ Додати перший сейф</button>
+          </div>
+        </td>
+      </tr>
+    `;
+    if (safesCount) {
+      safesCount.textContent = '0 сейфів';
+    }
+    return;
+  }
+  
+  // Update safes count
+  const count = currentClient.safes.length;
+  if (safesCount) {
+    safesCount.textContent = `${count} ${count === 1 ? 'сейф' : count < 5 ? 'сейфи' : 'сейфів'}`;
+  }
+  
+  // Render safes
+  safesTable.innerHTML = currentClient.safes.map((safe, index) => {
+    const status = safe.endDate ? (new Date(safe.endDate) < new Date() ? 'прострочено' : 'активний') : 'не активний';
+    const statusClass = getStatusClass(status);
+    
+    return `
+      <tr class="data-row" data-safe-index="${index}">
+        <td><span class="safe-number">#${safe.safeNumber || '-'}</span></td>
+        <td><span class="size-badge">${safe.category || '-'}</span></td>
+        <td><span class="price">-</span></td>
+        <td>${safe.startDate ? formatDate(safe.startDate) : '-'}</td>
+        <td>${safe.endDate ? formatDate(safe.endDate) : '-'}</td>
+        <td><span class="status-badge ${statusClass}">${status}</span></td>
+        <td class="actions">
+          <button class="action-btn small" onclick="editSafe(${index})" title="Редагувати">✏️</button>
+          <button class="action-btn small danger" onclick="deleteSafe(${index})" title="Видалити">🗑️</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 window.editSafe = function(idx) {
@@ -265,22 +336,38 @@ window.calculateSafe = function(idx) {
 
 // Enhanced client display functions
 function displayClient(client) {
+    if (!client) return;
+    
     // Update profile display
-    document.getElementById('client-name-display').textContent = client.name;
-    document.getElementById('client-contact-display').innerHTML = `📧 ${client.email || 'Не вказано'} | 📱 ${client.phone || 'Не вказано'}`;
+    const nameDisplay = document.getElementById('client-name-display');
+    const contactDisplay = document.getElementById('client-contact-display');
+    
+    if (nameDisplay) {
+        nameDisplay.textContent = client.name || 'Невідомий клієнт';
+    }
+    if (contactDisplay) {
+        contactDisplay.innerHTML = `📧 ${client.email || 'Не вказано'} | 📱 ${client.phone || 'Не вказано'}`;
+    }
     
     // Update safes count
     const safesCount = client.safes ? client.safes.length : 0;
-    document.getElementById('safes-count').textContent = `${safesCount} ${safesCount === 1 ? 'сейф' : safesCount < 5 ? 'сейфи' : 'сейфів'}`;
+    const safesCountElement = document.getElementById('safes-count');
+    if (safesCountElement) {
+        safesCountElement.textContent = `${safesCount} ${safesCount === 1 ? 'сейф' : safesCount < 5 ? 'сейфи' : 'сейфів'}`;
+    }
     
     // Display safes in table
     displaySafes(client.safes || []);
 }
 
 function toggleEditMode() {
+    if (!currentClient) return;
+    
     editMode = !editMode;
     const profileSection = document.querySelector('.client-profile');
     const editContainer = document.getElementById('edit-form-container');
+    
+    if (!profileSection || !editContainer) return;
     
     if (editMode) {
         profileSection.style.display = 'none';
@@ -293,15 +380,16 @@ function toggleEditMode() {
 }
 
 function populateEditForm() {
-    const client = clients.find(c => c.id === currentClientId);
-    if (!client) return;
+    if (!currentClient) return;
     
     const form = document.getElementById('client-form');
+    if (!form) return;
+    
     form.innerHTML = `
         <div class="form-row">
             <div class="form-group">
                 <label for="edit-name">👤 Ім'я клієнта</label>
-                <input type="text" id="edit-name" value="${client.name}" required>
+                <input type="text" id="edit-name" value="${currentClient.name || ''}" required>
                 <small class="form-hint">Повне ім'я або назва організації</small>
             </div>
         </div>
@@ -309,13 +397,13 @@ function populateEditForm() {
         <div class="form-row">
             <div class="form-group">
                 <label for="edit-email">📧 Email</label>
-                <input type="email" id="edit-email" value="${client.email || ''}" placeholder="client@example.com">
+                <input type="email" id="edit-email" value="${currentClient.email || ''}" placeholder="client@example.com">
                 <small class="form-hint">Електронна адреса для зв'язку</small>
             </div>
             
             <div class="form-group">
                 <label for="edit-phone">📱 Телефон</label>
-                <input type="tel" id="edit-phone" value="${client.phone || ''}" placeholder="+380501234567">
+                <input type="tel" id="edit-phone" value="${currentClient.phone || ''}" placeholder="+380501234567">
                 <small class="form-hint">Контактний номер у форматі +380...</small>
             </div>
         </div>
@@ -335,80 +423,29 @@ function cancelEdit() {
 function saveClient(event) {
     event.preventDefault();
     
-    const name = document.getElementById('edit-name').value;
-    const email = document.getElementById('edit-email').value;
-    const phone = document.getElementById('edit-phone').value;
+    const name = document.getElementById('edit-name')?.value;
+    const email = document.getElementById('edit-email')?.value;
+    const phone = document.getElementById('edit-phone')?.value;
     
-    const clientIndex = clients.findIndex(c => c.id === currentClientId);
-    if (clientIndex !== -1) {
-        clients[clientIndex] = {
-            ...clients[clientIndex],
-            name,
-            email,
-            phone
-        };
-        
-        // Save to localStorage
-        localStorage.setItem('clients', JSON.stringify(clients));
-        
-        // Update display
-        displayClient(clients[clientIndex]);
-        
-        // Exit edit mode
-        cancelEdit();
-        
-        // Show success message
-        showNotification('✅ Дані клієнта успішно оновлено!', 'success');
-    }
-}
-
-function displaySafes(safes) {
-    const safesTable = document.getElementById('safes-list');
-    
-    if (!safes || safes.length === 0) {
-        safesTable.innerHTML = `
-            <tr class="empty-row">
-                <td colspan="7">
-                    <div class="empty-state">
-                        <span class="empty-icon">🏦</span>
-                        <span>У цього клієнта поки немає сейфів</span>
-                        <button class="action-btn primary" onclick="addSafe()">➕ Додати перший сейф</button>
-                    </div>
-                </td>
-            </tr>
-        `;
+    if (!name) {
+        showNotification('❌ Ім\'я клієнта обов\'язкове!', 'error');
         return;
     }
     
-    safesTable.innerHTML = safes.map(safe => `
-        <tr class="data-row" data-safe-id="${safe.id}">
-            <td><span class="safe-number">#${safe.number}</span></td>
-            <td><span class="size-badge">${safe.size}</span></td>
-            <td><span class="price">${safe.rate} грн/міс</span></td>
-            <td>${formatDate(safe.rentFrom)}</td>
-            <td>${formatDate(safe.rentTo)}</td>
-            <td><span class="status-badge ${getStatusClass(safe.status)}">${safe.status}</span></td>
-            <td class="actions">
-                <button class="action-btn small" onclick="editSafe('${safe.id}')" title="Редагувати">✏️</button>
-                <button class="action-btn small danger" onclick="deleteSafe('${safe.id}')" title="Видалити">🗑️</button>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function getStatusClass(status) {
-    switch(status?.toLowerCase()) {
-        case 'активний': return 'success';
-        case 'заборгованість': return 'warning';
-        case 'прострочено': return 'danger';
-        default: return 'secondary';
-    }
-}
-
-function formatDate(dateString) {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('uk-UA');
+    // Update current client
+    currentClient.name = name;
+    currentClient.email = email;
+    currentClient.phone = phone;
+    
+    // Here you would typically save to server/API
+    // For now, we'll just update the display
+    displayClient(currentClient);
+    
+    // Exit edit mode
+    cancelEdit();
+    
+    // Show success message
+    showNotification('✅ Дані клієнта успішно оновлено!', 'success');
 }
 
 function showNotification(message, type = 'info') {
@@ -416,24 +453,65 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 1000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+    `;
     
     // Add to page
     document.body.appendChild(notification);
     
     // Animate in
-    setTimeout(() => notification.classList.add('show'), 100);
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
     
     // Remove after delay
     setTimeout(() => {
-        notification.classList.remove('show');
+        notification.style.transform = 'translateX(400px)';
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
 
-// Event listeners
+function addSafe() {
+    // Placeholder function - implement as needed
+    alert('Функція додавання сейфу буде реалізована');
+}
+
+function editSafe(index) {
+    // Placeholder function - implement as needed
+    alert(`Редагування сейфу #${index}`);
+}
+
+function deleteSafe(index) {
+    // Placeholder function - implement as needed
+    if (confirm('Ви впевнені, що хочете видалити цей сейф?')) {
+        alert(`Видалення сейфу #${index}`);
+    }
+}
+
+function deleteClient() {
+    if (confirm('Ви впевнені, що хочете видалити цього клієнта?')) {
+        alert('Функція видалення клієнта буде реалізована');
+    }
+}
+
+// ...existing code...
 document.addEventListener('DOMContentLoaded', function() {
-    // ...existing initialization code...
+    renderClient();
     
-    // Edit button handler
-    document.getElementById('edit-client-btn').addEventListener('click', toggleEditMode);
+    // Edit button handler - check if element exists
+    const editBtn = document.getElementById('edit-client-btn');
+    if (editBtn && typeof toggleEditMode === 'function') {
+        editBtn.addEventListener('click', toggleEditMode);
+    }
 });
