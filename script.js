@@ -229,6 +229,10 @@ function showHint(id, msg, isError) {
     // Перерахуємо після заповнення
     calculate();
   }
+  
+  // Заповнюємо дані клієнта якщо є
+  prefillClientData();
+  
   const txtArea     = document.getElementById('payment-text');
   const toast       = document.getElementById('toast');
 
@@ -585,3 +589,119 @@ function showHint(id, msg, isError) {
   // Initial calculate
   calculateAll();
 });
+
+// ========== ЗАПОВНЕННЯ ДАНИХ КЛІЄНТА ==========
+
+// Функція для заповнення форми даними клієнта
+function prefillClientData() {
+  const prefillData = localStorage.getItem('prefillClient');
+  if (prefillData) {
+    try {
+      const clientData = JSON.parse(prefillData);
+      
+      // Заповнюємо основні поля клієнта
+      const nameField = document.getElementById('name');
+      const ipnField = document.getElementById('ipn');
+      const ibanField = document.getElementById('iban');
+      const emailField = document.getElementById('email');
+      const phoneField = document.getElementById('phone');
+      
+      if (nameField && clientData.name) {
+        nameField.value = clientData.name;
+        animateValueUpdate(nameField, clientData.name);
+      }
+      
+      if (ipnField && clientData.ipn) {
+        ipnField.value = clientData.ipn;
+        animateValueUpdate(ipnField, clientData.ipn);
+      }
+      
+      if (ibanField && clientData.iban) {
+        ibanField.value = clientData.iban;
+        animateValueUpdate(ibanField, clientData.iban);
+      }
+      
+      if (emailField && clientData.email) {
+        emailField.value = clientData.email;
+        animateValueUpdate(emailField, clientData.email);
+      }
+      
+      if (phoneField && clientData.phone) {
+        phoneField.value = clientData.phone;
+        animateValueUpdate(phoneField, clientData.phone);
+      }
+      
+      // Якщо є дані про сейф, заповнюємо і їх
+      if (clientData.selectedSafe) {
+        const safe = clientData.selectedSafe;
+        
+        // Встановлюємо категорію сейфу
+        if (safe.category) {
+          const categorySelect = document.getElementById('category');
+          if (categorySelect) {
+            categorySelect.value = safe.category;
+            animateValueUpdate(categorySelect, safe.category);
+          }
+        }
+        
+        // Встановлюємо дату закінчення
+        if (safe.endDate) {
+          const endDateField = document.getElementById('end-date');
+          if (endDateField) {
+            endDateField.value = safe.endDate;
+            animateValueUpdate(endDateField, safe.endDate);
+          }
+        }
+        
+        // Автоматично перераховуємо
+        setTimeout(() => {
+          calculate();
+        }, 500);
+      }
+      
+      // Очищуємо збережені дані після використання
+      localStorage.removeItem('prefillClient');
+      
+      // Показуємо повідомлення
+      showNotification('✅ Дані клієнта завантажено!', 'success');
+      
+    } catch (e) {
+      console.error('Помилка завантаження даних клієнта:', e);
+      localStorage.removeItem('prefillClient');
+    }
+  }
+}
+
+function showNotification(message, type = 'info') {
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 1000;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+  `;
+  
+  // Add to page
+  document.body.appendChild(notification);
+  
+  // Animate in
+  setTimeout(() => {
+    notification.style.transform = 'translateX(0)';
+  }, 100);
+  
+  // Remove after delay
+  setTimeout(() => {
+    notification.style.transform = 'translateX(400px)';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}

@@ -174,7 +174,7 @@ function renderSafesNewFormat() {
   if (!currentClient || !currentClient.safes || currentClient.safes.length === 0) {
     safesTable.innerHTML = `
       <tr class="empty-row">
-        <td colspan="7">
+        <td colspan="5">
           <div class="empty-state">
             <span class="empty-icon">🏦</span>
             <span>У цього клієнта поки немає сейфів</span>
@@ -204,11 +204,10 @@ function renderSafesNewFormat() {
       <tr class="data-row" data-safe-index="${index}">
         <td><span class="safe-number">#${safe.safeNumber || '-'}</span></td>
         <td><span class="size-badge">${safe.category || '-'}</span></td>
-        <td><span class="price">-</span></td>
-        <td>${safe.startDate ? formatDate(safe.startDate) : '-'}</td>
         <td>${safe.endDate ? formatDate(safe.endDate) : '-'}</td>
         <td><span class="status-badge ${statusClass}">${status}</span></td>
         <td class="actions">
+          <button class="action-btn small primary" onclick="calculateSafe(${index})" title="Прорахувати">🧮</button>
           <button class="action-btn small" onclick="editSafe(${index})" title="Редагувати">✏️</button>
           <button class="action-btn small danger" onclick="deleteSafe(${index})" title="Видалити">🗑️</button>
         </td>
@@ -483,25 +482,89 @@ function showNotification(message, type = 'info') {
 }
 
 function addSafe() {
-    // Placeholder function - implement as needed
-    alert('Функція додавання сейфу буде реалізована');
+    // Redirect to main calculator with client data pre-filled
+    if (currentClient) {
+        const clientData = {
+            name: currentClient.name,
+            ipn: currentClient.ipn,
+            iban: currentClient.iban,
+            email: currentClient.email,
+            phone: currentClient.phone
+        };
+        localStorage.setItem('prefillClient', JSON.stringify(clientData));
+        window.location.href = 'index.html';
+    } else {
+        alert('Спочатку виберіть клієнта');
+    }
+}
+
+function calculateSafe(index) {
+    // Transfer client and safe data to calculator
+    if (currentClient && currentClient.safes && currentClient.safes[index]) {
+        const safe = currentClient.safes[index];
+        const clientData = {
+            name: currentClient.name,
+            ipn: currentClient.ipn,
+            iban: currentClient.iban,
+            email: currentClient.email,
+            phone: currentClient.phone,
+            selectedSafe: safe
+        };
+        localStorage.setItem('prefillClient', JSON.stringify(clientData));
+        window.location.href = 'index.html';
+    }
 }
 
 function editSafe(index) {
-    // Placeholder function - implement as needed
-    alert(`Редагування сейфу #${index}`);
+    if (!currentClient || !currentClient.safes || !currentClient.safes[index]) {
+        alert('Сейф не знайдено');
+        return;
+    }
+    
+    const safe = currentClient.safes[index];
+    const newEndDate = prompt('Введіть нову дату закінчення (YYYY-MM-DD):', safe.endDate || '');
+    
+    if (newEndDate !== null && newEndDate.trim() !== '') {
+        // Validate date format
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dateRegex.test(newEndDate)) {
+            alert('Невірний формат дати! Використовуйте YYYY-MM-DD');
+            return;
+        }
+        
+        // Update safe data
+        currentClient.safes[index].endDate = newEndDate;
+        
+        // Re-render safes table
+        renderSafesNewFormat();
+        
+        showNotification('✅ Дата сейфу оновлена!', 'success');
+    }
 }
 
 function deleteSafe(index) {
-    // Placeholder function - implement as needed
+    if (!currentClient || !currentClient.safes || !currentClient.safes[index]) {
+        alert('Сейф не знайдено');
+        return;
+    }
+    
     if (confirm('Ви впевнені, що хочете видалити цей сейф?')) {
-        alert(`Видалення сейфу #${index}`);
+        // Remove safe from array
+        currentClient.safes.splice(index, 1);
+        
+        // Re-render safes table
+        renderSafesNewFormat();
+        
+        showNotification('✅ Сейф видалено!', 'success');
     }
 }
 
 function deleteClient() {
-    if (confirm('Ви впевнені, що хочете видалити цього клієнта?')) {
-        alert('Функція видалення клієнта буде реалізована');
+    if (confirm('Ви впевнені, що хочете видалити цього клієнта? Цю дію неможливо скасувати.')) {
+        // Here you would typically send a delete request to the server
+        alert('Функція видалення клієнта буде реалізована для роботи з сервером');
+        // For now, redirect back to clients list
+        // window.location.href = 'clients.html';
     }
 }
 
@@ -530,7 +593,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Edit button handler - check if element exists
     const editBtn = document.getElementById('edit-client-btn');
-    if (editBtn && typeof toggleEditMode === 'function') {
-        editBtn.addEventListener('click', toggleEditMode);
+    if (editBtn) {
+        editBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Edit button clicked');
+            if (typeof toggleEditMode === 'function') {
+                toggleEditMode();
+            } else {
+                console.error('toggleEditMode function not found');
+            }
+        });
+        console.log('Edit button event listener attached');
+    } else {
+        console.error('Edit button not found');
     }
 });
