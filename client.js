@@ -207,7 +207,7 @@ function renderSafesNewFormat() {
         <td>${safe.endDate ? formatDate(safe.endDate) : '-'}</td>
         <td><span class="status-badge ${statusClass}">${status}</span></td>
         <td class="actions">
-          <button class="action-btn small primary" onclick="calculateSafe(${index})" title="Прорахувати">🧮</button>
+          <button class="action-btn small primary" onclick="calculateForSafe(${index})" title="Прорахувати">🧮</button>
           <button class="action-btn small" onclick="editSafe(${index})" title="Редагувати">✏️</button>
           <button class="action-btn small danger" onclick="deleteSafe(${index})" title="Видалити">🗑️</button>
         </td>
@@ -482,90 +482,150 @@ function showNotification(message, type = 'info') {
 }
 
 function addSafe() {
-    // Redirect to main calculator with client data pre-filled
-    if (currentClient) {
-        const clientData = {
-            name: currentClient.name,
-            ipn: currentClient.ipn,
-            iban: currentClient.iban,
-            email: currentClient.email,
-            phone: currentClient.phone
-        };
-        localStorage.setItem('prefillClient', JSON.stringify(clientData));
-        window.location.href = 'index.html';
-    } else {
-        alert('Спочатку виберіть клієнта');
+    if (!currentClient) {
+        showNotification('❌ Помилка: клієнт не завантажений', 'error');
+        return;
+    }
+    
+    // Створюємо форму додавання сейфу
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Додати новий сейф</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="add-safe-form" class="enhanced-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="safe-number">🔢 Номер сейфу</label>
+                        <input type="text" id="safe-number" required placeholder="Наприклад: 101">
+                        <small class="form-hint">Унікальний номер сейфу</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="safe-category">📐 Категорія</label>
+                        <select id="safe-category" required>
+                            <option value="">Оберіть категорію</option>
+                            <option value="1 категорія">1 категорія</option>
+                            <option value="2 категорія">2 категорія</option>
+                            <option value="3 категорія">3 категорія</option>
+                        </select>
+                        <small class="form-hint">Розмір сейфу</small>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="safe-coverage">💼 Покриття</label>
+                        <select id="safe-coverage">
+                            <option value="">Не вказано</option>
+                            <option value="Грошове покриття">Грошове покриття</option>
+                            <option value="Страхування">Страхування</option>
+                        </select>
+                        <small class="form-hint">Тип покриття ризиків</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="safe-end-date">📅 Дата закінчення</label>
+                        <input type="date" id="safe-end-date">
+                        <small class="form-hint">Термін дії оренди</small>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="action-btn secondary" onclick="closeModal()">❌ Скасувати</button>
+                    <button type="submit" class="action-btn primary">💾 Додати сейф</button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Обробник форми
+    document.getElementById('add-safe-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveSafe();
+    });
+}
+
+function saveSafe() {
+    const safeNumber = document.getElementById('safe-number').value;
+    const category = document.getElementById('safe-category').value;
+    const coverage = document.getElementById('safe-coverage').value;
+    const endDate = document.getElementById('safe-end-date').value;
+    
+    if (!safeNumber || !category) {
+        showNotification('❌ Заповніть обов\'язкові поля', 'error');
+        return;
+    }
+    
+    // Перевірка на унікальність номеру сейфу
+    if (currentClient.safes && currentClient.safes.some(s => s.safeNumber === safeNumber)) {
+        showNotification('❌ Сейф з таким номером вже існує', 'error');
+        return;
+    }
+    
+    // Додаємо новий сейф
+    if (!currentClient.safes) {
+        currentClient.safes = [];
+    }
+    
+    const newSafe = {
+        safeNumber,
+        category,
+        coverage: coverage || null,
+        endDate: endDate || null,
+        startDate: new Date().toISOString().split('T')[0]
+    };
+    
+    currentClient.safes.push(newSafe);
+    
+    // Оновлюємо відображення
+    renderSafesNewFormat();
+    
+    // Закриваємо модальне вікно
+    closeModal();
+    
+    showNotification('✅ Сейф успішно додано!', 'success');
+}
+
+function closeModal() {
+    const modal = document.querySelector('.modal-overlay');
+    if (modal) {
+        modal.remove();
     }
 }
 
-function calculateSafe(index) {
-    // Transfer client and safe data to calculator
-    if (currentClient && currentClient.safes && currentClient.safes[index]) {
-        const safe = currentClient.safes[index];
-        const clientData = {
-            name: currentClient.name,
-            ipn: currentClient.ipn,
-            iban: currentClient.iban,
-            email: currentClient.email,
-            phone: currentClient.phone,
-            selectedSafe: safe
-        };
-        localStorage.setItem('prefillClient', JSON.stringify(clientData));
-        window.location.href = 'index.html';
-    }
-}
-
-function editSafe(index) {
+function calculateForSafe(index) {
     if (!currentClient || !currentClient.safes || !currentClient.safes[index]) {
-        alert('Сейф не знайдено');
+        showNotification('❌ Помилка: сейф не знайдено', 'error');
         return;
     }
     
     const safe = currentClient.safes[index];
-    const newEndDate = prompt('Введіть нову дату закінчення (YYYY-MM-DD):', safe.endDate || '');
+    const client = currentClient;
     
-    if (newEndDate !== null && newEndDate.trim() !== '') {
-        // Validate date format
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-        if (!dateRegex.test(newEndDate)) {
-            alert('Невірний формат дати! Використовуйте YYYY-MM-DD');
-            return;
-        }
-        
-        // Update safe data
-        currentClient.safes[index].endDate = newEndDate;
-        
-        // Re-render safes table
-        renderSafesNewFormat();
-        
-        showNotification('✅ Дата сейфу оновлена!', 'success');
-    }
-}
-
-function deleteSafe(index) {
-    if (!currentClient || !currentClient.safes || !currentClient.safes[index]) {
-        alert('Сейф не знайдено');
-        return;
-    }
+    // Створюємо об'єкт з даними для калькулятора
+    const calculatorData = {
+        clientName: client.name,
+        clientEmail: client.email || '',
+        clientPhone: client.phone || '',
+        clientIpn: client.ipn || '',
+        clientIban: client.iban || '',
+        safeNumber: safe.safeNumber || '',
+        safeCategory: safe.category || '',
+        coverage: safe.coverage || '',
+        endDate: safe.endDate || ''
+    };
     
-    if (confirm('Ви впевнені, що хочете видалити цей сейф?')) {
-        // Remove safe from array
-        currentClient.safes.splice(index, 1);
-        
-        // Re-render safes table
-        renderSafesNewFormat();
-        
-        showNotification('✅ Сейф видалено!', 'success');
-    }
-}
-
-function deleteClient() {
-    if (confirm('Ви впевнені, що хочете видалити цього клієнта? Цю дію неможливо скасувати.')) {
-        // Here you would typically send a delete request to the server
-        alert('Функція видалення клієнта буде реалізована для роботи з сервером');
-        // For now, redirect back to clients list
-        // window.location.href = 'clients.html';
-    }
+    // Зберігаємо дані в localStorage для передачі в калькулятор
+    localStorage.setItem('calculatorPreFill', JSON.stringify(calculatorData));
+    
+    // Переходимо в калькулятор
+    window.location.href = 'index.html';
 }
 
 function getStatusClass(status) {
@@ -593,18 +653,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Edit button handler - check if element exists
     const editBtn = document.getElementById('edit-client-btn');
-    if (editBtn) {
-        editBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Edit button clicked');
-            if (typeof toggleEditMode === 'function') {
-                toggleEditMode();
-            } else {
-                console.error('toggleEditMode function not found');
-            }
-        });
-        console.log('Edit button event listener attached');
-    } else {
-        console.error('Edit button not found');
+    if (editBtn && typeof toggleEditMode === 'function') {
+        editBtn.addEventListener('click', toggleEditMode);
     }
 });

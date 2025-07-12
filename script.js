@@ -118,6 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const daysEl      = document.getElementById('days');
   const startEl     = document.getElementById('start-date');
   const endEl       = document.getElementById('end-date');
+  
+  // Автозаповнення з даних клієнта
+  prefillFromClient();
   const penaltyEl   = document.getElementById('penalty-amount');
   const atDec       = document.getElementById('attorney-decrease');
   const atInc       = document.getElementById('attorney-increase');
@@ -229,10 +232,6 @@ function showHint(id, msg, isError) {
     // Перерахуємо після заповнення
     calculate();
   }
-  
-  // Заповнюємо дані клієнта якщо є
-  prefillClientData();
-  
   const txtArea     = document.getElementById('payment-text');
   const toast       = document.getElementById('toast');
 
@@ -590,118 +589,153 @@ function showHint(id, msg, isError) {
   calculateAll();
 });
 
-// ========== ЗАПОВНЕННЯ ДАНИХ КЛІЄНТА ==========
+// ========== АВТОЗАПОВНЕННЯ З АНКЕТИ КЛІЄНТА ==========
 
-// Функція для заповнення форми даними клієнта
-function prefillClientData() {
-  const prefillData = localStorage.getItem('prefillClient');
-  if (prefillData) {
+// Функція для автозаповнення форми з даними клієнта
+function prefillFromClient() {
+    const storedData = localStorage.getItem('calculatorPreFill');
+    if (!storedData) return;
+    
     try {
-      const clientData = JSON.parse(prefillData);
-      
-      // Заповнюємо основні поля клієнта
-      const nameField = document.getElementById('name');
-      const ipnField = document.getElementById('ipn');
-      const ibanField = document.getElementById('iban');
-      const emailField = document.getElementById('email');
-      const phoneField = document.getElementById('phone');
-      
-      if (nameField && clientData.name) {
-        nameField.value = clientData.name;
-        animateValueUpdate(nameField, clientData.name);
-      }
-      
-      if (ipnField && clientData.ipn) {
-        ipnField.value = clientData.ipn;
-        animateValueUpdate(ipnField, clientData.ipn);
-      }
-      
-      if (ibanField && clientData.iban) {
-        ibanField.value = clientData.iban;
-        animateValueUpdate(ibanField, clientData.iban);
-      }
-      
-      if (emailField && clientData.email) {
-        emailField.value = clientData.email;
-        animateValueUpdate(emailField, clientData.email);
-      }
-      
-      if (phoneField && clientData.phone) {
-        phoneField.value = clientData.phone;
-        animateValueUpdate(phoneField, clientData.phone);
-      }
-      
-      // Якщо є дані про сейф, заповнюємо і їх
-      if (clientData.selectedSafe) {
-        const safe = clientData.selectedSafe;
+        const data = JSON.parse(storedData);
         
-        // Встановлюємо категорію сейфу
-        if (safe.category) {
-          const categorySelect = document.getElementById('category');
-          if (categorySelect) {
-            categorySelect.value = safe.category;
-            animateValueUpdate(categorySelect, safe.category);
-          }
+        // Заповнюємо поля клієнта
+        if (data.clientName) {
+            const nameField = document.getElementById('client-name');
+            if (nameField) {
+                nameField.value = data.clientName;
+                animateValueUpdate(nameField, data.clientName);
+            }
         }
         
-        // Встановлюємо дату закінчення
-        if (safe.endDate) {
-          const endDateField = document.getElementById('end-date');
-          if (endDateField) {
-            endDateField.value = safe.endDate;
-            animateValueUpdate(endDateField, safe.endDate);
-          }
+        if (data.clientEmail) {
+            const emailField = document.getElementById('client-email');
+            if (emailField) {
+                emailField.value = data.clientEmail;
+            }
         }
         
-        // Автоматично перераховуємо
+        if (data.clientPhone) {
+            const phoneField = document.getElementById('client-phone');
+            if (phoneField) {
+                phoneField.value = data.clientPhone;
+            }
+        }
+        
+        if (data.clientIpn) {
+            const ipnField = document.getElementById('client-ipn');
+            if (ipnField) {
+                ipnField.value = data.clientIpn;
+            }
+        }
+        
+        if (data.clientIban) {
+            const ibanField = document.getElementById('client-iban');
+            if (ibanField) {
+                ibanField.value = data.clientIban;
+            }
+        }
+        
+        // Заповнюємо дані сейфу
+        if (data.safeNumber) {
+            const safeField = document.getElementById('safe-number');
+            if (safeField) {
+                safeField.value = data.safeNumber;
+                animateValueUpdate(safeField, data.safeNumber);
+            }
+        }
+        
+        if (data.safeCategory) {
+            const categoryField = document.getElementById('category');
+            if (categoryField) {
+                categoryField.value = data.safeCategory;
+                animateValueUpdate(categoryField, data.safeCategory);
+                // Викликаємо зміну для оновлення розрахунків
+                categoryField.dispatchEvent(new Event('change'));
+            }
+        }
+        
+        if (data.coverage) {
+            const coverageField = document.getElementById('coverage');
+            if (coverageField) {
+                coverageField.value = data.coverage;
+                animateValueUpdate(coverageField, data.coverage);
+            }
+        }
+        
+        if (data.endDate) {
+            const endDateField = document.getElementById('end-date');
+            if (endDateField) {
+                endDateField.value = data.endDate;
+                // Автоматично розраховуємо період
+                calculatePeriodFromEndDate(data.endDate);
+            }
+        }
+        
+        // Видаляємо дані після використання
+        localStorage.removeItem('calculatorPreFill');
+        
+        // Показуємо повідомлення про успішне заповнення
+        showNotification('✅ Дані клієнта автоматично заповнені!', 'success');
+        
+        // Запускаємо розрахунок
         setTimeout(() => {
-          calculate();
+            calculate();
         }, 500);
-      }
-      
-      // Очищуємо збережені дані після використання
-      localStorage.removeItem('prefillClient');
-      
-      // Показуємо повідомлення
-      showNotification('✅ Дані клієнта завантажено!', 'success');
-      
-    } catch (e) {
-      console.error('Помилка завантаження даних клієнта:', e);
-      localStorage.removeItem('prefillClient');
+        
+    } catch (error) {
+        console.error('Помилка при автозаповненні:', error);
+        localStorage.removeItem('calculatorPreFill');
     }
-  }
 }
 
+// Функція для розрахунку періоду з кінцевої дати
+function calculatePeriodFromEndDate(endDate) {
+    try {
+        const end = new Date(endDate);
+        const start = new Date();
+        const diffTime = end - start;
+        const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30));
+        
+        if (diffMonths > 0) {
+            const periodField = document.getElementById('period');
+            if (periodField) {
+                periodField.value = diffMonths;
+                animateValueUpdate(periodField, diffMonths.toString());
+            }
+        }
+    } catch (error) {
+        console.error('Помилка розрахунку періоду:', error);
+    }
+}
+
+// Функція показу уведомлень
 function showNotification(message, type = 'info') {
-  // Create notification element
-  const notification = document.createElement('div');
-  notification.className = `notification ${type}`;
-  notification.textContent = message;
-  notification.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    color: white;
-    font-weight: 500;
-    z-index: 1000;
-    transform: translateX(400px);
-    transition: transform 0.3s ease;
-    background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-  `;
-  
-  // Add to page
-  document.body.appendChild(notification);
-  
-  // Animate in
-  setTimeout(() => {
-    notification.style.transform = 'translateX(0)';
-  }, 100);
-  
-  // Remove after delay
-  setTimeout(() => {
-    notification.style.transform = 'translateX(400px)';
-    setTimeout(() => notification.remove(), 300);
-  }, 3000);
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 1000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
