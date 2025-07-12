@@ -2158,3 +2158,458 @@ html[data-theme="dark"] {
     scroll-behavior: auto !important;
   }
 }
+
+/* ========== ПОКРАЩЕНІ ТАБЛИЦІ ========== */
+
+/* Контейнер таблиці з тінню та округленими кутами */
+.table-container {
+  background: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  margin: 20px 0;
+  border: 1px solid var(--border-color);
+  position: relative;
+}
+
+.table-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-primary);
+}
+
+/* Заголовок таблиці */
+.table-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+html[data-theme="dark"] .table-header {
+  background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+}
+
+.table-title {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+/* Пошукове поле в заголовку таблиці */
+.table-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-search input {
+  width: 250px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  font-size: 0.9em;
+  background: var(--card-bg);
+  transition: all 0.3s ease;
+}
+
+.table-search input:focus {
+  width: 300px;
+  box-shadow: var(--shadow-primary);
+  border-color: var(--primary-color);
+}
+
+/* Покращена таблиця */
+.clients-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  font-size: 0.95em;
+  margin: 0;
+}
+
+.clients-table thead {
+  background: linear-gradient(135deg, #f1f3f4 0%, #e8eaed 100%);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+html[data-theme="dark"] .clients-table thead {
+  background: linear-gradient(135deg, #404040 0%, #303030 100%);
+}
+
+.clients-table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text);
+  border: none;
+  border-bottom: 2px solid var(--primary-color);
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.clients-table th::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-accent);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.clients-table th:hover::after {
+  width: 80%;
+}
+
+.clients-table td {
+  padding: 16px 20px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  vertical-align: middle;
+}
+
+html[data-theme="dark"] .clients-table td {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.clients-table tbody tr {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.clients-table tbody tr:hover {
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.05) 0%, rgba(74, 144, 226, 0.1) 100%);
+  transform: translateX(5px);
+  box-shadow: inset 3px 0 0 var(--primary-color);
+}
+
+html[data-theme="dark"] .clients-table tbody tr:hover {
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(74, 144, 226, 0.15) 100%);
+}
+
+/* Альтернативні рядки */
+.clients-table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+html[data-theme="dark"] .clients-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Кнопки в таблиці */
+.clients-table .action-btn {
+  padding: 6px 12px;
+  margin: 2px;
+  font-size: 0.85em;
+  min-width: 70px;
+  border-radius: var(--border-radius-sm);
+}
+
+/* Статуси в таблиці */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--border-radius-full);
+  font-size: 0.8em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.active {
+  background: var(--gradient-success);
+  color: white;
+}
+
+.status-badge.expired {
+  background: var(--gradient-danger);
+  color: white;
+}
+
+.status-badge.expiring {
+  background: var(--gradient-warning);
+  color: #212529;
+}
+
+/* Мобільна адаптація таблиць */
+@media (max-width: 768px) {
+  .table-search input {
+    width: 200px;
+  }
+  
+  .table-search input:focus {
+    width: 220px;
+  }
+  
+  .clients-table {
+    font-size: 0.85em;
+  }
+  
+  .clients-table th,
+  .clients-table td {
+    padding: 12px 8px;
+  }
+  
+  .clients-table tbody tr:hover {
+    transform: none;
+    box-shadow: inset 0 0 0 2px var(--primary-color);
+  }
+}
+
+/* ========== ПОКРАЩЕНІ ФОРМИ ========== */
+
+/* Контейнер форми */
+.form-container {
+  background: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 24px;
+  margin: 20px 0;
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+/* Заголовки форм */
+.form-title {
+  font-size: 1.3em;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(74, 144, 226, 0.1);
+  position: relative;
+}
+
+.form-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: var(--gradient-primary);
+}
+
+/* Покращені групи форм */
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.form-group.required label::after {
+  content: '*';
+  color: var(--danger-color);
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: var(--text);
+  font-size: 0.95em;
+  transition: all 0.2s ease;
+}
+
+.form-group:focus-within label {
+  color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+/* Покращені поля вводу */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  font-size: 0.95em;
+  background: linear-gradient(145deg, #ffffff 0%, #fafafa 100%);
+  color: var(--text);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-inset);
+  position: relative;
+}
+
+html[data-theme="dark"] .form-group input,
+html[data-theme="dark"] .form-group select,
+html[data-theme="dark"] .form-group textarea {
+  background: linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 100%);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-primary), var(--shadow-inset);
+  transform: translateY(-1px);
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+html[data-theme="dark"] .form-group input:focus,
+html[data-theme="dark"] .form-group select:focus,
+html[data-theme="dark"] .form-group textarea:focus {
+  background: linear-gradient(145deg, #4a4a4a 0%, #3a3a3a 100%);
+}
+
+/* Floating labels */
+.form-group.floating {
+  position: relative;
+  margin-top: 20px;
+}
+
+.form-group.floating input,
+.form-group.floating textarea {
+  padding-top: 20px;
+  padding-bottom: 8px;
+}
+
+.form-group.floating label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-size: 0.95em;
+  color: #999;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  z-index: 1;
+}
+
+.form-group.floating input:focus + label,
+.form-group.floating input:not(:placeholder-shown) + label,
+.form-group.floating textarea:focus + label,
+.form-group.floating textarea:not(:placeholder-shown) + label {
+  top: 6px;
+  font-size: 0.8em;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* Групи полів в рядок */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-row .form-group {
+  margin-bottom: 0;
+}
+
+/* Кнопки форм */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.form-actions .action-btn {
+  min-width: 120px;
+  padding: 12px 24px;
+}
+
+/* Валідація форм */
+.form-group.error input,
+.form-group.error select,
+.form-group.error textarea {
+  border-color: var(--danger-color);
+  background: linear-gradient(145deg, #fff5f5 0%, #fef2f2 100%);
+  animation: shake 0.3s ease;
+}
+
+html[data-theme="dark"] .form-group.error input,
+html[data-theme="dark"] .form-group.error select,
+html[data-theme="dark"] .form-group.error textarea {
+  background: linear-gradient(145deg, #4a2c2c 0%, #3a2222 100%);
+}
+
+.form-group.success input,
+.form-group.success select,
+.form-group.success textarea {
+  border-color: var(--success-color);
+  background: linear-gradient(145deg, #f0fff4 0%, #dcfce7 100%);
+}
+
+html[data-theme="dark"] .form-group.success input,
+html[data-theme="dark"] .form-group.success select,
+html[data-theme="dark"] .form-group.success textarea {
+  background: linear-gradient(145deg, #2c4a2c 0%, #1a3a1a 100%);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Прогрес заповнення форми */
+.form-progress {
+  height: 4px;
+  background: #e9ecef;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.form-progress-bar {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+/* Мобільна адаптація форм */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 16px;
+    margin: 10px 0;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions .action-btn {
+    width: 100%;
+  }
+}

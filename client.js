@@ -1,6 +1,5 @@
 // client.js
 const info = document.getElementById('client-info');
-// client.js
 // Отримуємо id з URL
 function getIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -12,7 +11,6 @@ async function fetchClient(id) {
   const data = await res.json();
   return data && data.length ? data[0] : null;
 }
-
 
 let currentClient = null;
 let editMode = false;
@@ -264,3 +262,178 @@ window.calculateSafe = function(idx) {
   // Перенаправляємо на калькулятор
   window.location.href = 'index.html';
 }
+
+// Enhanced client display functions
+function displayClient(client) {
+    // Update profile display
+    document.getElementById('client-name-display').textContent = client.name;
+    document.getElementById('client-contact-display').innerHTML = `📧 ${client.email || 'Не вказано'} | 📱 ${client.phone || 'Не вказано'}`;
+    
+    // Update safes count
+    const safesCount = client.safes ? client.safes.length : 0;
+    document.getElementById('safes-count').textContent = `${safesCount} ${safesCount === 1 ? 'сейф' : safesCount < 5 ? 'сейфи' : 'сейфів'}`;
+    
+    // Display safes in table
+    displaySafes(client.safes || []);
+}
+
+function toggleEditMode() {
+    editMode = !editMode;
+    const profileSection = document.querySelector('.client-profile');
+    const editContainer = document.getElementById('edit-form-container');
+    
+    if (editMode) {
+        profileSection.style.display = 'none';
+        editContainer.style.display = 'block';
+        populateEditForm();
+    } else {
+        profileSection.style.display = 'block';
+        editContainer.style.display = 'none';
+    }
+}
+
+function populateEditForm() {
+    const client = clients.find(c => c.id === currentClientId);
+    if (!client) return;
+    
+    const form = document.getElementById('client-form');
+    form.innerHTML = `
+        <div class="form-row">
+            <div class="form-group">
+                <label for="edit-name">👤 Ім'я клієнта</label>
+                <input type="text" id="edit-name" value="${client.name}" required>
+                <small class="form-hint">Повне ім'я або назва організації</small>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="edit-email">📧 Email</label>
+                <input type="email" id="edit-email" value="${client.email || ''}" placeholder="client@example.com">
+                <small class="form-hint">Електронна адреса для зв'язку</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-phone">📱 Телефон</label>
+                <input type="tel" id="edit-phone" value="${client.phone || ''}" placeholder="+380501234567">
+                <small class="form-hint">Контактний номер у форматі +380...</small>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="button" class="action-btn secondary" onclick="cancelEdit()">❌ Скасувати</button>
+            <button type="submit" class="action-btn primary" onclick="saveClient(event)">💾 Зберегти зміни</button>
+        </div>
+    `;
+}
+
+function cancelEdit() {
+    editMode = false;
+    toggleEditMode();
+}
+
+function saveClient(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('edit-name').value;
+    const email = document.getElementById('edit-email').value;
+    const phone = document.getElementById('edit-phone').value;
+    
+    const clientIndex = clients.findIndex(c => c.id === currentClientId);
+    if (clientIndex !== -1) {
+        clients[clientIndex] = {
+            ...clients[clientIndex],
+            name,
+            email,
+            phone
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('clients', JSON.stringify(clients));
+        
+        // Update display
+        displayClient(clients[clientIndex]);
+        
+        // Exit edit mode
+        cancelEdit();
+        
+        // Show success message
+        showNotification('✅ Дані клієнта успішно оновлено!', 'success');
+    }
+}
+
+function displaySafes(safes) {
+    const safesTable = document.getElementById('safes-list');
+    
+    if (!safes || safes.length === 0) {
+        safesTable.innerHTML = `
+            <tr class="empty-row">
+                <td colspan="7">
+                    <div class="empty-state">
+                        <span class="empty-icon">🏦</span>
+                        <span>У цього клієнта поки немає сейфів</span>
+                        <button class="action-btn primary" onclick="addSafe()">➕ Додати перший сейф</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    safesTable.innerHTML = safes.map(safe => `
+        <tr class="data-row" data-safe-id="${safe.id}">
+            <td><span class="safe-number">#${safe.number}</span></td>
+            <td><span class="size-badge">${safe.size}</span></td>
+            <td><span class="price">${safe.rate} грн/міс</span></td>
+            <td>${formatDate(safe.rentFrom)}</td>
+            <td>${formatDate(safe.rentTo)}</td>
+            <td><span class="status-badge ${getStatusClass(safe.status)}">${safe.status}</span></td>
+            <td class="actions">
+                <button class="action-btn small" onclick="editSafe('${safe.id}')" title="Редагувати">✏️</button>
+                <button class="action-btn small danger" onclick="deleteSafe('${safe.id}')" title="Видалити">🗑️</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function getStatusClass(status) {
+    switch(status?.toLowerCase()) {
+        case 'активний': return 'success';
+        case 'заборгованість': return 'warning';
+        case 'прострочено': return 'danger';
+        default: return 'secondary';
+    }
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('uk-UA');
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => notification.classList.add('show'), 100);
+    
+    // Remove after delay
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // ...existing initialization code...
+    
+    // Edit button handler
+    document.getElementById('edit-client-btn').addEventListener('click', toggleEditMode);
+});

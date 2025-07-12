@@ -32,22 +32,30 @@
     </select>
   </header>
 
-  <main class="layout" style="grid-template-columns: 1fr; grid-template-areas: 'form'; max-width: 800px; margin: 0 auto;">
-    <section class="panel form-panel" style="grid-area: form;">
-      <h1 style="font-family:'Inter',sans-serif; font-weight:600; color:var(--accent); margin-bottom:16px;">Додати нового клієнта</h1>
+  <main class="layout" style="grid-template-columns: 1fr; grid-template-areas: 'form'; max-width: 900px; margin: 0 auto;">
+    <div class="form-container">
+      <h1 class="form-title">➕ Додати нового клієнта</h1>
+      
+      <div class="form-progress">
+        <div class="form-progress-bar" id="progress-bar"></div>
+      </div>
       
       <form id="client-form">
-        <div class="form-group">
-          <label for="client-name">ПІБ <span class="info-icon" title="Введіть повне ім'я клієнта">ℹ️</span></label>
-          <input type="text" id="client-name" name="name" required>
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="client-name">ПІБ клієнта</label>
+            <input type="text" id="client-name" name="name" placeholder="Введіть повне ім'я" required>
+            <small class="form-hint">Прізвище Ім'я По батькові</small>
+          </div>
+          
+          <div class="form-group required">
+            <label for="client-ipn">ІПН</label>
+            <input type="text" id="client-ipn" name="ipn" placeholder="1234567890" maxlength="10" required>
+            <small class="form-hint">10 цифр індивідуального податкового номера</small>
+          </div>
         </div>
         
-        <div class="form-group">
-          <label for="client-ipn">ІПН <span class="info-icon" title="Індивідуальний податковий номер">ℹ️</span></label>
-          <input type="text" id="client-ipn" name="ipn" required>
-        </div>
-        
-        <div id="safes-list" style="margin: 16px 0;"></div>
+        <div id="safes-list" style="margin: 20px 0;"></div>
         
         <button type="button" id="add-safe-btn" class="action-btn secondary" style="margin-bottom:16px;">
           Додати сейф
@@ -58,22 +66,26 @@
           <input type="text" id="client-iban" name="iban" required>
         </div>
         
-        <div class="form-group">
-          <label for="client-email">Email <span class="info-icon" title="Електронна пошта клієнта">ℹ️</span></label>
-          <input type="email" id="client-email" name="email" required>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="client-email">📧 Email</label>
+            <input type="email" id="client-email" name="email" placeholder="client@example.com">
+            <small class="form-hint">Електронна адреса для зв'язку</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="client-phone">📱 Телефон</label>
+            <input type="tel" id="client-phone" name="phone" placeholder="+380501234567">
+            <small class="form-hint">Контактний номер у форматі +380...</small>
+          </div>
         </div>
         
-        <div class="form-group">
-          <label for="client-phone">Телефон <span class="info-icon" title="Контактний номер телефону">ℹ️</span></label>
-          <input type="tel" id="client-phone" name="phone" required>
-        </div>
-        
-        <div class="button-row" style="margin-top:20px;">
-          <button type="submit" class="action-btn">Зберегти клієнта</button>
-          <a href="clients.html" class="action-btn secondary">Скасувати</a>
+        <div class="form-actions">
+          <a href="clients.html" class="action-btn secondary">❌ Скасувати</a>
+          <button type="submit" class="action-btn primary">💾 Зберегти клієнта</button>
         </div>
       </form>
-    </section>
+    </div>
   </main>
 
   <script>

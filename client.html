@@ -32,21 +32,76 @@
     </select>
   </header>
 
-  <main class="layout" style="grid-template-columns: 1fr; grid-template-areas: 'form'; max-width: 800px; margin: 0 auto;">
-    <section class="panel form-panel" style="grid-area: form;">
-      <div class="button-row" style="align-items:center;margin-bottom:16px;gap:12px;">
-        <h1 style="margin:0; font-family:'Inter',sans-serif; font-weight:600; color:var(--accent); flex:1;">Анкета клієнта</h1>
-        <button id="edit-client-btn" type="button" class="action-btn secondary" style="flex:none;">Редагувати анкету</button>
+  <main class="main-content">
+    <div class="client-profile">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <span class="avatar-icon">👤</span>
+        </div>
+        <div class="profile-info">
+          <h1 id="client-name-display">Завантаження...</h1>
+          <p id="client-contact-display">📧 📱</p>
+        </div>
+        <div class="profile-actions">
+          <button class="action-btn primary" id="edit-client-btn">✏️ Редагувати</button>
+          <button class="action-btn secondary" onclick="deleteClient()">🗑️ Видалити</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-container" id="edit-form-container" style="display: none;">
+      <div class="form-header">
+        <h2>✏️ Редагування клієнта</h2>
+        <div class="form-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 100%"></div>
+          </div>
+          <span class="progress-text">Крок 1 з 1</span>
+        </div>
       </div>
       
-      <form id="client-form" class="client-info-boxes"></form>
-      
-      <div id="safes-section" class="client-safes-boxes"></div>
-      
-      <div class="button-row" style="margin-top:16px;">
-        <a href="clients.html" class="action-btn secondary">Назад до списку</a>
+      <form id="client-form" class="enhanced-form">
+        <!-- Форма буде заповнена JavaScript -->
+      </form>
+    </div>
+
+    <div class="safes-section">
+      <div class="table-container">
+        <div class="table-header">
+          <div class="table-title">
+            <h2>🏦 Сейфи клієнта</h2>
+            <span class="table-count" id="safes-count">0 сейфів</span>
+          </div>
+          <button class="action-btn primary" onclick="addSafe()">➕ Додати сейф</button>
+        </div>
+        
+        <div class="table-wrapper">
+          <table id="safes-table">
+            <thead>
+              <tr>
+                <th>🔢 Номер</th>
+                <th>📐 Розмір</th>
+                <th>💰 Тариф</th>
+                <th>📅 Аренда з</th>
+                <th>📅 До</th>
+                <th>📊 Статус</th>
+                <th>⚙️ Дії</th>
+              </tr>
+            </thead>
+            <tbody id="safes-list">
+              <tr class="loading-row">
+                <td colspan="7">
+                  <div class="loading-state">
+                    <div class="spinner"></div>
+                    <span>Завантаження сейфів...</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </section>
+    </div>
   </main>
 
   <script>

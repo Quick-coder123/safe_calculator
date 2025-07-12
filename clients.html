@@ -33,26 +33,27 @@
     </select>
   </header>
   
-  <main class="layout" style="grid-template-columns: 1fr; grid-template-areas: 'form'; max-width: 1000px; margin: 0 auto;">
+  <main class="layout" style="grid-template-columns: 1fr; grid-template-areas: 'form'; max-width: 1200px; margin: 0 auto;">
     <section class="panel form-panel" style="grid-area: form;">
-      <h1 style="font-family:'Inter',sans-serif; font-weight:600; color:var(--accent); margin-bottom:16px;">Діючі клієнти</h1>
-      
-      <div class="form-group" style="max-width: 400px; margin-bottom: 20px;">
-        <input type="text" id="client-search" placeholder="Пошук по ПІБ..." style="width:100%;">
-      </div>
-       <div class="clients-table-container" style="overflow-x:auto;">
-        <table id="clients-table" class="clients-table" style="width:100%;">
+      <div class="table-container">
+        <div class="table-header">
+          <h1 class="table-title">Діючі клієнти</h1>
+          <div class="table-search">
+            <input type="text" id="client-search" placeholder="🔍 Пошук по ПІБ...">
+            <button id="export-btn" class="action-btn success">📊 Експорт</button>
+          </div>
+        </div>
+        
+        <table id="clients-table" class="clients-table">
           <thead>
             <tr>
-              <th>ПІБ</th>
+              <th>ПІБ клієнта</th>
               <th>Дії</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
-      
-      <button id="export-btn" class="action-btn secondary" style="margin-top:16px;">Експортувати в Excel</button>
     </section>
   </main>
 
