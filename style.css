@@ -1,3 +1,252 @@
+/* ========== МІКРО-АНІМАЦІЇ ТА ПЕРЕХОДИ ========== */
+
+/* Базові переходи для всіх інтерактивних елементів */
+* {
+  transition: all 0.2s ease;
+}
+
+/* Переходи для кнопок */
+button, .btn, .action-btn, .btn-icon {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+}
+
+button:hover, .btn:hover, .action-btn:hover, .btn-icon:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active, .btn:active, .action-btn:active, .btn-icon:active {
+  transform: translateY(0);
+  transition: all 0.1s ease;
+}
+
+/* Переходи для полів вводу */
+input, select, textarea {
+  transition: all 0.2s ease;
+  border-color: var(--border-color);
+}
+
+input:focus, select:focus, textarea:focus {
+  transform: scale(1.01);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+/* Анімації для навігації */
+.nav-link {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.nav-link:hover::before {
+  left: 100%;
+}
+
+.nav-link:hover {
+  transform: translateX(5px);
+}
+
+/* Анімації для панелей */
+.panel {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+}
+
+.panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Анімації для Toast повідомлень */
+.toast {
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: translateX(100px) scale(0.8);
+  opacity: 0;
+}
+
+.toast.show {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+}
+
+/* Анімації для модальних вікон */
+.modal-overlay {
+  transition: all 0.3s ease;
+  opacity: 0;
+  backdrop-filter: blur(0px);
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  backdrop-filter: blur(5px);
+}
+
+.modal {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: scale(0.7) translateY(-50px);
+  opacity: 0;
+}
+
+.modal-overlay.show .modal {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Анімації для таблиць */
+.clients-table tr {
+  transition: all 0.2s ease;
+}
+
+.clients-table tr:hover {
+  background-color: rgba(74, 144, 226, 0.05);
+  transform: scale(1.01);
+}
+
+/* Анімації для форм */
+.form-group {
+  transition: all 0.2s ease;
+}
+
+.form-group:focus-within {
+  transform: scale(1.02);
+}
+
+/* Анімації для кількісних контролів */
+.qty-btn {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qty-btn:hover {
+  transform: scale(1.1);
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.qty-btn:active {
+  transform: scale(0.95);
+}
+
+/* Анімації для іконок */
+.info-icon {
+  transition: all 0.2s ease;
+}
+
+.info-icon:hover {
+  transform: scale(1.2) rotate(10deg);
+}
+
+/* Анімації для контейнерів клієнтів */
+.client-box {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+}
+
+.client-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Анімації для бокового меню */
+.sidebar {
+  transition: all 0.3s ease;
+}
+
+/* Анімації для термінових сейфів */
+.expiring-item {
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideInLeft 0.3s ease forwards;
+}
+
+.expiring-item:nth-child(1) { animation-delay: 0.1s; }
+.expiring-item:nth-child(2) { animation-delay: 0.2s; }
+.expiring-item:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes slideInLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.expiring-item:hover {
+  transform: translateX(5px);
+  background-color: rgba(255, 193, 7, 0.1);
+}
+
+/* Анімації для завантаження */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.loading {
+  animation: pulse 1.5s infinite;
+}
+
+/* Анімації для успішних дій */
+@keyframes success-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.success-animation {
+  animation: success-bounce 0.3s ease;
+}
+
+/* Анімації для помилок */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.error-animation {
+  animation: shake 0.3s ease;
+}
+
+/* Плавне з'явлення сторінки */
+body {
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* Переходи для перемикача теми */
+#theme-toggle {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#theme-toggle:hover {
+  transform: rotate(180deg) scale(1.1);
+}
+
+/* Переходи для селектора мови */
+#lang-select {
+  transition: all 0.2s ease;
+}
+
+#lang-select:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
+}
+
 @media (max-width: 600px) {
   /* Загальні налаштування для мобільних */
   body {
@@ -1146,4 +1395,404 @@ html[data-theme="dark"] .client-box.highlighted-safe {
 @keyframes badge-pulse-orange {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
+}
+
+/* ========== АНІМАЦІЇ ДЛЯ ПІДСУМКОВИХ ЕЛЕМЕНТІВ ========== */
+
+/* Анімація з'явлення підсумкових елементів */
+.summary-item, .summary-total {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: slideInUp 0.3s ease forwards;
+}
+
+.summary-item:nth-child(1) { animation-delay: 0.1s; }
+.summary-item:nth-child(2) { animation-delay: 0.2s; }
+.summary-item:nth-child(3) { animation-delay: 0.3s; }
+.summary-item:nth-child(4) { animation-delay: 0.4s; }
+.summary-total { animation-delay: 0.5s; }
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Анімація оновлення значень */
+.summary-value {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.summary-value.updating {
+  transform: scale(1.1);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Анімації для відображення/приховування підсумкових рядків */
+.summary-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 50px;
+  overflow: hidden;
+}
+
+.summary-item[style*="display: none"] {
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  transform: scaleY(0);
+}
+
+/* ========== ПОКРАЩЕНІ АНІМАЦІЇ ДЛЯ ФОРМ ========== */
+
+/* Анімація для labels при фокусі */
+.form-group label {
+  transition: all 0.2s ease;
+  transform-origin: left bottom;
+}
+
+.form-group:focus-within label {
+  transform: scale(0.9) translateY(-2px);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* Анімація для hint повідомлень */
+.form-hint {
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: translateY(-5px) scale(0.9);
+  opacity: 0;
+}
+
+.form-hint:not(.error) {
+  display: block !important;
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* ========== АНІМАЦІЇ ДЛЯ КНОПОК ДІЙ ========== */
+
+/* Анімація ripple effect для кнопок */
+.action-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transition: width 0.6s, height 0.6s;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+.action-btn:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+.action-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== АНІМАЦІЇ ДЛЯ РЕЗУЛЬТАТІВ ========== */
+
+/* Анімація для текстової області з результатами */
+#payment-text {
+  transition: all 0.3s ease;
+}
+
+#payment-text.generated {
+  border-color: var(--success-color, #28a745);
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+  animation: successGlow 0.5s ease;
+}
+
+@keyframes successGlow {
+  0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+  100% { box-shadow: 0 0 0 8px rgba(40, 167, 69, 0); }
+}
+
+/* ========== АНІМАЦІЇ ДЛЯ ЧИСЛОВИХ КОНТРОЛІВ ========== */
+
+/* Анімація для лічильників */
+.qty-count {
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.qty-count.updating {
+  transform: scale(1.3);
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* ========== АНІМАЦІЇ ДЛЯ СТАТУСІВ ========== */
+
+/* Анімація для статусу "термінові" */
+.expired {
+  animation: urgentPulse 2s infinite;
+}
+
+@keyframes urgentPulse {
+  0%, 100% { 
+    background-color: rgba(220, 53, 69, 0.1);
+    transform: scale(1);
+  }
+  50% { 
+    background-color: rgba(220, 53, 69, 0.2);
+    transform: scale(1.02);
+  }
+}
+
+.expiring {
+  animation: warningBlink 3s infinite;
+}
+
+@keyframes warningBlink {
+  0%, 100% { 
+    background-color: rgba(255, 193, 7, 0.1);
+  }
+  50% { 
+    background-color: rgba(255, 193, 7, 0.2);
+  }
+}
+
+/* ========== АНІМАЦІЇ ПЕРЕХОДІВ СТОРІНОК ========== */
+
+/* Анімація завантаження сторінки */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: pageEnter 0.5s ease forwards;
+}
+
+@keyframes pageEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== АНІМАЦІЇ ДЛЯ МОБІЛЬНИХ ПРИСТРОЇВ ========== */
+
+@media (max-width: 600px) {
+  /* Зменшуємо інтенсивність анімацій на мобільних */
+  * {
+    transition-duration: 0.15s !important;
+  }
+  
+  .panel:hover {
+    transform: translateY(-1px);
+  }
+  
+  .action-btn:hover {
+    transform: translateY(0);
+  }
+  
+  /* Відключаємо деякі анімації на мобільних для кращої продуктивності */
+  .nav-link::before,
+  .action-btn::before {
+    display: none;
+  }
+}
+
+/* ========== ДОДАТКОВІ МІКРО-АНІМАЦІЇ ========== */
+
+/* Анімація для перемикача теми - більш плавна */
+#theme-toggle {
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+#theme-toggle:hover {
+  transform: rotate(360deg) scale(1.1);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Анімація для селектора мови */
+#lang-select:focus {
+  transform: scale(1.05);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+/* Покращені анімації для header */
+.header {
+  transition: all 0.3s ease;
+}
+
+.header:hover {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+/* Анімації для іконок info */
+.info-icon {
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.info-icon:hover {
+  transform: scale(1.3) rotate(15deg);
+  color: var(--primary-color);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Анімації для активних станів форм */
+.form-group.active {
+  transform: scale(1.02);
+  background: rgba(74, 144, 226, 0.02);
+  border-radius: 8px;
+  padding: 4px;
+  margin: 0 -4px;
+}
+
+/* Pulse анімація для важливих елементів */
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Анімація typing для placeholder тексту */
+.typing::after {
+  content: '|';
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Анімація для кнопки копіювання */
+#copy-btn.copied {
+  background: var(--success-color, #28a745) !important;
+  transform: scale(0.95);
+  transition: all 0.2s ease;
+}
+
+#copy-btn.copied::after {
+  content: ' ✓';
+}
+
+/* Анімація для кнопки генерації */
+#generate-btn.generating {
+  background: linear-gradient(45deg, 
+    var(--primary-color), 
+    lighten(var(--primary-color), 20%),
+    var(--primary-color)
+  );
+  background-size: 200% 200%;
+  animation: generateGradient 1s infinite;
+}
+
+@keyframes generateGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Анімації для бейджів термінових сейфів */
+.count-badge {
+  animation: badgeBounce 0.5s ease;
+}
+
+@keyframes badgeBounce {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.badge-danger {
+  animation: urgentPulse 2s infinite;
+}
+
+.badge-warning {
+  animation: warningGlow 3s infinite;
+}
+
+@keyframes warningGlow {
+  0%, 100% { box-shadow: 0 0 5px rgba(255, 193, 7, 0.5); }
+  50% { box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); }
+}
+
+/* Анімації для стану завантаження */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton 1.5s infinite;
+}
+
+@keyframes skeleton {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Анімації для взаємодії з сенсорними екранами */
+@media (hover: none) and (pointer: coarse) {
+  /* Зменшуємо hover ефекти на мобільних */
+  .panel:hover,
+  .action-btn:hover,
+  .nav-link:hover {
+    transform: none;
+  }
+  
+  /* Додаємо активні стани для touch */
+  .action-btn:active {
+    transform: scale(0.95);
+    background-color: rgba(74, 144, 226, 0.8);
+  }
+  
+  .nav-link:active {
+    background-color: rgba(74, 144, 226, 0.1);
+  }
+}
+
+/* Анімації для підтвердження дій */
+.confirm-action {
+  animation: confirmPulse 0.6s ease;
+}
+
+@keyframes confirmPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+}
+
+/* Анімація для відображення помилок валідації */
+.validation-error {
+  animation: errorShake 0.5s ease;
+  border-color: #e74c3c !important;
+  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2) !important;
+}
+
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+  20%, 40%, 60%, 80% { transform: translateX(3px); }
+}
+
+/* Покращення продуктивності анімацій */
+.hardware-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* Анімації для dark theme переключення */
+html[data-theme="dark"] * {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease, 
+              color 0.3s ease !important;
 }

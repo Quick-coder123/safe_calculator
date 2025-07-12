@@ -1,4 +1,243 @@
-﻿// Копіювання підсумкової інформації
+﻿// ========== АНІМАЦІЙНІ ФУНКЦІЇ ==========
+
+// Функція для анімації оновлення значень
+function animateValueUpdate(element, newValue) {
+  if (!element) return;
+  
+  // Додаємо клас оновлення
+  element.classList.add('updating');
+  
+  // Оновлюємо значення через невеликий проміжок часу
+  setTimeout(() => {
+    element.textContent = newValue;
+    element.classList.remove('updating');
+  }, 150);
+}
+
+// Функція для анімації числових контролів
+function animateCounterUpdate(element) {
+  if (!element) return;
+  
+  element.classList.add('updating');
+  setTimeout(() => {
+    element.classList.remove('updating');
+  }, 300);
+}
+
+// Функція для анімації генерації результату
+function animateGeneration() {
+  const textarea = document.getElementById('payment-text');
+  if (textarea) {
+    textarea.classList.add('generated');
+    setTimeout(() => {
+      textarea.classList.remove('generated');
+    }, 500);
+  }
+}
+
+// Функція для анімації помилок
+function animateError(element) {
+  if (!element) return;
+  
+  element.classList.add('error-animation');
+  setTimeout(() => {
+    element.classList.remove('error-animation');
+  }, 300);
+}
+
+// Функція для анімації успішних дій
+function animateSuccess(element) {
+  if (!element) return;
+  
+  element.classList.add('success-animation');
+  setTimeout(() => {
+    element.classList.remove('success-animation');
+  }, 300);
+}
+
+// Функція для анімації завантаження сторінки
+function initPageAnimation() {
+  document.body.classList.add('page-enter');
+}
+
+// Функція для плавного показу/приховування елементів
+function toggleElementWithAnimation(element, show) {
+  if (!element) return;
+  
+  if (show) {
+    element.style.display = '';
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(10px)';
+    
+    requestAnimationFrame(() => {
+      element.style.transition = 'all 0.3s ease';
+      element.style.opacity = '1';
+      element.style.transform = 'translateY(0)';
+    });
+  } else {
+    element.style.transition = 'all 0.3s ease';
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(-10px)';
+    
+    setTimeout(() => {
+      element.style.display = 'none';
+    }, 300);
+  }
+}
+
+// ========== РОЗШИРЕНІ АНІМАЦІЙНІ ФУНКЦІЇ ==========
+
+// Функція для анімації кнопки копіювання
+function animateCopyButton(button) {
+  button.classList.add('copied');
+  setTimeout(() => {
+    button.classList.remove('copied');
+  }, 1000);
+}
+
+// Функція для анімації кнопки генерації
+function animateGenerateButton(button) {
+  button.classList.add('generating');
+  setTimeout(() => {
+    button.classList.remove('generating');
+  }, 1000);
+}
+
+// Функція для анімації валідаційних помилок
+function animateValidationError(input) {
+  input.classList.add('validation-error');
+  setTimeout(() => {
+    input.classList.remove('validation-error');
+  }, 500);
+}
+
+// Функція для анімації підтвердження дії
+function animateConfirmAction(element) {
+  element.classList.add('confirm-action');
+  setTimeout(() => {
+    element.classList.remove('confirm-action');
+  }, 600);
+}
+
+// Функція для додавання typing ефекту
+function addTypingEffect(element) {
+  element.classList.add('typing');
+  setTimeout(() => {
+    element.classList.remove('typing');
+  }, 2000);
+}
+
+// Функція для плавного скролу до елемента
+function smoothScrollTo(element) {
+  element.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
+  });
+  
+  // Додаємо підсвічування
+  element.style.transition = 'all 0.3s ease';
+  element.style.background = 'rgba(74, 144, 226, 0.1)';
+  element.style.transform = 'scale(1.02)';
+  
+  setTimeout(() => {
+    element.style.background = '';
+    element.style.transform = '';
+  }, 1500);
+}
+
+// Функція для анімації оновлення теми
+function animateThemeChange() {
+  document.body.style.transition = 'all 0.3s ease';
+  document.body.style.opacity = '0.8';
+  
+  setTimeout(() => {
+    document.body.style.opacity = '1';
+  }, 150);
+}
+
+// Функція для анімації зміни мови
+function animateLanguageChange() {
+  const elements = document.querySelectorAll('[data-i18n-key]');
+  elements.forEach((el, index) => {
+    setTimeout(() => {
+      el.style.transition = 'all 0.2s ease';
+      el.style.transform = 'scale(1.05)';
+      el.style.color = 'var(--primary-color)';
+      
+      setTimeout(() => {
+        el.style.transform = '';
+        el.style.color = '';
+      }, 200);
+    }, index * 50);
+  });
+}
+
+// Функція для додавання hover ефектів
+function addHoverEffects() {
+  // Додаємо hover ефекти для форм
+  const formGroups = document.querySelectorAll('.form-group');
+  formGroups.forEach(group => {
+    group.addEventListener('focusin', () => {
+      group.classList.add('active');
+    });
+    
+    group.addEventListener('focusout', () => {
+      group.classList.remove('active');
+    });
+  });
+  
+  // Додаємо pulse ефект для важливих кнопок
+  const importantButtons = document.querySelectorAll('#generate-btn, #copy-btn');
+  importantButtons.forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+      if (!btn.classList.contains('generating') && !btn.classList.contains('copied')) {
+        btn.classList.add('pulse');
+      }
+    });
+    
+    btn.addEventListener('mouseleave', () => {
+      btn.classList.remove('pulse');
+    });
+  });
+}
+
+// Функція для анімації skeleton loading
+function showSkeletonLoading(container) {
+  container.innerHTML = `
+    <div class="loading-skeleton" style="height: 20px; margin: 8px 0; border-radius: 4px;"></div>
+    <div class="loading-skeleton" style="height: 20px; margin: 8px 0; border-radius: 4px; width: 80%;"></div>
+    <div class="loading-skeleton" style="height: 20px; margin: 8px 0; border-radius: 4px; width: 60%;"></div>
+  `;
+}
+
+// Функція для progressive enhancement
+function enableProgressiveAnimations() {
+  // Перевіряємо підтримку анімацій
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  
+  if (prefersReducedMotion) {
+    // Відключаємо складні анімації для користувачів з обмеженими можливостями
+    document.documentElement.style.setProperty('--animation-duration', '0.01s');
+    return;
+  }
+  
+  // Додаємо hardware acceleration для кращої продуктивності
+  const animatedElements = document.querySelectorAll('.panel, .action-btn, .nav-link, .form-group');
+  animatedElements.forEach(el => {
+    el.classList.add('hardware-accelerated');
+  });
+}
+
+// Ініціалізація розширених анімацій
+function initAdvancedAnimations() {
+  addHoverEffects();
+  enableProgressiveAnimations();
+}
+
+// Ініціалізація анімацій при завантаженні сторінки
+initPageAnimation();
+
+// Копіювання підсумкової інформації
 document.addEventListener('DOMContentLoaded', () => {
   const copySummaryBtn = document.getElementById('copy-summary-btn');
   if (copySummaryBtn) {
@@ -147,6 +386,9 @@ function showHint(id, msg, isError) {
   document.documentElement.setAttribute('data-theme', savedTheme);
   themeBtn.textContent = savedTheme === 'light' ? '🌙' : '☀️';
   themeBtn.addEventListener('click', () => {
+    // Анімація перемикання теми
+    animateThemeChange();
+    
     const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
@@ -267,6 +509,8 @@ function showHint(id, msg, isError) {
   langSelect.addEventListener('change', () => {
     localStorage.setItem('lang', langSelect.value);
     applyTranslations(langSelect.value);
+    // Анімація зміни мови
+    animateLanguageChange();
   });
 
   // Initialize dates
@@ -348,11 +592,14 @@ function showHint(id, msg, isError) {
     const days=getTermDays();
     const rateObj=dailyRates.find(r=>days>=r.min&&days<=r.max)||{rates:{}};
     const dailyRate=rateObj.rates[categoryEl.value]||0;
-    outRate.textContent = dailyRate.toFixed(2)+' грн/день';
-    outDays.textContent = days+' днів';
-    outEnd.textContent = endEl.value.split('-').reverse().join('-');
+    
+    // Анімоване оновлення значень
+    animateValueUpdate(outRate, dailyRate.toFixed(2)+' грн/день');
+    animateValueUpdate(outDays, days+' днів');
+    animateValueUpdate(outEnd, endEl.value.split('-').reverse().join('-'));
+    
     const rentAmt=dailyRate*days;
-    rentCost.textContent = rentAmt.toFixed(2)+' грн';
+    animateValueUpdate(rentCost, rentAmt.toFixed(2)+' грн');
     const insObj=insuranceRates.find(r=>days>=r.min&&days<=r.max)||{};
     const covAmt=coverageEl.value==='insurance'?insObj.cost:(contractEl.value==='new'?depositAmount:0);
     // Відображення типу покриття
@@ -363,18 +610,28 @@ function showHint(id, msg, isError) {
       coverageText = langSelect.value === 'uk' ? 'Грошове покриття' : 'Cash deposit';
     }
     document.querySelector('[data-i18n-key="summary_cov"]').textContent = coverageText + ':';
-    covCost.textContent = covAmt.toFixed(2)+' грн';
-    document.getElementById('coverage-summary').style.display = covAmt > 0 ? '' : 'none';
+    animateValueUpdate(covCost, covAmt.toFixed(2)+' грн');
+    
+    // Плавне показ/приховування елементів покриття
+    const coverageSummary = document.getElementById('coverage-summary');
+    toggleElementWithAnimation(coverageSummary, covAmt > 0);
+    
     const aCost=parseInt(atCount.textContent,10)*attorneyTariff;
-    atCost.textContent = aCost.toFixed(2)+' грн';
+    animateValueUpdate(atCost, aCost.toFixed(2)+' грн');
     const pCost=parseFloat(penaltyEl.value)||0;
-    penCost.textContent = pCost.toFixed(2)+' грн';
+    animateValueUpdate(penCost, pCost.toFixed(2)+' грн');
     const pkCost=parseInt(pkCount.textContent,10)*packetTariff;
-    // Показувати довіреності, пакети і пеню лише якщо не 0
-    document.getElementById('attorney-summary').style.display = aCost > 0 ? '' : 'none';
-    document.getElementById('packet-summary').style.display = pkCost > 0 ? '' : 'none';
-    document.getElementById('penalty-summary').style.display = pCost > 0 ? '' : 'none';
-    totCost.textContent = (rentAmt+covAmt+aCost+pCost+pkCost).toFixed(2)+' грн';
+    
+    // Плавне показ/приховування підсумкових рядків
+    const attorneySummary = document.getElementById('attorney-summary');
+    const packetSummary = document.getElementById('packet-summary');
+    const penaltySummary = document.getElementById('penalty-summary');
+    
+    toggleElementWithAnimation(attorneySummary, aCost > 0);
+    toggleElementWithAnimation(packetSummary, pkCost > 0);
+    toggleElementWithAnimation(penaltySummary, pCost > 0);
+    
+    animateValueUpdate(totCost, (rentAmt+covAmt+aCost+pCost+pkCost).toFixed(2)+' грн');
   }
 
   // Events
@@ -382,15 +639,39 @@ function showHint(id, msg, isError) {
   startEl.addEventListener('change',()=>{ syncDays(); calculateAll(); });
   endEl.addEventListener('change',()=>{ syncDays(); calculateAll(); });
   [categoryEl,contractEl,coverageEl,penaltyEl,recEl,edrEl,ibanEl,linkEl].forEach(el=>el.addEventListener('input',calculateAll));
-  atDec.addEventListener('click',()=>{ atCount.textContent=Math.max(0,parseInt(atCount.textContent)-1); calculateAll(); });
-  atInc.addEventListener('click',()=>{ atCount.textContent=parseInt(atCount.textContent)+1; calculateAll(); });
-  pkDec.addEventListener('click',()=>{ pkCount.textContent=Math.max(0,parseInt(pkCount.textContent)-1); calculateAll(); });
-  pkInc.addEventListener('click',()=>{ pkCount.textContent=parseInt(pkCount.textContent)+1; calculateAll(); });
+  
+  atDec.addEventListener('click',()=>{ 
+    atCount.textContent=Math.max(0,parseInt(atCount.textContent)-1); 
+    animateCounterUpdate(atCount);
+    calculateAll(); 
+  });
+  atInc.addEventListener('click',()=>{ 
+    atCount.textContent=parseInt(atCount.textContent)+1; 
+    animateCounterUpdate(atCount);
+    calculateAll(); 
+  });
+  pkDec.addEventListener('click',()=>{ 
+    pkCount.textContent=Math.max(0,parseInt(pkCount.textContent)-1); 
+    animateCounterUpdate(pkCount);
+    calculateAll(); 
+  });
+  pkInc.addEventListener('click',()=>{ 
+    pkCount.textContent=parseInt(pkCount.textContent)+1; 
+    animateCounterUpdate(pkCount);
+    calculateAll(); 
+  });
 
   // Generate
   genBtn.addEventListener('click',()=>{
+    // Анімація кнопки генерації
+    animateGenerateButton(genBtn);
+    
     calculateAll();
     if (document.querySelector('.input-error')) {
+      // Анімація помилки валідації
+      const errorInputs = document.querySelectorAll('.input-error');
+      errorInputs.forEach(input => animateValidationError(input));
+      
       toast.textContent = langSelect.value==='uk' ? 'Виправте помилки у формі!' : 'Please fix form errors!';
       toast.classList.add('show');
       setTimeout(()=>toast.classList.remove('show'),2000);
@@ -433,6 +714,12 @@ function showHint(id, msg, isError) {
       linkEl.value.trim()||'https://ars.aiwa.in.ua/docs/sdb/newID'
     ];
     txtArea.value=lines.join('\n');
+    
+    // Додаємо анімацію генерації
+    animateGeneration();
+    // Анімація підтвердження
+    animateConfirmAction(genBtn);
+    
     toast.textContent=translations[langSelect.value].toast_generated;
     toast.classList.add('show');
     setTimeout(()=>toast.classList.remove('show'),1500);
@@ -440,11 +727,20 @@ function showHint(id, msg, isError) {
 
   // Copy
   copyBtn.addEventListener('click',()=>{
-    if (!txtArea.value.trim()) return;
+    if (!txtArea.value.trim()) {
+      animateError(copyBtn);
+      return;
+    }
     navigator.clipboard.writeText(txtArea.value).then(()=>{
+      // Анімація успішного копіювання
+      animateSuccess(copyBtn);
+      animateCopyButton(copyBtn);
+      
       toast.textContent=translations[langSelect.value].toast_copied;
       toast.classList.add('show');
       setTimeout(()=>toast.classList.remove('show'),1500);
+    }).catch(()=>{
+      animateError(copyBtn);
     });
   });
 
