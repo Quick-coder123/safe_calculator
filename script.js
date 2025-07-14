@@ -452,12 +452,12 @@ function showHint(id, msg, isError) {
     // Анімоване оновлення значень
     if (outRate) animateValueUpdate(outRate, dailyRate.toFixed(2)+' грн/день');
     if (outDays) animateValueUpdate(outDays, days+' днів');
-    if (outEnd && endEl) animateValueUpdate(outEnd, endEl.value.split('-').reverse().join('-'));
+    if (outEnd && endEl && endEl.value) animateValueUpdate(outEnd, endEl.value.split('-').reverse().join('-'));
     
     const rentAmt=dailyRate*days;
     if (rentCost) animateValueUpdate(rentCost, rentAmt.toFixed(2)+' грн');
-    const insObj=insuranceRates.find(r=>days>=r.min&&days<=r.max)||{};
-    const covAmt=coverageEl && coverageEl.value==='insurance'?insObj.cost:(contractEl && contractEl.value==='new'?depositAmount:0);
+    const insObj=insuranceRates.find(r=>days>=r.min&&days<=r.max)||{cost:0};
+    const covAmt=coverageEl && coverageEl.value==='insurance'?(insObj.cost||0):(contractEl && contractEl.value==='new'?(depositAmount||0):0);
     // Відображення типу покриття
     let coverageText = '';
     if (coverageEl && coverageEl.value === 'insurance') {
@@ -467,12 +467,13 @@ function showHint(id, msg, isError) {
     }
     const summaryEl = document.querySelector('[data-i18n-key="summary_cov"]');
     if (summaryEl) summaryEl.textContent = coverageText + ':';
-    if (covCost) animateValueUpdate(covCost, covAmt.toFixed(2)+' грн');
+    const safeCovAmt = isNaN(covAmt) ? 0 : (covAmt || 0);
+    if (covCost) animateValueUpdate(covCost, safeCovAmt.toFixed(2)+' грн');
     
     // Плавне показ/приховування елементів покриття
     const coverageSummary = document.getElementById('coverage-summary');
     if (coverageSummary) {
-      toggleElementWithAnimation(coverageSummary, covAmt > 0);
+      toggleElementWithAnimation(coverageSummary, safeCovAmt > 0);
     }
     
     const aCost=parseInt(atCount ? atCount.textContent : '0',10)*attorneyTariff;
@@ -490,7 +491,7 @@ function showHint(id, msg, isError) {
     if (packetSummary) toggleElementWithAnimation(packetSummary, pkCost > 0);
     if (penaltySummary) toggleElementWithAnimation(penaltySummary, pCost > 0);
     
-    if (totCost) animateValueUpdate(totCost, (rentAmt+covAmt+aCost+pCost+pkCost).toFixed(2)+' грн');
+    if (totCost) animateValueUpdate(totCost, (rentAmt+safeCovAmt+aCost+pCost+pkCost).toFixed(2)+' грн');
   }
 
   // Events
