@@ -10,11 +10,11 @@ function renderSafes(safes) {
     <div class="form-group" style="border:1px solid #eee; border-radius:8px; padding:10px; margin-bottom:8px;">
       <label>Категорія
         <select name="category${i}" required>
-          <option value="1 категорія"${s.category==='1 категорія'?' selected':''}>1 категорія</option>
-          <option value="2 категорія"${s.category==='2 категорія'?' selected':''}>2 категорія</option>
-          <option value="3 категорія"${s.category==='3 категорія'?' selected':''}>3 категорія</option>
-          <option value="4 категорія"${s.category==='4 категорія'?' selected':''}>4 категорія</option>
-          <option value="5 категорія"${s.category==='5 категорія'?' selected':''}>5 категорія</option>
+          <option value="1"${s.category==='1' || s.category==='1 категорія'?' selected':''}>1 категорія</option>
+          <option value="2"${s.category==='2' || s.category==='2 категорія'?' selected':''}>2 категорія</option>
+          <option value="3"${s.category==='3' || s.category==='3 категорія'?' selected':''}>3 категорія</option>
+          <option value="4"${s.category==='4' || s.category==='4 категорія'?' selected':''}>4 категорія</option>
+          <option value="5"${s.category==='5' || s.category==='5 категорія'?' selected':''}>5 категорія</option>
         </select>
       </label>
       <label style="margin-left:8px;">№ сейфу <input type="text" name="safeNumber${i}" value="${s.safeNumber||''}" required style="width:80px;"></label>
@@ -30,16 +30,16 @@ function renderSafes(safes) {
   `).join('');
 }
 
-let safes = [ { category: '1 категорія', safeNumber: '', endDate: '', coverage: 'Страховка' } ];
+let safes = [ { category: '1', safeNumber: '', endDate: '', coverage: 'Страховка' } ];
 renderSafes(safes);
 
 window.removeSafe = function(idx) {
   safes.splice(idx,1);
-  if (safes.length === 0) safes.push({ category: '1 категорія', safeNumber: '', endDate: '', coverage: 'Страховка' });
+  if (safes.length === 0) safes.push({ category: '1', safeNumber: '', endDate: '', coverage: 'Страховка' });
   renderSafes(safes);
 }
 addSafeBtn.onclick = function() {
-  safes.push({ category: '1 категорія', safeNumber: '', endDate: '', coverage: 'Страховка' });
+  safes.push({ category: '1', safeNumber: '', endDate: '', coverage: 'Страховка' });
   renderSafes(safes);
 }
 

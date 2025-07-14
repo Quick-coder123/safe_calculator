@@ -136,7 +136,7 @@ function renderSafes() {
     // Замінюємо старі значення "Депозит" на "Грошове покриття" для відображення
     const coverageDisplay = s.coverage === 'Депозит' ? 'Грошове покриття' : (s.coverage || '-');
     div.innerHTML = `
-      <b>Сейф №${s.safeNumber || '-'} (${s.category ? s.category + ' категорія' : '-'})</b><br>
+      <b>Сейф №${s.safeNumber || '-'} (${s.category ? (isNaN(s.category) ? s.category : s.category + ' категорія') : '-'})</b><br>
       <span><b>Дата закінчення:</b> <input type="date" value="${s.endDate||''}" ${editMode?'':'readonly'} onchange="window.updateSafeDate(${idx},this.value)" ${s.safeNumber? '':'disabled'}></span><br>
       <span><b>Покриття:</b> ${coverageDisplay}</span><br>
       <div class="button-row" style="margin-top:8px;">
