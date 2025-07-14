@@ -216,21 +216,21 @@ function showHint(id, msg, isError) {
     if (!preset) return;
     
     // Заповнюємо поля калькулятора
-    if (preset.category) categoryEl.value = preset.category;
-    if (preset.coverage) coverageEl.value = preset.coverage;
-    if (preset.contractType) contractEl.value = preset.contractType;
-    if (preset.startDate) startEl.value = preset.startDate;
+    if (preset.category && categoryEl) categoryEl.value = preset.category;
+    if (preset.coverage && coverageEl) coverageEl.value = preset.coverage;
+    if (preset.contractType && contractEl) contractEl.value = preset.contractType;
+    if (preset.startDate && startEl) startEl.value = preset.startDate;
     
     // Заповнюємо реквізити
-    if (preset.name) recEl.value = preset.name;
-    if (preset.ipn) edrEl.value = preset.ipn;
-    if (preset.iban) ibanEl.value = preset.iban;
+    if (preset.name && recEl) recEl.value = preset.name;
+    if (preset.ipn && edrEl) edrEl.value = preset.ipn;
+    if (preset.iban && ibanEl) ibanEl.value = preset.iban;
     
     // Очищаємо preset після використання
     localStorage.removeItem('calculatorPreset');
     
     // Перерахуємо після заповнення
-    calculate();
+    calculateAll();
   }
   const txtArea     = document.getElementById('payment-text');
   const toast       = document.getElementById('toast');
