@@ -102,9 +102,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       navigator.clipboard.writeText(text.trim());
-      toast.textContent = 'Підсумок скопійовано!';
-      toast.classList.add('show');
-      setTimeout(()=>toast.classList.remove('show'),1500);
+      const toast = document.getElementById('toast');
+      if (toast) {
+        toast.textContent = 'Підсумок скопійовано!';
+        toast.classList.add('show');
+        setTimeout(()=>toast.classList.remove('show'),1500);
+      }
     };
   }
 });
@@ -394,18 +397,22 @@ function showHint(id, msg, isError) {
 
   // Helpers
   function getTermDays(){
+    if (!daysEl) return 1;
     const v = parseInt(daysEl.value,10);
     if(v>0) return v;
+    if (!startEl || !endEl) return 1;
     const sd=new Date(startEl.value), ed=new Date(endEl.value),
           diff=Math.floor((ed-sd)/(1000*60*60*24))+1;
-    return diff>0?diff:0;
+    return diff>0?diff:1;
   }
   function syncEndDate(){
+    if (!startEl || !endEl || !daysEl) return;
     const d=getTermDays(), dt=new Date(startEl.value);
     dt.setDate(dt.getDate()+d-1);
     endEl.value=dt.toISOString().slice(0,10);
   }
   function syncDays(){
+    if (!startEl || !endEl || !daysEl) return;
     const sd=new Date(startEl.value), ed=new Date(endEl.value),
           diff=Math.floor((ed-sd)/(1000*60*60*24))+1;
     daysEl.value = diff>0?diff:1;
@@ -414,101 +421,115 @@ function showHint(id, msg, isError) {
     // Валідація та підказки
     let valid = true;
     // EDRPOU
-    if (edrEl.value && !validateEDRPOU(edrEl.value)) {
-      showHint('edrpou', langSelect.value==='uk' ? 'Має бути 10 цифр' : 'Should be 10 digits', true);
+    if (edrEl && edrEl.value && !validateEDRPOU(edrEl.value)) {
+      showHint('edrpou', langSelect && langSelect.value==='uk' ? 'Має бути 10 цифр' : 'Should be 10 digits', true);
       setError(edrEl, true); valid = false;
     } else {
-      showHint('edrpou', '', false); setError(edrEl, false);
+      showHint('edrpou', '', false); 
+      if (edrEl) setError(edrEl, false);
     }
     // IBAN
-    if (ibanEl.value && !validateIBAN(ibanEl.value)) {
-      showHint('iban', langSelect.value==='uk' ? 'Формат: UA + 27 цифр' : 'Format: UA + 27 digits', true);
+    if (ibanEl && ibanEl.value && !validateIBAN(ibanEl.value)) {
+      showHint('iban', langSelect && langSelect.value==='uk' ? 'Формат: UA + 27 цифр' : 'Format: UA + 27 digits', true);
       setError(ibanEl, true); valid = false;
     } else {
-      showHint('iban', '', false); setError(ibanEl, false);
+      showHint('iban', '', false); 
+      if (ibanEl) setError(ibanEl, false);
     }
     // Дати
-    if (startEl.value && endEl.value && startEl.value > endEl.value) {
-      showHint('end-date', langSelect.value==='uk' ? 'Дата закінчення не може бути раніше початку' : 'End date cannot be before start', true);
+    if (startEl && endEl && startEl.value && endEl.value && startEl.value > endEl.value) {
+      showHint('end-date', langSelect && langSelect.value==='uk' ? 'Дата закінчення не може бути раніше початку' : 'End date cannot be before start', true);
       setError(endEl, true); valid = false;
     } else {
-      showHint('end-date', '', false); setError(endEl, false);
+      showHint('end-date', '', false); 
+      if (endEl) setError(endEl, false);
     }
     saveForm();
     const days=getTermDays();
     const rateObj=dailyRates.find(r=>days>=r.min&&days<=r.max)||{rates:{}};
-    const dailyRate=rateObj.rates[categoryEl.value]||0;
+    const dailyRate=rateObj.rates[categoryEl ? categoryEl.value : '']||0;
     
     // Анімоване оновлення значень
-    animateValueUpdate(outRate, dailyRate.toFixed(2)+' грн/день');
-    animateValueUpdate(outDays, days+' днів');
-    animateValueUpdate(outEnd, endEl.value.split('-').reverse().join('-'));
+    if (outRate) animateValueUpdate(outRate, dailyRate.toFixed(2)+' грн/день');
+    if (outDays) animateValueUpdate(outDays, days+' днів');
+    if (outEnd && endEl) animateValueUpdate(outEnd, endEl.value.split('-').reverse().join('-'));
     
     const rentAmt=dailyRate*days;
-    animateValueUpdate(rentCost, rentAmt.toFixed(2)+' грн');
+    if (rentCost) animateValueUpdate(rentCost, rentAmt.toFixed(2)+' грн');
     const insObj=insuranceRates.find(r=>days>=r.min&&days<=r.max)||{};
-    const covAmt=coverageEl.value==='insurance'?insObj.cost:(contractEl.value==='new'?depositAmount:0);
+    const covAmt=coverageEl && coverageEl.value==='insurance'?insObj.cost:(contractEl && contractEl.value==='new'?depositAmount:0);
     // Відображення типу покриття
     let coverageText = '';
-    if (coverageEl.value === 'insurance') {
-      coverageText = langSelect.value === 'uk' ? 'Страхування ключа' : 'Key insurance';
+    if (coverageEl && coverageEl.value === 'insurance') {
+      coverageText = langSelect && langSelect.value === 'uk' ? 'Страхування ключа' : 'Key insurance';
     } else {
-      coverageText = langSelect.value === 'uk' ? 'Грошове покриття' : 'Cash deposit';
+      coverageText = langSelect && langSelect.value === 'uk' ? 'Грошове покриття' : 'Cash deposit';
     }
-    document.querySelector('[data-i18n-key="summary_cov"]').textContent = coverageText + ':';
-    animateValueUpdate(covCost, covAmt.toFixed(2)+' грн');
+    const summaryEl = document.querySelector('[data-i18n-key="summary_cov"]');
+    if (summaryEl) summaryEl.textContent = coverageText + ':';
+    if (covCost) animateValueUpdate(covCost, covAmt.toFixed(2)+' грн');
     
     // Плавне показ/приховування елементів покриття
     const coverageSummary = document.getElementById('coverage-summary');
-    toggleElementWithAnimation(coverageSummary, covAmt > 0);
+    if (coverageSummary) {
+      toggleElementWithAnimation(coverageSummary, covAmt > 0);
+    }
     
-    const aCost=parseInt(atCount.textContent,10)*attorneyTariff;
-    animateValueUpdate(atCost, aCost.toFixed(2)+' грн');
-    const pCost=parseFloat(penaltyEl.value)||0;
-    animateValueUpdate(penCost, pCost.toFixed(2)+' грн');
-    const pkCost=parseInt(pkCount.textContent,10)*packetTariff;
+    const aCost=parseInt(atCount ? atCount.textContent : '0',10)*attorneyTariff;
+    if (atCost) animateValueUpdate(atCost, aCost.toFixed(2)+' грн');
+    const pCost=parseFloat(penaltyEl ? penaltyEl.value : '0')||0;
+    if (penCost) animateValueUpdate(penCost, pCost.toFixed(2)+' грн');
+    const pkCost=parseInt(pkCount ? pkCount.textContent : '0',10)*packetTariff;
     
     // Плавне показ/приховування підсумкових рядків
     const attorneySummary = document.getElementById('attorney-summary');
     const packetSummary = document.getElementById('packet-summary');
     const penaltySummary = document.getElementById('penalty-summary');
     
-    toggleElementWithAnimation(attorneySummary, aCost > 0);
-    toggleElementWithAnimation(packetSummary, pkCost > 0);
-    toggleElementWithAnimation(penaltySummary, pCost > 0);
+    if (attorneySummary) toggleElementWithAnimation(attorneySummary, aCost > 0);
+    if (packetSummary) toggleElementWithAnimation(packetSummary, pkCost > 0);
+    if (penaltySummary) toggleElementWithAnimation(penaltySummary, pCost > 0);
     
-    animateValueUpdate(totCost, (rentAmt+covAmt+aCost+pCost+pkCost).toFixed(2)+' грн');
+    if (totCost) animateValueUpdate(totCost, (rentAmt+covAmt+aCost+pCost+pkCost).toFixed(2)+' грн');
   }
 
   // Events
-  daysEl.addEventListener('input',()=>{ syncEndDate(); calculateAll(); });
-  startEl.addEventListener('change',()=>{ syncDays(); calculateAll(); });
-  endEl.addEventListener('change',()=>{ syncDays(); calculateAll(); });
-  [categoryEl,contractEl,coverageEl,penaltyEl,recEl,edrEl,ibanEl,linkEl].forEach(el=>el.addEventListener('input',calculateAll));
+  if (daysEl) daysEl.addEventListener('input',()=>{ syncEndDate(); calculateAll(); });
+  if (startEl) startEl.addEventListener('change',()=>{ syncDays(); calculateAll(); });
+  if (endEl) endEl.addEventListener('change',()=>{ syncDays(); calculateAll(); });
+  [categoryEl,contractEl,coverageEl,penaltyEl,recEl,edrEl,ibanEl,linkEl].filter(el => el).forEach(el=>el.addEventListener('input',calculateAll));
   
-  atDec.addEventListener('click',()=>{ 
-    atCount.textContent=Math.max(0,parseInt(atCount.textContent)-1); 
-    animateCounterUpdate(atCount);
-    calculateAll(); 
+  if (atDec) atDec.addEventListener('click',()=>{ 
+    if (atCount) {
+      atCount.textContent=Math.max(0,parseInt(atCount.textContent)-1); 
+      animateCounterUpdate(atCount);
+      calculateAll(); 
+    }
   });
-  atInc.addEventListener('click',()=>{ 
-    atCount.textContent=parseInt(atCount.textContent)+1; 
-    animateCounterUpdate(atCount);
-    calculateAll(); 
+  if (atInc) atInc.addEventListener('click',()=>{ 
+    if (atCount) {
+      atCount.textContent=parseInt(atCount.textContent)+1; 
+      animateCounterUpdate(atCount);
+      calculateAll(); 
+    }
   });
-  pkDec.addEventListener('click',()=>{ 
-    pkCount.textContent=Math.max(0,parseInt(pkCount.textContent)-1); 
-    animateCounterUpdate(pkCount);
-    calculateAll(); 
+  if (pkDec) pkDec.addEventListener('click',()=>{ 
+    if (pkCount) {
+      pkCount.textContent=Math.max(0,parseInt(pkCount.textContent)-1); 
+      animateCounterUpdate(pkCount);
+      calculateAll(); 
+    }
   });
-  pkInc.addEventListener('click',()=>{ 
-    pkCount.textContent=parseInt(pkCount.textContent)+1; 
-    animateCounterUpdate(pkCount);
-    calculateAll(); 
+  if (pkInc) pkInc.addEventListener('click',()=>{ 
+    if (pkCount) {
+      pkCount.textContent=parseInt(pkCount.textContent)+1; 
+      animateCounterUpdate(pkCount);
+      calculateAll(); 
+    }
   });
 
   // Generate
-  genBtn.addEventListener('click',()=>{
+  if (genBtn) genBtn.addEventListener('click',()=>{
     calculateAll();
     if (document.querySelector('.input-error')) {
       toast.textContent = langSelect.value==='uk' ? 'Виправте помилки у формі!' : 'Please fix form errors!';
