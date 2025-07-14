@@ -229,8 +229,7 @@ function showHint(id, msg, isError) {
     // Очищаємо preset після використання
     localStorage.removeItem('calculatorPreset');
     
-    // Перерахуємо після заповнення
-    calculateAll();
+    // Не викликаємо calculateAll тут, бо він буде викликаний після завантаження даних
   }
   const txtArea     = document.getElementById('payment-text');
   const toast       = document.getElementById('toast');
@@ -355,8 +354,7 @@ function showHint(id, msg, isError) {
     loadForm();
   }
   
-  // Завантажуємо попередньо заповнені дані з анкети клієнта (якщо є)
-  loadCalculatorPreset();
+  // Завантажуємо попередньо заповнені дані з анкети клієнта після завантаження rates.json
   langSelect.addEventListener('change', () => {
     localStorage.setItem('lang', langSelect.value);
     applyTranslations(langSelect.value);
@@ -367,10 +365,40 @@ function showHint(id, msg, isError) {
   if (!startEl.value) startEl.value = today;
   if (!endEl.value) endEl.value = today;
 
-  // Завантаження тарифів з rates.json
+  // Функція завантаження тарифів
+  async function loadRates() {
+    try {
+      // Спробуємо завантажити з Supabase
+      if (supabaseClient) {
+        console.log('Завантажуємо тарифи з Supabase...');
+        
+        const { data: rates, error } = await supabaseClient
+          .from('rates')
+          .select('*')
+          .single();
+          
+        if (error) throw error;
+        
+        if (rates && rates.data) {
+          console.log('✅ Тарифи завантажені з Supabase');
+          return rates.data;
+        }
+      }
+    } catch (error) {
+      console.log('⚠️ Помилка завантаження з Supabase:', error.message);
+    }
+    
+    // Fallback: завантажуємо з локального JSON
+    console.log('📁 Завантажуємо тарифи з rates.json...');
+    const response = await fetch('rates.json');
+    const data = await response.json();
+    console.log('✅ Тарифи завантажені з rates.json');
+    return data;
+  }
+
+  // Завантаження тарифів
   let dailyRates = [], insuranceRates = [], attorneyTariff = 0, packetTariff = 0, depositAmount = 0;
-  fetch('rates.json')
-    .then(r=>r.json())
+  loadRates()
     .then(data=>{
       // Преобразуємо dailyRates для швидкого пошуку
       dailyRates = data.dailyRates.map((row,i)=>({
@@ -392,6 +420,9 @@ function showHint(id, msg, isError) {
       attorneyTariff = data.attorneyTariff;
       packetTariff = data.packetTariff;
       depositAmount = data.depositAmount;
+      
+      // Спочатку завантажуємо preset, потім розраховуємо
+      loadCalculatorPreset();
       calculateAll();
     });
 
@@ -418,6 +449,12 @@ function showHint(id, msg, isError) {
     daysEl.value = diff>0?diff:1;
   }
   function calculateAll(){
+    // Перевіряємо, чи завантажені дані з rates.json
+    if (!dailyRates || dailyRates.length === 0) {
+      console.log('Дані ще не завантажені, пропускаємо розрахунок');
+      return;
+    }
+    
     // Валідація та підказки
     let valid = true;
     // EDRPOU
